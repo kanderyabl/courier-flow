@@ -2,7 +2,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 
 export default function Home() {
-  const value: string = 123;
+  const value: number = 123;
   return (
     <div className={styles.page}>
       <main className={styles.main}>
