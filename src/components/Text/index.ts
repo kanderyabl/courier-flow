@@ -1,2 +1,2 @@
 export { Text } from "./ui";
-export type { TextProps } from "./types";
+export type { TextProps, TextColor } from "./types";
