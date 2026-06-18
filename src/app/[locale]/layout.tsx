@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { inter } from "@/shared/config/fonts";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { PwaRegister } from "@/components/PwaRegister/PwaRegister";
 import { routing } from "@/i18n/routing";
+import { inter } from "@/shared/config/fonts";
 
 import "../globals.css";
 
@@ -38,8 +38,8 @@ export default async function RootLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={inter.className}>
-      <body>
+    <html lang={locale}>
+      <body className={inter.className}>
         <NextIntlClientProvider>
           <PwaRegister />
           {children}
