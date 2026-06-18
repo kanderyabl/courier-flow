@@ -1,0 +1,21 @@
+.hint {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.default {
+  color: var(--color-muted);
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+.success {
+  color: var(--color-success);
+}
+
+.warning {
+  color: var(--color-warning);
+}
