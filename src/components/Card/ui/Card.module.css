@@ -1,0 +1,30 @@
+.card {
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.default {
+  border: 1px solid var(--color-border);
+}
+
+.outlined {
+  border: 1px solid var(--color-border);
+  background: transparent;
+}
+
+.elevated {
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 6%);
+}
+
+.sm {
+  padding: 12px;
+}
+
+.md {
+  padding: 16px;
+}
+
+.lg {
+  padding: 24px;
+}
