@@ -2,5 +2,14 @@
   "HomePage": {
     "title": "Courier Flow",
     "description": "कूरियर, आदेश और डिलीवरी प्रबंधित करने के लिए डैशबोर्ड"
+  },
+  "order": {
+    "status": {
+      "new": "नया",
+      "assigned": "सौंपा गया",
+      "in_progress": "प्रगति में",
+      "delivered": "डिलीवर किया गया",
+      "cancelled": "रद्द किया गया"
+    }
   }
 }

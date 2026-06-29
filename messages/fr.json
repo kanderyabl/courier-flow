@@ -2,5 +2,14 @@
   "HomePage": {
     "title": "Courier Flow",
     "description": "Tableau de bord pour gérer les coursiers, les commandes et les livraisons"
+  },
+  "order": {
+    "status": {
+      "new": "Nouveau",
+      "assigned": "Assigné",
+      "in_progress": "En cours",
+      "delivered": "Livré",
+      "cancelled": "Annulé"
+    }
   }
 }
