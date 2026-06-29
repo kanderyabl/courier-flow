@@ -2,5 +2,14 @@
   "HomePage": {
     "title": "Courier Flow",
     "description": "Panel de control para administrar mensajeros, pedidos y entregas"
+  },
+  "order": {
+    "status": {
+      "new": "Nuevo",
+      "assigned": "Asignado",
+      "in_progress": "En progreso",
+      "delivered": "Entregado",
+      "cancelled": "Cancelado"
+    }
   }
 }

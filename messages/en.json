@@ -2,5 +2,14 @@
   "HomePage": {
     "title": "Courier Flow",
     "description": "Dashboard for managing couriers, orders and deliveries"
+  },
+  "order": {
+    "status": {
+      "new": "New",
+      "assigned": "Assigned",
+      "in_progress": "In progress",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
   }
 }

@@ -2,5 +2,14 @@
   "HomePage": {
     "title": "Courier Flow",
     "description": "用于管理快递员、订单和交付的仪表盘"
+  },
+  "order": {
+    "status": {
+      "new": "新订单",
+      "assigned": "已分配",
+      "in_progress": "进行中",
+      "delivered": "已送达",
+      "cancelled": "已取消"
+    }
   }
 }
