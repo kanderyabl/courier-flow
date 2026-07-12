@@ -11,5 +11,72 @@
       "delivered": "已送达",
       "cancelled": "已取消"
     }
+  },
+  "auth": {
+    "signUp": {
+      "title": "创建账户",
+      "description": "创建客户账户，以便下单和追踪配送进度。",
+      "alreadyHaveAccount": "已经有账户了？",
+
+      "fields": {
+        "name": {
+          "label": "姓名",
+          "placeholder": "请输入您的姓名"
+        },
+        "email": {
+          "label": "电子邮箱",
+          "placeholder": "请输入您的电子邮箱"
+        },
+        "phone": {
+          "label": "电话号码",
+          "placeholder": "请输入您的电话号码"
+        },
+        "password": {
+          "label": "密码",
+          "placeholder": "创建密码",
+          "hint": "请使用至少 8 个字符，并包含大写字母、小写字母、数字和特殊符号。"
+        },
+        "confirmPassword": {
+          "label": "确认密码",
+          "placeholder": "请再次输入密码"
+        },
+        "acceptTerms": {
+          "label": "我同意<terms>服务条款</terms>和<privacy>隐私政策</privacy>"
+        }
+      },
+
+      "actions": {
+        "submit": "创建账户",
+        "submitting": "正在创建账户...",
+        "signIn": "登录",
+        "showPassword": "显示密码",
+        "hidePassword": "隐藏密码"
+      },
+
+      "validation": {
+        "nameRequired": "姓名为必填项",
+        "nameTooShort": "姓名至少需要包含 2 个字符",
+        "nameTooLong": "姓名不能超过 80 个字符",
+
+        "emailRequired": "电子邮箱为必填项",
+        "emailInvalid": "请输入有效的电子邮箱地址",
+
+        "phoneRequired": "电话号码为必填项",
+        "phoneInvalid": "请输入有效的电话号码",
+
+        "passwordRequired": "密码为必填项",
+        "passwordTooShort": "密码至少需要包含 8 个字符",
+        "passwordTooLong": "密码不能超过 64 个字符",
+        "passwordLowercase": "密码必须包含一个小写字母",
+        "passwordUppercase": "密码必须包含一个大写字母",
+        "passwordNumber": "密码必须包含一个数字",
+        "passwordSpecial": "密码必须包含一个特殊字符",
+
+        "confirmPasswordRequired": "请确认您的密码",
+        "passwordsDoNotMatch": "两次输入的密码不一致",
+
+        "termsRequired": "您必须接受相关条款才能继续"
+      }
+    }
   }
 }

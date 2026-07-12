@@ -11,5 +11,72 @@
       "delivered": "डिलीवर किया गया",
       "cancelled": "रद्द किया गया"
     }
+  },
+  "auth": {
+    "signUp": {
+      "title": "खाता बनाएँ",
+      "description": "डिलीवरी ऑर्डर करने और उन्हें ट्रैक करने के लिए ग्राहक खाता बनाएँ।",
+      "alreadyHaveAccount": "क्या आपका पहले से खाता है?",
+
+      "fields": {
+        "name": {
+          "label": "पूरा नाम",
+          "placeholder": "अपना पूरा नाम दर्ज करें"
+        },
+        "email": {
+          "label": "ईमेल",
+          "placeholder": "अपना ईमेल दर्ज करें"
+        },
+        "phone": {
+          "label": "फ़ोन नंबर",
+          "placeholder": "अपना फ़ोन नंबर दर्ज करें"
+        },
+        "password": {
+          "label": "पासवर्ड",
+          "placeholder": "पासवर्ड बनाएँ",
+          "hint": "कम से कम 8 अक्षरों का उपयोग करें, जिसमें बड़ा अक्षर, छोटा अक्षर, संख्या और विशेष चिह्न शामिल हो।"
+        },
+        "confirmPassword": {
+          "label": "पासवर्ड की पुष्टि करें",
+          "placeholder": "पासवर्ड दोबारा दर्ज करें"
+        },
+        "acceptTerms": {
+          "label": "मैं <terms>सेवा की शर्तों</terms> और <privacy>गोपनीयता नीति</privacy> से सहमत हूँ"
+        }
+      },
+
+      "actions": {
+        "submit": "खाता बनाएँ",
+        "submitting": "खाता बनाया जा रहा है...",
+        "signIn": "साइन इन करें",
+        "showPassword": "पासवर्ड दिखाएँ",
+        "hidePassword": "पासवर्ड छिपाएँ"
+      },
+
+      "validation": {
+        "nameRequired": "पूरा नाम आवश्यक है",
+        "nameTooShort": "पूरे नाम में कम से कम 2 अक्षर होने चाहिए",
+        "nameTooLong": "पूरा नाम 80 अक्षरों से अधिक नहीं होना चाहिए",
+
+        "emailRequired": "ईमेल आवश्यक है",
+        "emailInvalid": "मान्य ईमेल पता दर्ज करें",
+
+        "phoneRequired": "फ़ोन नंबर आवश्यक है",
+        "phoneInvalid": "मान्य फ़ोन नंबर दर्ज करें",
+
+        "passwordRequired": "पासवर्ड आवश्यक है",
+        "passwordTooShort": "पासवर्ड में कम से कम 8 अक्षर होने चाहिए",
+        "passwordTooLong": "पासवर्ड 64 अक्षरों से अधिक नहीं होना चाहिए",
+        "passwordLowercase": "पासवर्ड में एक छोटा अक्षर होना चाहिए",
+        "passwordUppercase": "पासवर्ड में एक बड़ा अक्षर होना चाहिए",
+        "passwordNumber": "पासवर्ड में एक संख्या होनी चाहिए",
+        "passwordSpecial": "पासवर्ड में एक विशेष चिह्न होना चाहिए",
+
+        "confirmPasswordRequired": "अपने पासवर्ड की पुष्टि करें",
+        "passwordsDoNotMatch": "पासवर्ड मेल नहीं खाते",
+
+        "termsRequired": "जारी रखने के लिए आपको शर्तें स्वीकार करनी होंगी"
+      }
+    }
   }
 }
