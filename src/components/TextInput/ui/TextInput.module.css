@@ -71,6 +71,11 @@
   font-size: 14px;
 }
 
+.control::-ms-reveal,
+.control::-ms-clear {
+  display: none;
+}
+
 .control::placeholder {
   color: var(--color-muted);
 }

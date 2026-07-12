@@ -64,11 +64,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             {...props}
           />
 
-          {endIcon && (
-            <span className={styles.icon} aria-hidden="true">
-              {endIcon}
-            </span>
-          )}
+          {endIcon && <span className={styles.icon}>{endIcon}</span>}
         </div>
 
         {error ? (
