@@ -1,0 +1,36 @@
+.form {
+  width: 100%;
+  display: grid;
+  gap: 24px;
+}
+
+.header {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.fields {
+  display: grid;
+  gap: 16px;
+}
+
+.footer {
+  display: grid;
+  gap: 16px;
+}
+
+.signInText {
+  text-align: center;
+}
+
+.signInLink {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.signInLink:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

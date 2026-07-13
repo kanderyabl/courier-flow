@@ -11,5 +11,72 @@
       "delivered": "Delivered",
       "cancelled": "Cancelled"
     }
+  },
+  "auth": {
+    "signUp": {
+      "title": "Create account",
+      "description": "Create a client account to place and track deliveries.",
+      "alreadyHaveAccount": "Already have an account?",
+
+      "fields": {
+        "name": {
+          "label": "Full name",
+          "placeholder": "Enter your full name"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter your email"
+        },
+        "phone": {
+          "label": "Phone number",
+          "placeholder": "Enter your phone number"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Create a password",
+          "hint": "Use at least 8 characters, including uppercase, lowercase, number and symbol."
+        },
+        "confirmPassword": {
+          "label": "Confirm password",
+          "placeholder": "Enter the password again"
+        },
+        "acceptTerms": {
+          "label": "I agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>"
+        }
+      },
+
+      "actions": {
+        "submit": "Create account",
+        "submitting": "Creating account...",
+        "signIn": "Sign in",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password"
+      },
+
+      "validation": {
+        "nameRequired": "Full name is required",
+        "nameTooShort": "Full name must contain at least 2 characters",
+        "nameTooLong": "Full name must not exceed 80 characters",
+
+        "emailRequired": "Email is required",
+        "emailInvalid": "Enter a valid email address",
+
+        "phoneRequired": "Phone number is required",
+        "phoneInvalid": "Enter a valid phone number",
+
+        "passwordRequired": "Password is required",
+        "passwordTooShort": "Password must contain at least 8 characters",
+        "passwordTooLong": "Password must not exceed 64 characters",
+        "passwordLowercase": "Password must contain a lowercase letter",
+        "passwordUppercase": "Password must contain an uppercase letter",
+        "passwordNumber": "Password must contain a number",
+        "passwordSpecial": "Password must contain a special character",
+
+        "confirmPasswordRequired": "Confirm your password",
+        "passwordsDoNotMatch": "Passwords do not match",
+
+        "termsRequired": "You must accept the terms to continue"
+      }
+    }
   }
 }
