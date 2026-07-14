@@ -77,6 +77,17 @@
 
         "termsRequired": "您必须接受相关条款才能继续"
       }
+    },
+    "verifyEmail": {
+      "title": "验证您的电子邮箱",
+      "description": "我们已向您的电子邮箱发送了一封验证邮件。",
+      "descriptionWithEmail": "我们已向 {email} 发送了一封验证邮件。",
+      "resent": "新的验证邮件已发送。",
+      "actions": {
+        "resend": "重新发送邮件",
+        "resending": "发送中...",
+        "changeEmail": "更改电子邮箱"
+      }
     }
   }
 }

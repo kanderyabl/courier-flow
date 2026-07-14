@@ -77,6 +77,17 @@
 
         "termsRequired": "Vous devez accepter les conditions pour continuer"
       }
+    },
+    "verifyEmail": {
+      "title": "Vérifiez votre adresse e-mail",
+      "description": "Nous avons envoyé un lien de vérification à votre adresse e-mail.",
+      "descriptionWithEmail": "Nous avons envoyé un lien de vérification à {email}.",
+      "resent": "Un nouvel e-mail de vérification a été envoyé.",
+      "actions": {
+        "resend": "Renvoyer l'e-mail",
+        "resending": "Envoi...",
+        "changeEmail": "Modifier l'adresse e-mail"
+      }
     }
   }
 }

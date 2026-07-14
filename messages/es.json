@@ -77,6 +77,17 @@
 
         "termsRequired": "Debes aceptar los términos para continuar"
       }
+    },
+    "verifyEmail": {
+      "title": "Verifica tu correo electrónico",
+      "description": "Hemos enviado un enlace de verificación a tu correo electrónico.",
+      "descriptionWithEmail": "Hemos enviado un enlace de verificación a {email}.",
+      "resent": "Se ha enviado un nuevo correo de verificación.",
+      "actions": {
+        "resend": "Reenviar correo",
+        "resending": "Enviando...",
+        "changeEmail": "Cambiar correo electrónico"
+      }
     }
   }
 }

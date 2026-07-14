@@ -1,0 +1,1 @@
+export { VerifyEmailCard } from "./VerifyEmailCard";

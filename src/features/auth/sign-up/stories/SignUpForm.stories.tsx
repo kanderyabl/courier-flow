@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { Card } from "@/components/Card";
 
-import { SignUpForm } from "@/features/auth/sign-up";
+import { SignUpForm } from "../ui";
 
 const meta = {
   title: "Features/Auth/SignUpForm",

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { PasswordInput } from "@/components/PasswordInput";
+import { PasswordInput } from "../ui";
 
 const meta = {
   title: "Shared/UI/PasswordInput",

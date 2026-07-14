@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { Select } from "@/components/Select";
+import { Select } from "../ui";
 
 const statusOptions = [
   { label: "New", value: "new" },

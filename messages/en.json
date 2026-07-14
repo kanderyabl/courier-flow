@@ -77,6 +77,17 @@
 
         "termsRequired": "You must accept the terms to continue"
       }
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "description": "We've sent a verification link to your email address.",
+      "descriptionWithEmail": "We've sent a verification link to {email}.",
+      "resent": "A new verification email has been sent.",
+      "actions": {
+        "resend": "Resend email",
+        "resending": "Sending...",
+        "changeEmail": "Change email"
+      }
     }
   }
 }
