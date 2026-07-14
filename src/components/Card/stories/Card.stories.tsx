@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Badge } from "@/components/Badge";
 import { Text } from "@/components/Text";
 
-import { Card } from "@/components/Card";
+import { Card } from "../ui";
 
 const meta = {
   title: "Shared/UI/Card",

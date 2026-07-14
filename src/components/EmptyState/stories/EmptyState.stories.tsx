@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { Button } from "@/components/Button";
 
-import { EmptyState } from "@/components/EmptyState";
+import { EmptyState } from "../ui";
 
 const meta = {
   title: "Shared/UI/EmptyState",
