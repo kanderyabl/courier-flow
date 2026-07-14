@@ -1,0 +1,43 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-block: 40px;
+  background: var(--color-background);
+}
+
+.content {
+  width: 100%;
+  display: grid;
+  gap: 24px;
+}
+
+.brand {
+  display: flex;
+  justify-content: center;
+}
+
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoText {
+  color: var(--color-primary);
+}
+
+.card {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .layout {
+    align-items: flex-start;
+    padding-block: 24px;
+  }
+
+  .content {
+    gap: 16px;
+  }
+}
