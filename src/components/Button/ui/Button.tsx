@@ -11,6 +11,8 @@ export function Button(props: ButtonProps) {
     fullWidth,
     className,
     children,
+    as,
+    ...buttonProps
   } = props;
 
   const classes = clsx(
@@ -21,15 +23,13 @@ export function Button(props: ButtonProps) {
     className,
   );
 
-  if (props.as === "link") {
+  if (as === "link") {
     return (
       <Link href={props.href} className={classes}>
         {children}
       </Link>
     );
   }
-
-  const { as, ...buttonProps } = props;
 
   return (
     <button className={classes} {...buttonProps}>
