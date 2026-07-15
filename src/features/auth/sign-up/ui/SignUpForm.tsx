@@ -17,7 +17,7 @@ import type { SignUpFormProps, SignUpFormValues } from "../types";
 
 import styles from "./SignUpForm.module.css";
 
-export function SignUpForm({ onSubmit }: SignUpFormProps) {
+export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
   const t = useTranslations("auth.signUp");
   const locale = useLocale();
 
@@ -71,7 +71,7 @@ export function SignUpForm({ onSubmit }: SignUpFormProps) {
   });
 
   const handleValidSubmit = async (values: SignUpFormValues) => {
-    await onSubmit?.(values);
+    await onSubmitAction?.(values);
   };
 
   return (

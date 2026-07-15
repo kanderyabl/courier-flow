@@ -114,6 +114,24 @@
         "codeLength": "验证码必须包含 {length} 位数字",
         "codeDigitsOnly": "验证码只能包含数字"
       }
+    },
+    "changePhone": {
+      "fields": {
+        "phone": {
+          "label": "新电话号码",
+          "placeholder": "+48 123 456 789",
+          "hint": "请以国际格式输入电话号码。"
+        }
+      },
+      "actions": {
+        "cancel": "取消",
+        "submit": "保存并发送验证码",
+        "submitting": "正在保存..."
+      },
+      "validation": {
+        "phoneRequired": "请输入电话号码",
+        "phoneInvalid": "请输入有效的电话号码"
+      }
     }
   }
 }

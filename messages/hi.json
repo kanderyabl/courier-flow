@@ -114,6 +114,24 @@
         "codeLength": "कोड में {length} अंक होने चाहिए",
         "codeDigitsOnly": "कोड में केवल अंक होने चाहिए"
       }
+    },
+    "changePhone": {
+      "fields": {
+        "phone": {
+          "label": "नया फ़ोन नंबर",
+          "placeholder": "+48 123 456 789",
+          "hint": "फ़ोन नंबर अंतरराष्ट्रीय प्रारूप में दर्ज करें।"
+        }
+      },
+      "actions": {
+        "cancel": "रद्द करें",
+        "submit": "सहेजें और कोड भेजें",
+        "submitting": "सहेजा जा रहा है..."
+      },
+      "validation": {
+        "phoneRequired": "फ़ोन नंबर दर्ज करें",
+        "phoneInvalid": "मान्य फ़ोन नंबर दर्ज करें"
+      }
     }
   }
 }

@@ -114,6 +114,24 @@
         "codeLength": "Le code doit contenir {length} chiffres",
         "codeDigitsOnly": "Le code doit contenir uniquement des chiffres"
       }
+    },
+    "changePhone": {
+      "fields": {
+        "phone": {
+          "label": "Nouveau numéro de téléphone",
+          "placeholder": "+48 123 456 789",
+          "hint": "Saisissez le numéro de téléphone au format international."
+        }
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "submit": "Enregistrer et envoyer le code",
+        "submitting": "Enregistrement..."
+      },
+      "validation": {
+        "phoneRequired": "Saisissez un numéro de téléphone",
+        "phoneInvalid": "Saisissez un numéro de téléphone valide"
+      }
     }
   }
 }

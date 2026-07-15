@@ -15,7 +15,7 @@ const meta = {
   tags: ["autodocs"],
 
   argTypes: {
-    onSubmit: {
+    onSubmitAction: {
       control: false,
     },
   },
@@ -37,7 +37,7 @@ export const WithSubmitDelay: Story = {
   render: () => (
     <Card variant="elevated" padding="lg" style={{ width: "440px" }}>
       <SignUpForm
-        onSubmit={() =>
+        onSubmitAction={() =>
           new Promise((resolve) => {
             window.setTimeout(resolve, 1500);
           })
