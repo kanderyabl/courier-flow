@@ -88,6 +88,32 @@
         "resending": "भेजा जा रहा है...",
         "changeEmail": "ईमेल बदलें"
       }
+    },
+    "verifyPhone": {
+      "title": "अपने फ़ोन नंबर की पुष्टि करें",
+      "description": "हमने आपके फ़ोन नंबर पर {length} अंकों का सत्यापन कोड भेजा है।",
+      "descriptionWithPhone": "हमने {phone} पर {length} अंकों का सत्यापन कोड भेजा है।",
+      "resent": "एक नया सत्यापन कोड भेज दिया गया है।",
+      "fields": {
+        "code": {
+          "label": "सत्यापन कोड",
+          "hint": "SMS संदेश में प्राप्त कोड दर्ज करें।",
+          "digitAriaLabel": "अंक"
+        }
+      },
+      "actions": {
+        "submit": "फ़ोन नंबर की पुष्टि करें",
+        "submitting": "पुष्टि की जा रही है...",
+        "resend": "कोड दोबारा भेजें",
+        "resending": "भेजा जा रहा है...",
+        "resendIn": "{seconds} सेकंड में दोबारा भेजें",
+        "changePhone": "फ़ोन नंबर बदलें"
+      },
+      "validation": {
+        "codeRequired": "सत्यापन कोड दर्ज करें",
+        "codeLength": "कोड में {length} अंक होने चाहिए",
+        "codeDigitsOnly": "कोड में केवल अंक होने चाहिए"
+      }
     }
   }
 }

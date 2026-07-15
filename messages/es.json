@@ -88,6 +88,32 @@
         "resending": "Enviando...",
         "changeEmail": "Cambiar correo electrónico"
       }
+    },
+    "verifyPhone": {
+      "title": "Confirma tu número de teléfono",
+      "description": "Hemos enviado un código de verificación de {length} dígitos a tu número de teléfono.",
+      "descriptionWithPhone": "Hemos enviado un código de verificación de {length} dígitos a {phone}.",
+      "resent": "Se ha enviado un nuevo código de verificación.",
+      "fields": {
+        "code": {
+          "label": "Código de verificación",
+          "hint": "Introduce el código del mensaje SMS.",
+          "digitAriaLabel": "Dígito"
+        }
+      },
+      "actions": {
+        "submit": "Confirmar número de teléfono",
+        "submitting": "Confirmando...",
+        "resend": "Reenviar código",
+        "resending": "Enviando...",
+        "resendIn": "Reenviar en {seconds} s",
+        "changePhone": "Cambiar número de teléfono"
+      },
+      "validation": {
+        "codeRequired": "Introduce el código de verificación",
+        "codeLength": "El código debe contener {length} dígitos",
+        "codeDigitsOnly": "El código solo debe contener dígitos"
+      }
     }
   }
 }
