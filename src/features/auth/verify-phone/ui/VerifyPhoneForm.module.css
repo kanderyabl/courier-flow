@@ -1,0 +1,46 @@
+.form {
+  width: 100%;
+  display: grid;
+  gap: 24px;
+  text-align: center;
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  border-radius: 50%;
+  background: rgb(37 99 235 / 10%);
+  font-size: 30px;
+}
+
+.header {
+  display: grid;
+  gap: 8px;
+}
+
+.actions {
+  display: grid;
+  gap: 8px;
+}
+
+.message {
+  min-height: 20px;
+}
+
+.changePhone {
+  width: fit-content;
+  justify-self: center;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.changePhone:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

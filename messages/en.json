@@ -88,6 +88,32 @@
         "resending": "Sending...",
         "changeEmail": "Change email"
       }
+    },
+    "verifyPhone": {
+      "title": "Confirm your phone number",
+      "description": "We sent a {length}-digit verification code to your phone number.",
+      "descriptionWithPhone": "We sent a {length}-digit verification code to {phone}.",
+      "resent": "A new verification code has been sent.",
+      "fields": {
+        "code": {
+          "label": "Verification code",
+          "hint": "Enter the code from the SMS message.",
+          "digitAriaLabel": "Digit"
+        }
+      },
+      "actions": {
+        "submit": "Confirm phone number",
+        "submitting": "Confirming...",
+        "resend": "Resend code",
+        "resending": "Sending...",
+        "resendIn": "Resend in {seconds}s",
+        "changePhone": "Change phone number"
+      },
+      "validation": {
+        "codeRequired": "Enter the verification code",
+        "codeLength": "The code must contain {length} digits",
+        "codeDigitsOnly": "The code must contain only digits"
+      }
     }
   }
 }

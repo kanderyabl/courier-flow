@@ -88,6 +88,32 @@
         "resending": "发送中...",
         "changeEmail": "更改电子邮箱"
       }
+    },
+    "verifyPhone": {
+      "title": "确认您的电话号码",
+      "description": "我们已向您的电话号码发送了一个 {length} 位验证码。",
+      "descriptionWithPhone": "我们已向 {phone} 发送了一个 {length} 位验证码。",
+      "resent": "新的验证码已发送。",
+      "fields": {
+        "code": {
+          "label": "验证码",
+          "hint": "请输入短信中的验证码。",
+          "digitAriaLabel": "数字"
+        }
+      },
+      "actions": {
+        "submit": "确认电话号码",
+        "submitting": "正在确认...",
+        "resend": "重新发送验证码",
+        "resending": "发送中...",
+        "resendIn": "{seconds} 秒后重新发送",
+        "changePhone": "更改电话号码"
+      },
+      "validation": {
+        "codeRequired": "请输入验证码",
+        "codeLength": "验证码必须包含 {length} 位数字",
+        "codeDigitsOnly": "验证码只能包含数字"
+      }
     }
   }
 }
