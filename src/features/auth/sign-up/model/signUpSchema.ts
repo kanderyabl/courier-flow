@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import type { SignUpValidationMessages } from "../types";
 
+import { createEmailSchema, createPhoneSchema } from "../../model";
+
 export function createSignUpSchema(messages: SignUpValidationMessages) {
   return z
     .object({
@@ -19,25 +21,15 @@ export function createSignUpSchema(messages: SignUpValidationMessages) {
           error: messages.nameTooLong,
         }),
 
-      email: z
-        .string()
-        .min(1, {
-          error: messages.emailRequired,
-        })
-        .pipe(
-          z.email({
-            error: messages.emailInvalid,
-          }),
-        ),
+      email: createEmailSchema({
+        emailRequired: messages.emailRequired,
+        emailInvalid: messages.emailInvalid,
+      }),
 
-      phone: z
-        .string()
-        .min(1, {
-          error: messages.phoneRequired,
-        })
-        .regex(/^\+?[0-9\s()-]{8,20}$/, {
-          error: messages.phoneInvalid,
-        }),
+      phone: createPhoneSchema({
+        phoneRequired: messages.phoneRequired,
+        phoneInvalid: messages.phoneInvalid,
+      }),
 
       password: z
         .string()
