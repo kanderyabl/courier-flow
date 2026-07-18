@@ -1,3 +1,7 @@
-export { ChangePhoneForm } from "./ui";
+export { ChangePhoneForm, ChangePhoneModal } from "./ui";
 
-export type { ChangePhoneFormProps, ChangePhoneFormValues } from "./types";
+export type {
+  ChangePhoneFormProps,
+  ChangePhoneFormValues,
+  ChangePhoneModalProps,
+} from "./types";

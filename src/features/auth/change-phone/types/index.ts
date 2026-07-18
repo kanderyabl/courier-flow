@@ -20,3 +20,11 @@ export type ChangePhoneFormProps = {
 
   onCancelAction?: () => void;
 };
+
+export type ChangePhoneModalProps = {
+  open: boolean;
+
+  onCloseAction: () => void;
+
+  onSubmitAction: (values: ChangePhoneFormValues) => void | Promise<void>;
+};
