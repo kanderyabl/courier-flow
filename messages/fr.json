@@ -116,6 +116,8 @@
       }
     },
     "changePhone": {
+      "title": "Modifier le numéro de téléphone",
+      "description": "Saisissez un nouveau numéro de téléphone. Nous enverrons un code de vérification pour le confirmer.",
       "fields": {
         "phone": {
           "label": "Nouveau numéro de téléphone",
@@ -125,6 +127,7 @@
       },
       "actions": {
         "cancel": "Annuler",
+        "close": "Fermer la fenêtre",
         "submit": "Enregistrer et envoyer le code",
         "submitting": "Enregistrement..."
       },

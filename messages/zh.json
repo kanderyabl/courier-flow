@@ -116,6 +116,8 @@
       }
     },
     "changePhone": {
+      "title": "更改电话号码",
+      "description": "请输入新的电话号码。我们将发送验证码以确认该号码。",
       "fields": {
         "phone": {
           "label": "新电话号码",
@@ -125,6 +127,7 @@
       },
       "actions": {
         "cancel": "取消",
+        "close": "关闭窗口",
         "submit": "保存并发送验证码",
         "submitting": "正在保存..."
       },
