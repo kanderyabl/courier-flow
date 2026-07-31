@@ -134,6 +134,26 @@
         "phoneRequired": "请输入电话号码",
         "phoneInvalid": "请输入有效的电话号码"
       }
+    },
+    "changeEmail": {
+      "title": "更改电子邮箱地址",
+      "description": "请输入新的电子邮箱地址。我们将发送验证链接以确认该地址。",
+      "fields": {
+        "email": {
+          "label": "新电子邮箱地址",
+          "placeholder": "name@example.com",
+          "hint": "请输入您可以访问的电子邮箱地址。"
+        }
+      },
+      "actions": {
+        "cancel": "取消",
+        "submit": "保存并发送验证邮件",
+        "submitting": "正在保存..."
+      },
+      "validation": {
+        "emailRequired": "请输入电子邮箱地址",
+        "emailInvalid": "请输入有效的电子邮箱地址"
+      }
     }
   }
 }

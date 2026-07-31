@@ -65,7 +65,7 @@ export function VerifyEmailCard({
           {isResending ? t("actions.resending") : t("actions.resend")}
         </Button>
 
-        <Link href={`/${locale}/sign-up`} className={styles.changeEmail}>
+        <Link href={`/${locale}/change-email`} className={styles.changeEmail}>
           {t("actions.changeEmail")}
         </Link>
       </div>
