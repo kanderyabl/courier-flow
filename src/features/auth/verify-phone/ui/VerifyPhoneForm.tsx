@@ -181,7 +181,7 @@ export function VerifyPhoneForm({
         )}
       </div>
 
-      <Link href={`/${locale}/sign-up`} className={styles.changePhone}>
+      <Link href={`/${locale}/change-phone`} className={styles.changePhone}>
         {t("actions.changePhone")}
       </Link>
     </form>

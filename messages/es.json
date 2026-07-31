@@ -134,6 +134,26 @@
         "phoneRequired": "Introduce un número de teléfono",
         "phoneInvalid": "Introduce un número de teléfono válido"
       }
+    },
+    "changeEmail": {
+      "title": "Cambiar dirección de correo electrónico",
+      "description": "Introduce una nueva dirección de correo electrónico. Enviaremos un enlace de verificación para confirmarla.",
+      "fields": {
+        "email": {
+          "label": "Nueva dirección de correo electrónico",
+          "placeholder": "nombre@ejemplo.com",
+          "hint": "Introduce una dirección de correo electrónico a la que tengas acceso."
+        }
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "submit": "Guardar y enviar correo de verificación",
+        "submitting": "Guardando..."
+      },
+      "validation": {
+        "emailRequired": "Introduce una dirección de correo electrónico",
+        "emailInvalid": "Introduce una dirección de correo electrónico válida"
+      }
     }
   }
 }

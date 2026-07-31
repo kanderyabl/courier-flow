@@ -134,6 +134,26 @@
         "phoneRequired": "Enter a phone number",
         "phoneInvalid": "Enter a valid phone number"
       }
+    },
+    "changeEmail": {
+      "title": "Change email address",
+      "description": "Enter a new email address. We will send a verification link to confirm it.",
+      "fields": {
+        "email": {
+          "label": "New email address",
+          "placeholder": "name@example.com",
+          "hint": "Enter an email address you can access."
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "submit": "Save and send verification email",
+        "submitting": "Saving..."
+      },
+      "validation": {
+        "emailRequired": "Enter an email address",
+        "emailInvalid": "Enter a valid email address"
+      }
     }
   }
 }
