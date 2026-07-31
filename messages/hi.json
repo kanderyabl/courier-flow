@@ -182,6 +182,29 @@
         "emailInvalid": "मान्य ईमेल पता दर्ज करें",
         "passwordRequired": "अपना पासवर्ड दर्ज करें"
       }
+    },
+    "forgotPassword": {
+      "title": "पासवर्ड भूल गए?",
+      "description": "अपना ईमेल पता दर्ज करें और हम आपको पासवर्ड रीसेट करने का लिंक भेजेंगे।",
+      "fields": {
+        "email": {
+          "label": "ईमेल पता",
+          "placeholder": "name@example.com"
+        }
+      },
+      "actions": {
+        "submit": "रीसेट लिंक भेजें",
+        "submitting": "भेजा जा रहा है...",
+        "backToSignIn": "साइन इन पर वापस जाएँ"
+      },
+      "success": {
+        "title": "अपना इनबॉक्स देखें",
+        "description": "यदि इस ईमेल पते से कोई खाता मौजूद है, तो हमने पासवर्ड रीसेट लिंक भेज दिया है।"
+      },
+      "validation": {
+        "emailRequired": "अपना ईमेल पता दर्ज करें",
+        "emailInvalid": "मान्य ईमेल पता दर्ज करें"
+      }
     }
   }
 }

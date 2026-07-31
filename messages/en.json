@@ -182,6 +182,29 @@
         "emailInvalid": "Enter a valid email address",
         "passwordRequired": "Enter your password"
       }
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "description": "Enter your email address and we will send you a link to reset your password.",
+      "fields": {
+        "email": {
+          "label": "Email address",
+          "placeholder": "name@example.com"
+        }
+      },
+      "actions": {
+        "submit": "Send reset link",
+        "submitting": "Sending...",
+        "backToSignIn": "Back to sign in"
+      },
+      "success": {
+        "title": "Check your inbox",
+        "description": "If an account exists for this email address, we sent a password reset link."
+      },
+      "validation": {
+        "emailRequired": "Enter your email address",
+        "emailInvalid": "Enter a valid email address"
+      }
     }
   }
 }

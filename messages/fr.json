@@ -182,6 +182,29 @@
         "emailInvalid": "Saisissez une adresse e-mail valide",
         "passwordRequired": "Saisissez votre mot de passe"
       }
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié ?",
+      "description": "Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "fields": {
+        "email": {
+          "label": "Adresse e-mail",
+          "placeholder": "nom@exemple.com"
+        }
+      },
+      "actions": {
+        "submit": "Envoyer le lien",
+        "submitting": "Envoi...",
+        "backToSignIn": "Retour à la connexion"
+      },
+      "success": {
+        "title": "Consultez votre boîte de réception",
+        "description": "Si un compte existe pour cette adresse e-mail, nous avons envoyé un lien de réinitialisation."
+      },
+      "validation": {
+        "emailRequired": "Saisissez votre adresse e-mail",
+        "emailInvalid": "Saisissez une adresse e-mail valide"
+      }
     }
   }
 }
