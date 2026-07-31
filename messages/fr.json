@@ -127,7 +127,6 @@
       },
       "actions": {
         "cancel": "Annuler",
-        "close": "Fermer la fenêtre",
         "submit": "Enregistrer et envoyer le code",
         "submitting": "Enregistrement..."
       },
