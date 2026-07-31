@@ -182,6 +182,29 @@
         "emailInvalid": "Introduce un correo electrónico válido",
         "passwordRequired": "Introduce tu contraseña"
       }
+    },
+    "forgotPassword": {
+      "title": "¿Olvidaste tu contraseña?",
+      "description": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+      "fields": {
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "nombre@ejemplo.com"
+        }
+      },
+      "actions": {
+        "submit": "Enviar enlace",
+        "submitting": "Enviando...",
+        "backToSignIn": "Volver al inicio de sesión"
+      },
+      "success": {
+        "title": "Revisa tu bandeja de entrada",
+        "description": "Si existe una cuenta con este correo electrónico, hemos enviado un enlace para restablecer la contraseña."
+      },
+      "validation": {
+        "emailRequired": "Introduce tu correo electrónico",
+        "emailInvalid": "Introduce un correo electrónico válido"
+      }
     }
   }
 }
