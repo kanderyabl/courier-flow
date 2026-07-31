@@ -20,14 +20,15 @@ export function ChangeEmailForm({
   onSubmitAction,
 }: ChangeEmailFormProps) {
   const t = useTranslations("auth.changeEmail");
+  const validationT = useTranslations("auth.validation");
 
   const schema = useMemo(
     () =>
       createChangeEmailSchema({
-        emailRequired: t("validation.emailRequired"),
-        emailInvalid: t("validation.emailInvalid"),
+        emailRequired: validationT("email.required"),
+        emailInvalid: validationT("email.invalid"),
       }),
-    [t],
+    [validationT],
   );
 
   const {

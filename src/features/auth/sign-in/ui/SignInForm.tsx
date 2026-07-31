@@ -21,16 +21,17 @@ export function SignInForm({
   onSubmitAction,
 }: SignInFormProps) {
   const t = useTranslations("auth.signIn");
+  const validationT = useTranslations("auth.validation");
   const locale = useLocale();
 
   const schema = useMemo(
     () =>
       createSignInSchema({
-        emailRequired: t("validation.emailRequired"),
-        emailInvalid: t("validation.emailInvalid"),
-        passwordRequired: t("validation.passwordRequired"),
+        emailRequired: validationT("email.required"),
+        emailInvalid: validationT("email.invalid"),
+        passwordRequired: validationT("password.required"),
       }),
-    [t],
+    [validationT],
   );
 
   const {

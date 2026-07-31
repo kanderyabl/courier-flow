@@ -1,7 +1,16 @@
-export { createPhoneSchema, normalizePhone } from "./phoneSchema";
+export {
+  createPhoneSchema,
+  normalizePhone,
+  type PhoneValidationMessages,
+} from "./phoneSchema";
 
-export type { PhoneValidationMessages } from "./phoneSchema";
+export {
+  createEmailSchema,
+  normalizeEmail,
+  type EmailValidationMessages,
+} from "./emailSchema";
 
-export { createEmailSchema, normalizeEmail } from "./emailSchema";
-
-export type { EmailValidationMessages } from "./emailSchema";
+export {
+  createPasswordSchema,
+  type PasswordValidationMessages,
+} from "./passwordSchema";

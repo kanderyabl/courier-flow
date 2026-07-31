@@ -1,8 +1,12 @@
 import { z } from "zod";
 
-import type { SignUpValidationMessages } from "../types";
+import {
+  createEmailSchema,
+  createPasswordSchema,
+  createPhoneSchema,
+} from "../../model";
 
-import { createEmailSchema, createPhoneSchema } from "../../model";
+import type { SignUpValidationMessages } from "../types";
 
 export function createSignUpSchema(messages: SignUpValidationMessages) {
   return z
@@ -31,29 +35,15 @@ export function createSignUpSchema(messages: SignUpValidationMessages) {
         phoneInvalid: messages.phoneInvalid,
       }),
 
-      password: z
-        .string()
-        .min(1, {
-          error: messages.passwordRequired,
-        })
-        .min(8, {
-          error: messages.passwordTooShort,
-        })
-        .max(64, {
-          error: messages.passwordTooLong,
-        })
-        .regex(/[a-z]/, {
-          error: messages.passwordLowercase,
-        })
-        .regex(/[A-Z]/, {
-          error: messages.passwordUppercase,
-        })
-        .regex(/[0-9]/, {
-          error: messages.passwordNumber,
-        })
-        .regex(/[^a-zA-Z0-9]/, {
-          error: messages.passwordSpecial,
-        }),
+      password: createPasswordSchema({
+        passwordRequired: messages.passwordRequired,
+        passwordTooShort: messages.passwordTooShort,
+        passwordTooLong: messages.passwordTooLong,
+        passwordLowercase: messages.passwordLowercase,
+        passwordUppercase: messages.passwordUppercase,
+        passwordNumber: messages.passwordNumber,
+        passwordSpecial: messages.passwordSpecial,
+      }),
 
       confirmPassword: z.string().min(1, {
         error: messages.confirmPasswordRequired,
@@ -63,7 +53,7 @@ export function createSignUpSchema(messages: SignUpValidationMessages) {
         error: messages.termsRequired,
       }),
     })
-    .refine((values) => values.password === values.confirmPassword, {
+    .refine(({ password, confirmPassword }) => password === confirmPassword, {
       path: ["confirmPassword"],
       error: messages.passwordsDoNotMatch,
     });
