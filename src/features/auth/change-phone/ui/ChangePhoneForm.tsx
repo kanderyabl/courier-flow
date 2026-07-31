@@ -20,14 +20,15 @@ export function ChangePhoneForm({
   onSubmitAction,
 }: ChangePhoneFormProps) {
   const t = useTranslations("auth.changePhone");
+  const validationT = useTranslations("auth.validation");
 
   const schema = useMemo(
     () =>
       createChangePhoneSchema({
-        phoneRequired: t("validation.phoneRequired"),
-        phoneInvalid: t("validation.phoneInvalid"),
+        phoneRequired: validationT("phone.required"),
+        phoneInvalid: validationT("phone.invalid"),
       }),
-    [t],
+    [validationT],
   );
 
   const {

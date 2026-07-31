@@ -13,6 +13,29 @@
     }
   },
   "auth": {
+    "validation": {
+      "email": {
+        "required": "电子邮箱为必填项",
+        "invalid": "请输入有效的电子邮箱地址"
+      },
+      "phone": {
+        "required": "电话号码为必填项",
+        "invalid": "请输入有效的电话号码"
+      },
+      "password": {
+        "required": "密码为必填项",
+        "tooShort": "密码至少需要包含 8 个字符",
+        "tooLong": "密码不能超过 64 个字符",
+        "lowercase": "密码必须包含一个小写字母",
+        "uppercase": "密码必须包含一个大写字母",
+        "number": "密码必须包含一个数字",
+        "special": "密码必须包含一个特殊字符"
+      },
+      "confirmPassword": {
+        "required": "请确认您的密码",
+        "doNotMatch": "两次输入的密码不一致"
+      }
+    },
     "signUp": {
       "title": "创建账户",
       "description": "创建客户账户，以便下单和追踪配送进度。",
@@ -57,24 +80,6 @@
         "nameRequired": "姓名为必填项",
         "nameTooShort": "姓名至少需要包含 2 个字符",
         "nameTooLong": "姓名不能超过 80 个字符",
-
-        "emailRequired": "电子邮箱为必填项",
-        "emailInvalid": "请输入有效的电子邮箱地址",
-
-        "phoneRequired": "电话号码为必填项",
-        "phoneInvalid": "请输入有效的电话号码",
-
-        "passwordRequired": "密码为必填项",
-        "passwordTooShort": "密码至少需要包含 8 个字符",
-        "passwordTooLong": "密码不能超过 64 个字符",
-        "passwordLowercase": "密码必须包含一个小写字母",
-        "passwordUppercase": "密码必须包含一个大写字母",
-        "passwordNumber": "密码必须包含一个数字",
-        "passwordSpecial": "密码必须包含一个特殊字符",
-
-        "confirmPasswordRequired": "请确认您的密码",
-        "passwordsDoNotMatch": "两次输入的密码不一致",
-
         "termsRequired": "您必须接受相关条款才能继续"
       }
     },
@@ -130,10 +135,7 @@
         "submit": "保存并发送验证码",
         "submitting": "正在保存..."
       },
-      "validation": {
-        "phoneRequired": "请输入电话号码",
-        "phoneInvalid": "请输入有效的电话号码"
-      }
+      "validation": {}
     },
     "changeEmail": {
       "title": "更改电子邮箱地址",
@@ -150,10 +152,7 @@
         "submit": "保存并发送验证邮件",
         "submitting": "正在保存..."
       },
-      "validation": {
-        "emailRequired": "请输入电子邮箱地址",
-        "emailInvalid": "请输入有效的电子邮箱地址"
-      }
+      "validation": {}
     },
     "signIn": {
       "title": "欢迎",
@@ -177,11 +176,7 @@
       "footer": {
         "noAccount": "还没有账户？"
       },
-      "validation": {
-        "emailRequired": "请输入电子邮箱地址",
-        "emailInvalid": "请输入有效的电子邮箱地址",
-        "passwordRequired": "请输入密码"
-      }
+      "validation": {}
     },
     "forgotPassword": {
       "title": "忘记密码？",
@@ -201,9 +196,36 @@
         "title": "请检查您的收件箱",
         "description": "如果此电子邮箱地址对应的账户存在，我们已发送密码重置链接。"
       },
-      "validation": {
-        "emailRequired": "请输入电子邮箱地址",
-        "emailInvalid": "请输入有效的电子邮箱地址"
+      "validation": {}
+    },
+    "resetPassword": {
+      "title": "创建新密码",
+      "description": "请为您的账户输入新密码。",
+      "fields": {
+        "password": {
+          "label": "新密码",
+          "placeholder": "请输入新密码",
+          "hint": "请使用 8 到 64 个字符，并包含大小写字母、数字和特殊字符。"
+        },
+        "confirmPassword": {
+          "label": "确认新密码",
+          "placeholder": "请再次输入密码"
+        }
+      },
+      "actions": {
+        "submit": "重置密码",
+        "submitting": "正在保存...",
+        "signIn": "登录",
+        "backToSignIn": "返回登录",
+        "requestNewLink": "获取新链接"
+      },
+      "success": {
+        "title": "密码已更新",
+        "description": "您的密码已更改。现在可以使用新密码登录。"
+      },
+      "invalid": {
+        "title": "重置链接无效",
+        "description": "密码重置链接缺失或无效。请获取新的链接。"
       }
     }
   }

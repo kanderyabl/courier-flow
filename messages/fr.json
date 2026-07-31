@@ -13,6 +13,29 @@
     }
   },
   "auth": {
+    "validation": {
+      "email": {
+        "required": "L’adresse e-mail est obligatoire",
+        "invalid": "Saisissez une adresse e-mail valide"
+      },
+      "phone": {
+        "required": "Le numéro de téléphone est obligatoire",
+        "invalid": "Saisissez un numéro de téléphone valide"
+      },
+      "password": {
+        "required": "Le mot de passe est obligatoire",
+        "tooShort": "Le mot de passe doit contenir au moins 8 caractères",
+        "tooLong": "Le mot de passe ne doit pas dépasser 64 caractères",
+        "lowercase": "Le mot de passe doit contenir une lettre minuscule",
+        "uppercase": "Le mot de passe doit contenir une lettre majuscule",
+        "number": "Le mot de passe doit contenir un chiffre",
+        "special": "Le mot de passe doit contenir un caractère spécial"
+      },
+      "confirmPassword": {
+        "required": "Confirmez votre mot de passe",
+        "doNotMatch": "Les mots de passe ne correspondent pas"
+      }
+    },
     "signUp": {
       "title": "Créer un compte",
       "description": "Créez un compte client pour commander et suivre vos livraisons.",
@@ -57,24 +80,6 @@
         "nameRequired": "Le nom complet est obligatoire",
         "nameTooShort": "Le nom complet doit contenir au moins 2 caractères",
         "nameTooLong": "Le nom complet ne doit pas dépasser 80 caractères",
-
-        "emailRequired": "L’adresse e-mail est obligatoire",
-        "emailInvalid": "Saisissez une adresse e-mail valide",
-
-        "phoneRequired": "Le numéro de téléphone est obligatoire",
-        "phoneInvalid": "Saisissez un numéro de téléphone valide",
-
-        "passwordRequired": "Le mot de passe est obligatoire",
-        "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
-        "passwordTooLong": "Le mot de passe ne doit pas dépasser 64 caractères",
-        "passwordLowercase": "Le mot de passe doit contenir une lettre minuscule",
-        "passwordUppercase": "Le mot de passe doit contenir une lettre majuscule",
-        "passwordNumber": "Le mot de passe doit contenir un chiffre",
-        "passwordSpecial": "Le mot de passe doit contenir un caractère spécial",
-
-        "confirmPasswordRequired": "Confirmez votre mot de passe",
-        "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
-
         "termsRequired": "Vous devez accepter les conditions pour continuer"
       }
     },
@@ -130,10 +135,7 @@
         "submit": "Enregistrer et envoyer le code",
         "submitting": "Enregistrement..."
       },
-      "validation": {
-        "phoneRequired": "Saisissez un numéro de téléphone",
-        "phoneInvalid": "Saisissez un numéro de téléphone valide"
-      }
+      "validation": {}
     },
     "changeEmail": {
       "title": "Modifier l’adresse e-mail",
@@ -150,10 +152,7 @@
         "submit": "Enregistrer et envoyer l’e-mail de vérification",
         "submitting": "Enregistrement..."
       },
-      "validation": {
-        "emailRequired": "Saisissez une adresse e-mail",
-        "emailInvalid": "Saisissez une adresse e-mail valide"
-      }
+      "validation": {}
     },
     "signIn": {
       "title": "Bienvenue",
@@ -177,11 +176,7 @@
       "footer": {
         "noAccount": "Vous n’avez pas de compte ?"
       },
-      "validation": {
-        "emailRequired": "Saisissez votre adresse e-mail",
-        "emailInvalid": "Saisissez une adresse e-mail valide",
-        "passwordRequired": "Saisissez votre mot de passe"
-      }
+      "validation": {}
     },
     "forgotPassword": {
       "title": "Mot de passe oublié ?",
@@ -201,9 +196,36 @@
         "title": "Consultez votre boîte de réception",
         "description": "Si un compte existe pour cette adresse e-mail, nous avons envoyé un lien de réinitialisation."
       },
-      "validation": {
-        "emailRequired": "Saisissez votre adresse e-mail",
-        "emailInvalid": "Saisissez une adresse e-mail valide"
+      "validation": {}
+    },
+    "resetPassword": {
+      "title": "Créer un nouveau mot de passe",
+      "description": "Saisissez un nouveau mot de passe pour votre compte.",
+      "fields": {
+        "password": {
+          "label": "Nouveau mot de passe",
+          "placeholder": "Saisissez un nouveau mot de passe",
+          "hint": "Utilisez entre 8 et 64 caractères avec des lettres majuscules, minuscules, un chiffre et un caractère spécial."
+        },
+        "confirmPassword": {
+          "label": "Confirmer le nouveau mot de passe",
+          "placeholder": "Saisissez à nouveau le mot de passe"
+        }
+      },
+      "actions": {
+        "submit": "Réinitialiser le mot de passe",
+        "submitting": "Enregistrement...",
+        "signIn": "Se connecter",
+        "backToSignIn": "Retour à la connexion",
+        "requestNewLink": "Demander un nouveau lien"
+      },
+      "success": {
+        "title": "Mot de passe mis à jour",
+        "description": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
+      },
+      "invalid": {
+        "title": "Lien non valide",
+        "description": "Ce lien de réinitialisation est manquant ou non valide. Demandez un nouveau lien."
       }
     }
   }

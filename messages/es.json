@@ -13,6 +13,29 @@
     }
   },
   "auth": {
+    "validation": {
+      "email": {
+        "required": "El correo electrónico es obligatorio",
+        "invalid": "Introduce una dirección de correo electrónico válida"
+      },
+      "phone": {
+        "required": "El número de teléfono es obligatorio",
+        "invalid": "Introduce un número de teléfono válido"
+      },
+      "password": {
+        "required": "La contraseña es obligatoria",
+        "tooShort": "La contraseña debe contener al menos 8 caracteres",
+        "tooLong": "La contraseña no debe superar los 64 caracteres",
+        "lowercase": "La contraseña debe contener una letra minúscula",
+        "uppercase": "La contraseña debe contener una letra mayúscula",
+        "number": "La contraseña debe contener un número",
+        "special": "La contraseña debe contener un carácter especial"
+      },
+      "confirmPassword": {
+        "required": "Confirma tu contraseña",
+        "doNotMatch": "Las contraseñas no coinciden"
+      }
+    },
     "signUp": {
       "title": "Crear una cuenta",
       "description": "Crea una cuenta de cliente para solicitar y seguir tus entregas.",
@@ -57,24 +80,6 @@
         "nameRequired": "El nombre completo es obligatorio",
         "nameTooShort": "El nombre completo debe contener al menos 2 caracteres",
         "nameTooLong": "El nombre completo no debe superar los 80 caracteres",
-
-        "emailRequired": "El correo electrónico es obligatorio",
-        "emailInvalid": "Introduce una dirección de correo electrónico válida",
-
-        "phoneRequired": "El número de teléfono es obligatorio",
-        "phoneInvalid": "Introduce un número de teléfono válido",
-
-        "passwordRequired": "La contraseña es obligatoria",
-        "passwordTooShort": "La contraseña debe contener al menos 8 caracteres",
-        "passwordTooLong": "La contraseña no debe superar los 64 caracteres",
-        "passwordLowercase": "La contraseña debe contener una letra minúscula",
-        "passwordUppercase": "La contraseña debe contener una letra mayúscula",
-        "passwordNumber": "La contraseña debe contener un número",
-        "passwordSpecial": "La contraseña debe contener un carácter especial",
-
-        "confirmPasswordRequired": "Confirma tu contraseña",
-        "passwordsDoNotMatch": "Las contraseñas no coinciden",
-
         "termsRequired": "Debes aceptar los términos para continuar"
       }
     },
@@ -130,10 +135,7 @@
         "submit": "Guardar y enviar código",
         "submitting": "Guardando..."
       },
-      "validation": {
-        "phoneRequired": "Introduce un número de teléfono",
-        "phoneInvalid": "Introduce un número de teléfono válido"
-      }
+      "validation": {}
     },
     "changeEmail": {
       "title": "Cambiar dirección de correo electrónico",
@@ -150,10 +152,7 @@
         "submit": "Guardar y enviar correo de verificación",
         "submitting": "Guardando..."
       },
-      "validation": {
-        "emailRequired": "Introduce una dirección de correo electrónico",
-        "emailInvalid": "Introduce una dirección de correo electrónico válida"
-      }
+      "validation": {}
     },
     "signIn": {
       "title": "Bienvenido",
@@ -177,11 +176,7 @@
       "footer": {
         "noAccount": "¿No tienes una cuenta?"
       },
-      "validation": {
-        "emailRequired": "Introduce tu correo electrónico",
-        "emailInvalid": "Introduce un correo electrónico válido",
-        "passwordRequired": "Introduce tu contraseña"
-      }
+      "validation": {}
     },
     "forgotPassword": {
       "title": "¿Olvidaste tu contraseña?",
@@ -201,9 +196,36 @@
         "title": "Revisa tu bandeja de entrada",
         "description": "Si existe una cuenta con este correo electrónico, hemos enviado un enlace para restablecer la contraseña."
       },
-      "validation": {
-        "emailRequired": "Introduce tu correo electrónico",
-        "emailInvalid": "Introduce un correo electrónico válido"
+      "validation": {}
+    },
+    "resetPassword": {
+      "title": "Crear una nueva contraseña",
+      "description": "Introduce una nueva contraseña para tu cuenta.",
+      "fields": {
+        "password": {
+          "label": "Nueva contraseña",
+          "placeholder": "Introduce una nueva contraseña",
+          "hint": "Utiliza entre 8 y 64 caracteres con letras mayúsculas, minúsculas, un número y un carácter especial."
+        },
+        "confirmPassword": {
+          "label": "Confirmar nueva contraseña",
+          "placeholder": "Introduce la contraseña de nuevo"
+        }
+      },
+      "actions": {
+        "submit": "Restablecer contraseña",
+        "submitting": "Guardando...",
+        "signIn": "Iniciar sesión",
+        "backToSignIn": "Volver al inicio de sesión",
+        "requestNewLink": "Solicitar un nuevo enlace"
+      },
+      "success": {
+        "title": "Contraseña actualizada",
+        "description": "Tu contraseña ha sido cambiada. Ya puedes iniciar sesión con tu nueva contraseña."
+      },
+      "invalid": {
+        "title": "Enlace no válido",
+        "description": "Este enlace para restablecer la contraseña no existe o no es válido. Solicita uno nuevo."
       }
     }
   }

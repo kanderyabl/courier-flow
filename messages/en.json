@@ -13,6 +13,29 @@
     }
   },
   "auth": {
+    "validation": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Enter a valid email address"
+      },
+      "phone": {
+        "required": "Phone number is required",
+        "invalid": "Enter a valid phone number"
+      },
+      "password": {
+        "required": "Password is required",
+        "tooShort": "Password must contain at least 8 characters",
+        "tooLong": "Password must not exceed 64 characters",
+        "lowercase": "Password must contain a lowercase letter",
+        "uppercase": "Password must contain an uppercase letter",
+        "number": "Password must contain a number",
+        "special": "Password must contain a special character"
+      },
+      "confirmPassword": {
+        "required": "Confirm your password",
+        "doNotMatch": "Passwords do not match"
+      }
+    },
     "signUp": {
       "title": "Create account",
       "description": "Create a client account to place and track deliveries.",
@@ -57,24 +80,6 @@
         "nameRequired": "Full name is required",
         "nameTooShort": "Full name must contain at least 2 characters",
         "nameTooLong": "Full name must not exceed 80 characters",
-
-        "emailRequired": "Email is required",
-        "emailInvalid": "Enter a valid email address",
-
-        "phoneRequired": "Phone number is required",
-        "phoneInvalid": "Enter a valid phone number",
-
-        "passwordRequired": "Password is required",
-        "passwordTooShort": "Password must contain at least 8 characters",
-        "passwordTooLong": "Password must not exceed 64 characters",
-        "passwordLowercase": "Password must contain a lowercase letter",
-        "passwordUppercase": "Password must contain an uppercase letter",
-        "passwordNumber": "Password must contain a number",
-        "passwordSpecial": "Password must contain a special character",
-
-        "confirmPasswordRequired": "Confirm your password",
-        "passwordsDoNotMatch": "Passwords do not match",
-
         "termsRequired": "You must accept the terms to continue"
       }
     },
@@ -130,10 +135,7 @@
         "submit": "Save and send code",
         "submitting": "Saving..."
       },
-      "validation": {
-        "phoneRequired": "Enter a phone number",
-        "phoneInvalid": "Enter a valid phone number"
-      }
+      "validation": {}
     },
     "changeEmail": {
       "title": "Change email address",
@@ -150,10 +152,7 @@
         "submit": "Save and send verification email",
         "submitting": "Saving..."
       },
-      "validation": {
-        "emailRequired": "Enter an email address",
-        "emailInvalid": "Enter a valid email address"
-      }
+      "validation": {}
     },
     "signIn": {
       "title": "Welcome",
@@ -177,11 +176,7 @@
       "footer": {
         "noAccount": "Don't have an account?"
       },
-      "validation": {
-        "emailRequired": "Enter your email address",
-        "emailInvalid": "Enter a valid email address",
-        "passwordRequired": "Enter your password"
-      }
+      "validation": {}
     },
     "forgotPassword": {
       "title": "Forgot your password?",
@@ -201,9 +196,36 @@
         "title": "Check your inbox",
         "description": "If an account exists for this email address, we sent a password reset link."
       },
-      "validation": {
-        "emailRequired": "Enter your email address",
-        "emailInvalid": "Enter a valid email address"
+      "validation": {}
+    },
+    "resetPassword": {
+      "title": "Create a new password",
+      "description": "Enter a new password for your account.",
+      "fields": {
+        "password": {
+          "label": "New password",
+          "placeholder": "Enter a new password",
+          "hint": "Use 8–64 characters with uppercase and lowercase letters, a number, and a special character."
+        },
+        "confirmPassword": {
+          "label": "Confirm new password",
+          "placeholder": "Enter the password again"
+        }
+      },
+      "actions": {
+        "submit": "Reset password",
+        "submitting": "Saving...",
+        "signIn": "Sign in",
+        "backToSignIn": "Back to sign in",
+        "requestNewLink": "Request a new link"
+      },
+      "success": {
+        "title": "Password updated",
+        "description": "Your password has been changed. You can now sign in with your new password."
+      },
+      "invalid": {
+        "title": "Invalid reset link",
+        "description": "This password reset link is missing or invalid. Request a new link and try again."
       }
     }
   }

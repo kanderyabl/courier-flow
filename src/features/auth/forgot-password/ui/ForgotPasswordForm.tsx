@@ -23,6 +23,7 @@ export function ForgotPasswordForm({
   onSubmitAction,
 }: ForgotPasswordFormProps) {
   const t = useTranslations("auth.forgotPassword");
+  const validationT = useTranslations("auth.validation");
   const locale = useLocale();
 
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -30,10 +31,10 @@ export function ForgotPasswordForm({
   const schema = useMemo(
     () =>
       createForgotPasswordSchema({
-        emailRequired: t("validation.emailRequired"),
-        emailInvalid: t("validation.emailInvalid"),
+        emailRequired: validationT("email.required"),
+        emailInvalid: validationT("email.invalid"),
       }),
-    [t],
+    [validationT],
   );
 
   const {

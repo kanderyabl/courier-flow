@@ -2,12 +2,14 @@ import type { z } from "zod";
 
 import type { createSignUpSchema } from "../model/signUpSchema";
 import type {
-  PhoneValidationMessages,
   EmailValidationMessages,
+  PasswordValidationMessages,
+  PhoneValidationMessages,
 } from "../../model";
 
 export type SignUpValidationMessages = PhoneValidationMessages &
-  EmailValidationMessages & {
+  EmailValidationMessages &
+  PasswordValidationMessages & {
     nameRequired: string;
     nameTooShort: string;
     nameTooLong: string;
@@ -17,14 +19,6 @@ export type SignUpValidationMessages = PhoneValidationMessages &
 
     phoneRequired: string;
     phoneInvalid: string;
-
-    passwordRequired: string;
-    passwordTooShort: string;
-    passwordTooLong: string;
-    passwordLowercase: string;
-    passwordUppercase: string;
-    passwordNumber: string;
-    passwordSpecial: string;
 
     confirmPasswordRequired: string;
     passwordsDoNotMatch: string;

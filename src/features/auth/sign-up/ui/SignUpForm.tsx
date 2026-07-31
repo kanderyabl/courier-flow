@@ -19,6 +19,7 @@ import styles from "./SignUpForm.module.css";
 
 export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
   const t = useTranslations("auth.signUp");
+  const validationT = useTranslations("auth.validation");
   const locale = useLocale();
 
   const schema = useMemo(
@@ -28,26 +29,26 @@ export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
         nameTooShort: t("validation.nameTooShort"),
         nameTooLong: t("validation.nameTooLong"),
 
-        emailRequired: t("validation.emailRequired"),
-        emailInvalid: t("validation.emailInvalid"),
+        emailRequired: validationT("email.required"),
+        emailInvalid: validationT("email.invalid"),
 
-        phoneRequired: t("validation.phoneRequired"),
-        phoneInvalid: t("validation.phoneInvalid"),
+        phoneRequired: validationT("phone.required"),
+        phoneInvalid: validationT("phone.invalid"),
 
-        passwordRequired: t("validation.passwordRequired"),
-        passwordTooShort: t("validation.passwordTooShort"),
-        passwordTooLong: t("validation.passwordTooLong"),
-        passwordLowercase: t("validation.passwordLowercase"),
-        passwordUppercase: t("validation.passwordUppercase"),
-        passwordNumber: t("validation.passwordNumber"),
-        passwordSpecial: t("validation.passwordSpecial"),
+        passwordRequired: validationT("password.required"),
+        passwordTooShort: validationT("password.tooShort"),
+        passwordTooLong: validationT("password.tooLong"),
+        passwordLowercase: validationT("password.lowercase"),
+        passwordUppercase: validationT("password.uppercase"),
+        passwordNumber: validationT("password.number"),
+        passwordSpecial: validationT("password.special"),
 
-        confirmPasswordRequired: t("validation.confirmPasswordRequired"),
-        passwordsDoNotMatch: t("validation.passwordsDoNotMatch"),
+        confirmPasswordRequired: validationT("confirmPassword.required"),
+        passwordsDoNotMatch: validationT("confirmPassword.doNotMatch"),
 
         termsRequired: t("validation.termsRequired"),
       }),
-    [t],
+    [t, validationT],
   );
 
   const {
