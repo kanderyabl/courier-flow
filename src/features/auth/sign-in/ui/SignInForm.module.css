@@ -1,0 +1,60 @@
+.form {
+  width: 100%;
+  display: grid;
+  gap: 24px;
+}
+
+.header {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.fields {
+  display: grid;
+  gap: 16px;
+}
+
+.passwordField {
+  display: grid;
+  gap: 8px;
+}
+
+.forgotPassword {
+  justify-self: end;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary, #2563eb);
+  text-decoration: none;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+.forgotPassword:focus-visible,
+.signUpLink:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.signUpLink {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary, #2563eb);
+  text-decoration: none;
+}
+
+.signUpLink:hover {
+  text-decoration: underline;
+}

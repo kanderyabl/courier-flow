@@ -154,6 +154,34 @@
         "emailRequired": "Введіть електронну адресу",
         "emailInvalid": "Введіть коректну електронну адресу"
       }
+    },
+    "signIn": {
+      "title": "Ласкаво просимо",
+      "description": "Увійдіть, щоб продовжити роботу з Courier Flow.",
+      "fields": {
+        "email": {
+          "label": "Електронна адреса",
+          "placeholder": "name@example.com"
+        },
+        "password": {
+          "label": "Пароль",
+          "placeholder": "Введіть пароль"
+        }
+      },
+      "actions": {
+        "forgotPassword": "Забули пароль?",
+        "submit": "Увійти",
+        "submitting": "Вхід...",
+        "signUp": "Створити обліковий запис"
+      },
+      "footer": {
+        "noAccount": "Ще не маєте облікового запису?"
+      },
+      "validation": {
+        "emailRequired": "Введіть електронну адресу",
+        "emailInvalid": "Введіть коректну електронну адресу",
+        "passwordRequired": "Введіть пароль"
+      }
     }
   }
 }

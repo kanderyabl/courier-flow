@@ -154,6 +154,34 @@
         "emailRequired": "Introduce una dirección de correo electrónico",
         "emailInvalid": "Introduce una dirección de correo electrónico válida"
       }
+    },
+    "signIn": {
+      "title": "Bienvenido",
+      "description": "Inicia sesión para continuar en Courier Flow.",
+      "fields": {
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "nombre@ejemplo.com"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "Introduce tu contraseña"
+        }
+      },
+      "actions": {
+        "forgotPassword": "¿Olvidaste tu contraseña?",
+        "submit": "Iniciar sesión",
+        "submitting": "Iniciando sesión...",
+        "signUp": "Crear una cuenta"
+      },
+      "footer": {
+        "noAccount": "¿No tienes una cuenta?"
+      },
+      "validation": {
+        "emailRequired": "Introduce tu correo electrónico",
+        "emailInvalid": "Introduce un correo electrónico válido",
+        "passwordRequired": "Introduce tu contraseña"
+      }
     }
   }
 }

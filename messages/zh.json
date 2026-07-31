@@ -154,6 +154,34 @@
         "emailRequired": "请输入电子邮箱地址",
         "emailInvalid": "请输入有效的电子邮箱地址"
       }
+    },
+    "signIn": {
+      "title": "欢迎",
+      "description": "登录以继续使用 Courier Flow。",
+      "fields": {
+        "email": {
+          "label": "电子邮箱地址",
+          "placeholder": "name@example.com"
+        },
+        "password": {
+          "label": "密码",
+          "placeholder": "请输入密码"
+        }
+      },
+      "actions": {
+        "forgotPassword": "忘记密码？",
+        "submit": "登录",
+        "submitting": "正在登录...",
+        "signUp": "创建账户"
+      },
+      "footer": {
+        "noAccount": "还没有账户？"
+      },
+      "validation": {
+        "emailRequired": "请输入电子邮箱地址",
+        "emailInvalid": "请输入有效的电子邮箱地址",
+        "passwordRequired": "请输入密码"
+      }
     }
   }
 }

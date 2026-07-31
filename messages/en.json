@@ -154,6 +154,34 @@
         "emailRequired": "Enter an email address",
         "emailInvalid": "Enter a valid email address"
       }
+    },
+    "signIn": {
+      "title": "Welcome",
+      "description": "Sign in to continue to Courier Flow.",
+      "fields": {
+        "email": {
+          "label": "Email address",
+          "placeholder": "name@example.com"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter your password"
+        }
+      },
+      "actions": {
+        "forgotPassword": "Forgot password?",
+        "submit": "Sign in",
+        "submitting": "Signing in...",
+        "signUp": "Create account"
+      },
+      "footer": {
+        "noAccount": "Don't have an account?"
+      },
+      "validation": {
+        "emailRequired": "Enter your email address",
+        "emailInvalid": "Enter a valid email address",
+        "passwordRequired": "Enter your password"
+      }
     }
   }
 }

@@ -154,6 +154,34 @@
         "emailRequired": "ईमेल पता दर्ज करें",
         "emailInvalid": "मान्य ईमेल पता दर्ज करें"
       }
+    },
+    "signIn": {
+      "title": "स्वागत है",
+      "description": "Courier Flow का उपयोग जारी रखने के लिए साइन इन करें।",
+      "fields": {
+        "email": {
+          "label": "ईमेल पता",
+          "placeholder": "name@example.com"
+        },
+        "password": {
+          "label": "पासवर्ड",
+          "placeholder": "अपना पासवर्ड दर्ज करें"
+        }
+      },
+      "actions": {
+        "forgotPassword": "पासवर्ड भूल गए?",
+        "submit": "साइन इन करें",
+        "submitting": "साइन इन किया जा रहा है...",
+        "signUp": "खाता बनाएँ"
+      },
+      "footer": {
+        "noAccount": "क्या आपके पास खाता नहीं है?"
+      },
+      "validation": {
+        "emailRequired": "अपना ईमेल पता दर्ज करें",
+        "emailInvalid": "मान्य ईमेल पता दर्ज करें",
+        "passwordRequired": "अपना पासवर्ड दर्ज करें"
+      }
     }
   }
 }
