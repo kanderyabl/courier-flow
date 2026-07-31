@@ -127,7 +127,6 @@
       },
       "actions": {
         "cancel": "Cancel",
-        "close": "Close dialog",
         "submit": "Save and send code",
         "submitting": "Saving..."
       },

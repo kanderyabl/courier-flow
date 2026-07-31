@@ -127,7 +127,6 @@
       },
       "actions": {
         "cancel": "取消",
-        "close": "关闭窗口",
         "submit": "保存并发送验证码",
         "submitting": "正在保存..."
       },
