@@ -2,7 +2,7 @@ import { Prisma, UserRole } from "@/generated/prisma/client";
 
 import { signUpRequestSchema } from "@/features/auth/sign-up/model/signUpRequestSchema";
 import { hashPassword } from "@/shared/lib/password";
-import { prisma } from "@/shared/lib/prisma";
+import { getPrisma } from "@/shared/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -43,6 +43,8 @@ export async function POST(request: Request) {
   const { name, email, phone, password } = validationResult.data;
 
   try {
+    const prisma = getPrisma();
+
     const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
