@@ -15,10 +15,11 @@ export function createSignUpSchema(messages: SignUpValidationMessages) {
 
       name: z
         .string()
+        .trim()
         .min(1, {
           error: messages.nameRequired,
         })
-        .refine((value) => value.trim().length >= 2, {
+        .min(2, {
           error: messages.nameTooShort,
         })
         .max(80, {
