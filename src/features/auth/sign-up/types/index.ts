@@ -14,12 +14,6 @@ export type SignUpValidationMessages = PhoneValidationMessages &
     nameTooShort: string;
     nameTooLong: string;
 
-    emailRequired: string;
-    emailInvalid: string;
-
-    phoneRequired: string;
-    phoneInvalid: string;
-
     confirmPasswordRequired: string;
     passwordsDoNotMatch: string;
 
