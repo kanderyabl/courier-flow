@@ -84,6 +84,7 @@ model AuthChallenge {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([type, secretHash])
   @@index([userId, type, expiresAt])
   @@index([expiresAt])
   @@map("auth_challenges")
