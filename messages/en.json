@@ -227,6 +227,32 @@
         "title": "Invalid reset link",
         "description": "This password reset link is missing or invalid. Request a new link and try again."
       }
+    },
+    "verifyEmailResult": {
+      "loading": {
+        "title": "Verifying your email",
+        "description": "Please wait while we verify your email address."
+      },
+      "success": {
+        "title": "Email verified",
+        "description": "Your email address has been successfully verified."
+      },
+      "expired": {
+        "title": "Verification link expired",
+        "description": "This verification link has expired. Request a new link to continue."
+      },
+      "invalid": {
+        "title": "Invalid verification link",
+        "description": "This verification link is invalid or has been revoked."
+      },
+      "error": {
+        "title": "Verification failed",
+        "description": "An unexpected error occurred. Please try again."
+      },
+      "actions": {
+        "retry": "Try again",
+        "signIn": "Go to sign in"
+      }
     }
   }
 }

@@ -1,2 +1,2 @@
-export { VerifyEmailCard } from "./ui";
-export type { VerifyEmailCardProps } from "./types";
+export { VerifyEmailCard, VerifyEmailResultCard } from "./ui";
+export * from "./types";

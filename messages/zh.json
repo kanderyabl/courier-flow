@@ -227,6 +227,32 @@
         "title": "重置链接无效",
         "description": "密码重置链接缺失或无效。请获取新的链接。"
       }
+    },
+    "verifyEmailResult": {
+      "loading": {
+        "title": "正在验证邮箱",
+        "description": "请稍候，我们正在验证您的邮箱地址。"
+      },
+      "success": {
+        "title": "邮箱验证成功",
+        "description": "您的邮箱地址已成功验证。"
+      },
+      "expired": {
+        "title": "验证链接已过期",
+        "description": "此验证链接已过期，请申请新的链接。"
+      },
+      "invalid": {
+        "title": "无效的验证链接",
+        "description": "此验证链接无效或已被撤销。"
+      },
+      "error": {
+        "title": "验证失败",
+        "description": "发生意外错误，请重试。"
+      },
+      "actions": {
+        "retry": "重试",
+        "signIn": "前往登录"
+      }
     }
   }
 }

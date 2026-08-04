@@ -22,11 +22,15 @@ export function VerifyEmailCard({
   const [isResent, setIsResent] = useState(false);
 
   const handleResend = async () => {
+    if (!onResendAction) {
+      return;
+    }
+
     setIsResending(true);
     setIsResent(false);
 
     try {
-      await onResendAction?.();
+      await onResendAction();
       setIsResent(true);
     } finally {
       setIsResending(false);
@@ -59,7 +63,7 @@ export function VerifyEmailCard({
         <Button
           type="button"
           fullWidth
-          disabled={isResending}
+          disabled={isResending || !onResendAction}
           onClick={handleResend}
         >
           {isResending ? t("actions.resending") : t("actions.resend")}
