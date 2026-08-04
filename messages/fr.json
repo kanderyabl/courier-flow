@@ -227,6 +227,32 @@
         "title": "Lien non valide",
         "description": "Ce lien de réinitialisation est manquant ou non valide. Demandez un nouveau lien."
       }
+    },
+    "verifyEmailResult": {
+      "loading": {
+        "title": "Vérification de votre adresse",
+        "description": "Veuillez patienter pendant la vérification de votre adresse e-mail."
+      },
+      "success": {
+        "title": "Adresse e-mail vérifiée",
+        "description": "Votre adresse e-mail a bien été vérifiée."
+      },
+      "expired": {
+        "title": "Lien expiré",
+        "description": "Ce lien a expiré. Demandez un nouveau lien pour continuer."
+      },
+      "invalid": {
+        "title": "Lien non valide",
+        "description": "Ce lien est invalide ou a été révoqué."
+      },
+      "error": {
+        "title": "Échec de la vérification",
+        "description": "Une erreur inattendue s'est produite. Réessayez."
+      },
+      "actions": {
+        "retry": "Réessayer",
+        "signIn": "Aller à la connexion"
+      }
     }
   }
 }

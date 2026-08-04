@@ -227,6 +227,32 @@
         "title": "Enlace no válido",
         "description": "Este enlace para restablecer la contraseña no existe o no es válido. Solicita uno nuevo."
       }
+    },
+    "verifyEmailResult": {
+      "loading": {
+        "title": "Verificando tu correo",
+        "description": "Espera mientras verificamos tu dirección de correo."
+      },
+      "success": {
+        "title": "Correo verificado",
+        "description": "Tu dirección de correo se ha verificado correctamente."
+      },
+      "expired": {
+        "title": "El enlace ha caducado",
+        "description": "Este enlace ha caducado. Solicita uno nuevo para continuar."
+      },
+      "invalid": {
+        "title": "Enlace no válido",
+        "description": "Este enlace no es válido o ha sido revocado."
+      },
+      "error": {
+        "title": "Error de verificación",
+        "description": "Se produjo un error inesperado. Inténtalo de nuevo."
+      },
+      "actions": {
+        "retry": "Intentar de nuevo",
+        "signIn": "Ir a iniciar sesión"
+      }
     }
   }
 }

@@ -1,10 +1,29 @@
-import { VerifyEmailCard } from "@/features/auth/verify-email";
+import {
+  VerifyEmailCard,
+  VerifyEmailResultCard,
+} from "@/features/auth/verify-email";
 import { AuthLayout } from "@/widgets/AuthLayout";
 
-export default function VerifyEmailPage() {
+type VerifyEmailPageProps = {
+  searchParams: Promise<{
+    token?: string | string[];
+  }>;
+};
+
+export default async function VerifyEmailPage({
+  searchParams,
+}: VerifyEmailPageProps) {
+  const { token } = await searchParams;
+
+  const verificationToken = Array.isArray(token) ? token[0] : token;
+
   return (
     <AuthLayout>
-      <VerifyEmailCard />
+      {verificationToken !== undefined ? (
+        <VerifyEmailResultCard token={verificationToken} />
+      ) : (
+        <VerifyEmailCard />
+      )}
     </AuthLayout>
   );
 }
