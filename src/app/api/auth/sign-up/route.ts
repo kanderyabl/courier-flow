@@ -1,10 +1,13 @@
-import { Prisma, UserRole } from "@/generated/prisma/client";
+import { AuthChallengeType, Prisma, UserRole } from "@/generated/prisma/client";
 
 import { signUpRequestSchema } from "@/features/auth/sign-up/model/signUpRequestSchema";
+import { createAuthToken } from "@/shared/lib/authToken";
 import { hashPassword } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
 
 export const runtime = "nodejs";
+
+const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -87,6 +90,13 @@ export async function POST(request: Request) {
 
     const passwordHash = await hashPassword(password);
 
+    const { token: verificationToken, tokenHash: verificationTokenHash } =
+      createAuthToken();
+
+    const verificationExpiresAt = new Date(
+      Date.now() + EMAIL_VERIFICATION_TTL_MS,
+    );
+
     const user = await prisma.user.create({
       data: {
         role: UserRole.CLIENT,
@@ -94,6 +104,15 @@ export async function POST(request: Request) {
         email,
         phone,
         passwordHash,
+
+        authChallenges: {
+          create: {
+            type: AuthChallengeType.EMAIL_VERIFICATION,
+            secretHash: verificationTokenHash,
+            target: email,
+            expiresAt: verificationExpiresAt,
+          },
+        },
       },
 
       select: {
@@ -109,6 +128,12 @@ export async function POST(request: Request) {
     return Response.json(
       {
         user,
+
+        ...(process.env.NODE_ENV === "development"
+          ? {
+              verificationToken,
+            }
+          : {}),
       },
       {
         status: 201,
