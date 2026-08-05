@@ -1,13 +1,26 @@
+import { NextResponse } from "next/server";
+
 import { AuthChallengeType, Prisma, UserRole } from "@/generated/prisma/client";
 
 import { signUpRequestSchema } from "@/features/auth/sign-up/model/signUpRequestSchema";
 import { createAuthToken } from "@/shared/lib/authToken";
 import { hashPassword } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
+import { createSessionToken, setSessionCookie } from "@/shared/lib/session";
 
 export const runtime = "nodejs";
 
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+
+function getRequestIp(request: Request): string | undefined {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0]?.trim() || undefined;
+  }
+
+  return request.headers.get("x-real-ip") ?? undefined;
+}
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -15,7 +28,7 @@ export async function POST(request: Request) {
   try {
     body = await request.json();
   } catch {
-    return Response.json(
+    return NextResponse.json(
       {
         code: "INVALID_JSON",
       },
@@ -28,7 +41,7 @@ export async function POST(request: Request) {
   const validationResult = signUpRequestSchema.safeParse(body);
 
   if (!validationResult.success) {
-    return Response.json(
+    return NextResponse.json(
       {
         code: "VALIDATION_ERROR",
 
@@ -67,7 +80,7 @@ export async function POST(request: Request) {
     });
 
     if (existingUser?.email === email) {
-      return Response.json(
+      return NextResponse.json(
         {
           code: "EMAIL_ALREADY_IN_USE",
         },
@@ -78,7 +91,7 @@ export async function POST(request: Request) {
     }
 
     if (existingUser?.phone === phone) {
-      return Response.json(
+      return NextResponse.json(
         {
           code: "PHONE_ALREADY_IN_USE",
         },
@@ -97,6 +110,12 @@ export async function POST(request: Request) {
       Date.now() + EMAIL_VERIFICATION_TTL_MS,
     );
 
+    const {
+      token: sessionToken,
+      tokenHash: sessionTokenHash,
+      expiresAt: sessionExpiresAt,
+    } = createSessionToken();
+
     const user = await prisma.user.create({
       data: {
         role: UserRole.CLIENT,
@@ -113,6 +132,15 @@ export async function POST(request: Request) {
             expiresAt: verificationExpiresAt,
           },
         },
+
+        sessions: {
+          create: {
+            tokenHash: sessionTokenHash,
+            expiresAt: sessionExpiresAt,
+            ipAddress: getRequestIp(request),
+            userAgent: request.headers.get("user-agent") ?? undefined,
+          },
+        },
       },
 
       select: {
@@ -121,11 +149,12 @@ export async function POST(request: Request) {
         email: true,
         phone: true,
         role: true,
+        emailVerifiedAt: true,
         createdAt: true,
       },
     });
 
-    return Response.json(
+    const response = NextResponse.json(
       {
         user,
 
@@ -139,12 +168,16 @@ export async function POST(request: Request) {
         status: 201,
       },
     );
+
+    setSessionCookie(response, sessionToken, sessionExpiresAt);
+
+    return response;
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return Response.json(
+      return NextResponse.json(
         {
           code: "ACCOUNT_ALREADY_EXISTS",
         },
@@ -156,7 +189,7 @@ export async function POST(request: Request) {
 
     console.error("Sign-up failed:", error);
 
-    return Response.json(
+    return NextResponse.json(
       {
         code: "INTERNAL_SERVER_ERROR",
       },
