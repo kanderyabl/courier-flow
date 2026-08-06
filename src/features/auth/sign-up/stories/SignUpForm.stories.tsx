@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { fn } from "storybook/test";
 
 import { Card } from "@/components/Card";
 
@@ -14,35 +15,37 @@ const meta = {
 
   tags: ["autodocs"],
 
+  args: {
+    onSubmitAction: fn(),
+  },
+
   argTypes: {
     onSubmitAction: {
       control: false,
     },
   },
+
+  decorators: [
+    (Story) => (
+      <Card variant="elevated" padding="lg" style={{ width: "440px" }}>
+        <Story />
+      </Card>
+    ),
+  ],
 } satisfies Meta<typeof SignUpForm>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  render: () => (
-    <Card variant="elevated" padding="lg" style={{ width: "440px" }}>
-      <SignUpForm />
-    </Card>
-  ),
-};
+export const Default: Story = {};
 
 export const WithSubmitDelay: Story = {
-  render: () => (
-    <Card variant="elevated" padding="lg" style={{ width: "440px" }}>
-      <SignUpForm
-        onSubmitAction={() =>
-          new Promise((resolve) => {
-            window.setTimeout(resolve, 1500);
-          })
-        }
-      />
-    </Card>
-  ),
+  args: {
+    onSubmitAction: fn(async () => {
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, 1500);
+      });
+    }),
+  },
 };

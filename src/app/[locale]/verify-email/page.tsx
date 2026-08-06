@@ -1,5 +1,5 @@
 import {
-  VerifyEmailCard,
+  VerifyEmailCardContainer,
   VerifyEmailResultCard,
 } from "@/features/auth/verify-email";
 import { AuthLayout } from "@/widgets/AuthLayout";
@@ -22,7 +22,7 @@ export default async function VerifyEmailPage({
       {verificationToken !== undefined ? (
         <VerifyEmailResultCard token={verificationToken} />
       ) : (
-        <VerifyEmailCard />
+        <VerifyEmailCardContainer />
       )}
     </AuthLayout>
   );

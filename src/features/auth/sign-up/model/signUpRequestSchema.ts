@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import type { SignUpValidationMessages } from "../types";
 
 import { createSignUpSchema } from "./signUpSchema";
@@ -27,4 +29,8 @@ const SIGN_UP_VALIDATION_CODES = {
   termsRequired: "TERMS_REQUIRED",
 } satisfies SignUpValidationMessages;
 
-export const signUpRequestSchema = createSignUpSchema(SIGN_UP_VALIDATION_CODES);
+export const signUpRequestSchema = createSignUpSchema(
+  SIGN_UP_VALIDATION_CODES,
+).safeExtend({
+  locale: z.unknown().optional(),
+});

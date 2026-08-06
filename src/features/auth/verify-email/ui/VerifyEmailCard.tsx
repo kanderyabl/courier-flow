@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@/components/Button";
@@ -13,29 +12,15 @@ import styles from "./VerifyEmailCard.module.css";
 
 export function VerifyEmailCard({
   email,
+  secondsLeft,
+  isStatusLoading,
+  isResending,
+  isResent,
+  hasResendError,
   onResendAction,
 }: VerifyEmailCardProps) {
   const t = useTranslations("auth.verifyEmail");
   const locale = useLocale();
-
-  const [isResending, setIsResending] = useState(false);
-  const [isResent, setIsResent] = useState(false);
-
-  const handleResend = async () => {
-    if (!onResendAction) {
-      return;
-    }
-
-    setIsResending(true);
-    setIsResent(false);
-
-    try {
-      await onResendAction();
-      setIsResent(true);
-    } finally {
-      setIsResending(false);
-    }
-  };
 
   return (
     <div className={styles.wrapper}>
@@ -59,14 +44,30 @@ export function VerifyEmailCard({
         </Text>
       )}
 
+      {hasResendError && (
+        <Text role="alert" variant="bodySmall" className={styles.resendError}>
+          {t("resendFailed")}
+        </Text>
+      )}
+
       <div className={styles.actions}>
         <Button
           type="button"
           fullWidth
-          disabled={isResending || !onResendAction}
-          onClick={handleResend}
+          disabled={isStatusLoading || isResending || secondsLeft > 0}
+          onClick={() => {
+            void onResendAction();
+          }}
         >
-          {isResending ? t("actions.resending") : t("actions.resend")}
+          {isStatusLoading
+            ? t("actions.checking")
+            : isResending
+              ? t("actions.resending")
+              : secondsLeft > 0
+                ? t("actions.resendIn", {
+                    seconds: secondsLeft,
+                  })
+                : t("actions.resend")}
         </Button>
 
         <Link href={`/${locale}/change-email`} className={styles.changeEmail}>

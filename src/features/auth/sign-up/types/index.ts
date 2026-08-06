@@ -23,5 +23,5 @@ export type SignUpValidationMessages = PhoneValidationMessages &
 export type SignUpFormValues = z.infer<ReturnType<typeof createSignUpSchema>>;
 
 export type SignUpFormProps = {
-  onSubmitAction?: (values: SignUpFormValues) => void | Promise<void>;
+  onSubmitAction: (values: SignUpFormValues) => Promise<void>;
 };

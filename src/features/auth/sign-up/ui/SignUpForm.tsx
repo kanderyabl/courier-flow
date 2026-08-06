@@ -54,6 +54,9 @@ export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
+
     formState: { errors, isSubmitting },
   } = useForm<SignUpFormValues>({
     resolver: zodResolver(schema),
@@ -72,7 +75,49 @@ export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
   });
 
   const handleValidSubmit = async (values: SignUpFormValues) => {
-    await onSubmitAction?.(values);
+    clearErrors("root.server");
+
+    try {
+      await onSubmitAction(values);
+    } catch (error) {
+      const errorCode =
+        error instanceof Error ? error.message : "SIGN_UP_FAILED";
+
+      if (errorCode === "EMAIL_ALREADY_IN_USE") {
+        setError(
+          "email",
+          {
+            type: "server",
+            message: t("errors.emailAlreadyInUse"),
+          },
+          {
+            shouldFocus: true,
+          },
+        );
+
+        return;
+      }
+
+      if (errorCode === "PHONE_ALREADY_IN_USE") {
+        setError(
+          "phone",
+          {
+            type: "server",
+            message: t("errors.phoneAlreadyInUse"),
+          },
+          {
+            shouldFocus: true,
+          },
+        );
+
+        return;
+      }
+
+      setError("root.server", {
+        type: "server",
+        message: t("errors.submitFailed"),
+      });
+    }
   };
 
   return (
@@ -167,6 +212,12 @@ export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
       </div>
 
       <div className={styles.footer}>
+        {errors.root?.server?.message && (
+          <Text role="alert" className={styles.submitError}>
+            {errors.root.server.message}
+          </Text>
+        )}
+
         <Button type="submit" fullWidth disabled={isSubmitting}>
           {isSubmitting ? t("actions.submitting") : t("actions.submit")}
         </Button>

@@ -1,6 +1,9 @@
 import "server-only";
 
+import { getTranslations } from "next-intl/server";
 import { Resend } from "resend";
+
+import type { AppLocale } from "@/i18n/routing";
 
 let resendClient: Resend | undefined;
 
@@ -9,6 +12,7 @@ type EmailEnvironmentVariable = "RESEND_API_KEY" | "EMAIL_FROM" | "APP_URL";
 export type SendEmailVerificationEmailParams = {
   to: string;
   verificationToken: string;
+  locale: AppLocale;
 };
 
 export type SentEmail = {
@@ -39,44 +43,67 @@ function getResend(): Resend {
   return resendClient;
 }
 
-function createEmailVerificationUrl(verificationToken: string): string {
+function createEmailVerificationUrl(
+  verificationToken: string,
+  locale: AppLocale,
+): string {
   const appUrl = getRequiredEnvironmentVariable("APP_URL");
 
-  const verificationUrl = new URL("/en/verify-email", appUrl);
+  const verificationUrl = new URL(`/${locale}/verify-email`, appUrl);
 
   verificationUrl.searchParams.set("token", verificationToken);
 
   return verificationUrl.toString();
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export async function sendEmailVerificationEmail({
   to,
   verificationToken,
+  locale,
 }: SendEmailVerificationEmailParams): Promise<SentEmail> {
+  const t = await getTranslations({
+    locale,
+    namespace: "emails.verifyEmail",
+  });
+
   const resend = getResend();
   const from = getRequiredEnvironmentVariable("EMAIL_FROM");
 
-  const verificationUrl = createEmailVerificationUrl(verificationToken);
+  const verificationUrl = createEmailVerificationUrl(
+    verificationToken,
+    locale,
+  );
+
+  const escapedVerificationUrl = escapeHtml(verificationUrl);
 
   const { data, error } = await resend.emails.send({
     from,
     to: [to],
-    subject: "Verify your Courier Flow email",
+    subject: t("subject"),
 
     text: [
-      "Welcome to Courier Flow!",
+      t("welcome"),
       "",
-      "Confirm your email address by opening this link:",
+      t("linkInstruction"),
       verificationUrl,
       "",
-      "This verification link expires in 24 hours.",
+      t("expires"),
       "",
-      "If you did not create this account, ignore this email.",
+      t("ignore"),
     ].join("\n"),
 
     html: `
       <!doctype html>
-      <html lang="en">
+      <html lang="${locale}">
         <body
           style="
             margin: 0;
@@ -104,7 +131,7 @@ export async function sendEmailVerificationEmail({
                   line-height: 1.25;
                 "
               >
-                Verify your email
+                ${t("heading")}
               </h1>
 
               <p
@@ -115,12 +142,11 @@ export async function sendEmailVerificationEmail({
                   color: #4b5563;
                 "
               >
-                Confirm your email address to finish setting up
-                your Courier Flow account.
+                ${t("description")}
               </p>
 
               <a
-                href="${verificationUrl}"
+                href="${escapedVerificationUrl}"
                 style="
                   display: inline-block;
                   padding: 12px 20px;
@@ -132,7 +158,7 @@ export async function sendEmailVerificationEmail({
                   text-decoration: none;
                 "
               >
-                Verify email
+                ${t("action")}
               </a>
 
               <p
@@ -143,7 +169,7 @@ export async function sendEmailVerificationEmail({
                   color: #6b7280;
                 "
               >
-                This link expires in 24 hours.
+                ${t("expires")}
               </p>
 
               <p
@@ -155,7 +181,7 @@ export async function sendEmailVerificationEmail({
                   word-break: break-all;
                 "
               >
-                ${verificationUrl}
+                ${escapedVerificationUrl}
               </p>
             </div>
           </div>
