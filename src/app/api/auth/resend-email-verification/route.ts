@@ -4,6 +4,7 @@ import { AuthChallengeType } from "@/generated/prisma/client";
 
 import { resendEmailVerificationRequestSchema } from "@/features/auth/verify-email/model/resendEmailVerificationRequestSchema";
 import { createAuthToken, hashAuthToken } from "@/shared/lib/authToken";
+import { sendEmailVerificationEmail } from "@/shared/lib/email";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getCurrentSession } from "@/shared/lib/session";
 
@@ -150,7 +151,6 @@ export async function POST(request: NextRequest) {
     });
 
     const latestChallenge = recentChallenges[0];
-
     if (latestChallenge) {
       const nextAllowedAt =
         latestChallenge.createdAt.getTime() + RESEND_COOLDOWN_MS;
@@ -167,6 +167,7 @@ export async function POST(request: NextRequest) {
           },
           {
             status: 429,
+
             headers: {
               "Retry-After": retryAfterSeconds.toString(),
             },
@@ -174,7 +175,6 @@ export async function POST(request: NextRequest) {
         );
       }
     }
-
     if (recentChallenges.length >= RESEND_LIMIT_PER_HOUR) {
       const oldestChallenge = recentChallenges[recentChallenges.length - 1];
 
@@ -193,6 +193,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 429,
+
           headers: {
             "Retry-After": retryAfterSeconds.toString(),
           },
@@ -206,31 +207,78 @@ export async function POST(request: NextRequest) {
     const verificationExpiresAt = new Date(
       now.getTime() + EMAIL_VERIFICATION_TTL_MS,
     );
+    const newChallenge = await prisma.authChallenge.create({
+      data: {
+        userId: user.id,
+        type: AuthChallengeType.EMAIL_VERIFICATION,
+        secretHash: verificationTokenHash,
+        target: user.email,
+        expiresAt: verificationExpiresAt,
+      },
 
-    await prisma.$transaction([
-      prisma.authChallenge.updateMany({
+      select: {
+        id: true,
+      },
+    });
+
+    try {
+      const sentEmail = await sendEmailVerificationEmail({
+        to: user.email,
+        verificationToken,
+      });
+
+      console.info("Verification email resent:", sentEmail.id);
+    } catch (error) {
+      try {
+        await prisma.authChallenge.deleteMany({
+          where: {
+            id: newChallenge.id,
+            consumedAt: null,
+          },
+        });
+      } catch (cleanupError) {
+        console.error(
+          "Failed to remove undelivered verification challenge:",
+          cleanupError,
+        );
+      }
+
+      console.error("Verification email delivery failed:", error);
+
+      return NextResponse.json(
+        {
+          code: "EMAIL_DELIVERY_FAILED",
+        },
+        {
+          status: 503,
+        },
+      );
+    }
+
+    try {
+      await prisma.authChallenge.updateMany({
         where: {
           userId: user.id,
           type: AuthChallengeType.EMAIL_VERIFICATION,
+
+          id: {
+            not: newChallenge.id,
+          },
+
           consumedAt: null,
           revokedAt: null,
         },
 
         data: {
-          revokedAt: now,
+          revokedAt: new Date(),
         },
-      }),
-
-      prisma.authChallenge.create({
-        data: {
-          userId: user.id,
-          type: AuthChallengeType.EMAIL_VERIFICATION,
-          secretHash: verificationTokenHash,
-          target: user.email,
-          expiresAt: verificationExpiresAt,
-        },
-      }),
-    ]);
+      });
+    } catch (error) {
+      console.error(
+        "Failed to revoke previous verification challenges:",
+        error,
+      );
+    }
 
     return NextResponse.json(
       {

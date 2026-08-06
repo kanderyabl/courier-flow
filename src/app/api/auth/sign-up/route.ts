@@ -7,6 +7,7 @@ import { createAuthToken } from "@/shared/lib/authToken";
 import { hashPassword } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
 import { createSessionToken, setSessionCookie } from "@/shared/lib/session";
+import { sendEmailVerificationEmail } from "@/shared/lib/email";
 
 export const runtime = "nodejs";
 
@@ -154,10 +155,25 @@ export async function POST(request: Request) {
       },
     });
 
+    let emailDelivery: "sent" | "failed" = "sent";
+
+    try {
+      const sentEmail = await sendEmailVerificationEmail({
+        to: user.email,
+        verificationToken,
+      });
+
+      console.info("Verification email sent:", sentEmail.id);
+    } catch (error) {
+      emailDelivery = "failed";
+
+      console.error("Verification email delivery failed:", error);
+    }
+
     const response = NextResponse.json(
       {
         user,
-
+        emailDelivery,
         ...(process.env.NODE_ENV === "development"
           ? {
               verificationToken,
