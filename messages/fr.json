@@ -88,10 +88,18 @@
       "description": "Nous avons envoyé un lien de vérification à votre adresse e-mail.",
       "descriptionWithEmail": "Nous avons envoyé un lien de vérification à {email}.",
       "resent": "Un nouvel e-mail de vérification a été envoyé.",
+      "resendFailed": "Impossible de renvoyer l’e-mail. Réessayez.",
       "actions": {
         "resend": "Renvoyer l'e-mail",
         "resending": "Envoi...",
+        "checking": "Vérification...",
+        "resendIn": "Renvoyer l’e-mail dans {seconds} s",
         "changeEmail": "Modifier l'adresse e-mail"
+      },
+      "errors": {
+        "emailAlreadyInUse": "Un compte existe déjà avec cette adresse e-mail.",
+        "phoneAlreadyInUse": "Un compte existe déjà avec ce numéro de téléphone.",
+        "submitFailed": "Impossible de créer le compte. Réessayez."
       }
     },
     "verifyPhone": {
@@ -253,6 +261,18 @@
         "retry": "Réessayer",
         "signIn": "Aller à la connexion"
       }
+    }
+  },
+  "emails": {
+    "verifyEmail": {
+      "subject": "Vérifiez votre adresse e-mail Courier Flow",
+      "welcome": "Bienvenue sur Courier Flow !",
+      "heading": "Vérifiez votre adresse e-mail",
+      "description": "Confirmez votre adresse e-mail pour terminer la configuration de votre compte Courier Flow.",
+      "linkInstruction": "Confirmez votre adresse e-mail en ouvrant ce lien :",
+      "action": "Vérifier l’adresse e-mail",
+      "expires": "Ce lien de vérification expire dans 24 heures.",
+      "ignore": "Si vous n’avez pas créé ce compte, ignorez cet e-mail."
     }
   }
 }

@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 import { AuthChallengeType, Prisma, UserRole } from "@/generated/prisma/client";
 
 import { signUpRequestSchema } from "@/features/auth/sign-up/model/signUpRequestSchema";
+import { isAppLocale, routing } from "@/i18n/routing";
 import { createAuthToken } from "@/shared/lib/authToken";
+import { sendEmailVerificationEmail } from "@/shared/lib/email";
 import { hashPassword } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
 import { createSessionToken, setSessionCookie } from "@/shared/lib/session";
-import { sendEmailVerificationEmail } from "@/shared/lib/email";
 
 export const runtime = "nodejs";
 
@@ -57,7 +58,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const { name, email, phone, password } = validationResult.data;
+  const { name, email, phone, password, locale: requestedLocale } =
+    validationResult.data;
+
+  const emailLocale =
+    typeof requestedLocale === "string" && isAppLocale(requestedLocale)
+      ? requestedLocale
+      : routing.defaultLocale;
 
   try {
     const prisma = getPrisma();
@@ -161,6 +168,7 @@ export async function POST(request: Request) {
       const sentEmail = await sendEmailVerificationEmail({
         to: user.email,
         verificationToken,
+        locale: emailLocale,
       });
 
       console.info("Verification email sent:", sentEmail.id);

@@ -81,6 +81,11 @@
         "nameTooShort": "Full name must contain at least 2 characters",
         "nameTooLong": "Full name must not exceed 80 characters",
         "termsRequired": "You must accept the terms to continue"
+      },
+      "errors": {
+        "emailAlreadyInUse": "An account with this email already exists.",
+        "phoneAlreadyInUse": "An account with this phone number already exists.",
+        "submitFailed": "Could not create the account. Please try again."
       }
     },
     "verifyEmail": {
@@ -88,9 +93,12 @@
       "description": "We've sent a verification link to your email address.",
       "descriptionWithEmail": "We've sent a verification link to {email}.",
       "resent": "A new verification email has been sent.",
+      "resendFailed": "Could not resend the email. Please try again.",
       "actions": {
         "resend": "Resend email",
         "resending": "Sending...",
+        "checking": "Checking...",
+        "resendIn": "Resend email in {seconds}s",
         "changeEmail": "Change email"
       }
     },
@@ -253,6 +261,18 @@
         "retry": "Try again",
         "signIn": "Go to sign in"
       }
+    }
+  },
+  "emails": {
+    "verifyEmail": {
+      "subject": "Verify your Courier Flow email",
+      "welcome": "Welcome to Courier Flow!",
+      "heading": "Verify your email",
+      "description": "Confirm your email address to finish setting up your Courier Flow account.",
+      "linkInstruction": "Confirm your email address by opening this link:",
+      "action": "Verify email",
+      "expires": "This verification link expires in 24 hours.",
+      "ignore": "If you did not create this account, ignore this email."
     }
   }
 }

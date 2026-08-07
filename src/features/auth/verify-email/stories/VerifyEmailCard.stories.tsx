@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { VerifyEmailCardProps } from "../types";
 
 import { AuthLayout } from "@/widgets/AuthLayout";
 
@@ -13,10 +14,31 @@ const meta = {
   tags: ["autodocs"],
   args: {
     email: "vladyslav@example.com",
+    secondsLeft: 0,
+    isStatusLoading: false,
+    isResending: false,
+    isResent: false,
+    hasResendError: false,
+    onResendAction: async () => undefined,
   },
   argTypes: {
     email: {
       control: "text",
+    },
+    secondsLeft: {
+      control: "number",
+    },
+    isStatusLoading: {
+      control: "boolean",
+    },
+    isResending: {
+      control: "boolean",
+    },
+    isResent: {
+      control: "boolean",
+    },
+    hasResendError: {
+      control: "boolean",
     },
     onResendAction: {
       control: false,
@@ -28,23 +50,21 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+const renderWithLayout = (args: VerifyEmailCardProps) => (
+  <AuthLayout>
+    <VerifyEmailCard {...args} />
+  </AuthLayout>
+);
+
 export const Default: Story = {
-  render: (args) => (
-    <AuthLayout>
-      <VerifyEmailCard {...args} />
-    </AuthLayout>
-  ),
+  render: renderWithLayout,
 };
 
 export const WithoutEmail: Story = {
   args: {
     email: undefined,
   },
-  render: (args) => (
-    <AuthLayout>
-      <VerifyEmailCard {...args} />
-    </AuthLayout>
-  ),
+  render: renderWithLayout,
 };
 
 export const WithResendDelay: Story = {
@@ -60,4 +80,18 @@ export const WithResendDelay: Story = {
       />
     </AuthLayout>
   ),
+};
+
+export const ResentState: Story = {
+  args: {
+    isResent: true,
+  },
+  render: renderWithLayout,
+};
+
+export const ErrorState: Story = {
+  args: {
+    hasResendError: true,
+  },
+  render: renderWithLayout,
 };

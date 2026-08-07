@@ -1,2 +1,6 @@
-export { VerifyEmailCard, VerifyEmailResultCard } from "./ui";
+export {
+  VerifyEmailCard,
+  VerifyEmailResultCard,
+  VerifyEmailCardContainer,
+} from "./ui";
 export * from "./types";

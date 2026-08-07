@@ -3,6 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { AuthChallengeType } from "@/generated/prisma/client";
 
 import { resendEmailVerificationRequestSchema } from "@/features/auth/verify-email/model/resendEmailVerificationRequestSchema";
+import { isAppLocale, routing } from "@/i18n/routing";
 import { createAuthToken, hashAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
 import { getPrisma } from "@/shared/lib/prisma";
@@ -21,6 +22,160 @@ type ResendUser = {
   email: string;
   emailVerifiedAt: Date | null;
 };
+
+function getRetryAfterSeconds(
+  challengeCreatedAt: Date | undefined,
+  now: Date,
+): number {
+  if (!challengeCreatedAt) {
+    return 0;
+  }
+
+  const nextAllowedAt = challengeCreatedAt.getTime() + RESEND_COOLDOWN_MS;
+
+  return Math.max(0, Math.ceil((nextAllowedAt - now.getTime()) / 1000));
+}
+
+async function findResendUser(
+  request: NextRequest,
+  token?: string,
+): Promise<ResendUser | null> {
+  const session = await getCurrentSession(request);
+
+  if (session) {
+    return {
+      id: session.user.id,
+      email: session.user.email,
+      emailVerifiedAt: session.user.emailVerifiedAt,
+    };
+  }
+
+  if (!token) {
+    return null;
+  }
+
+  const prisma = getPrisma();
+  const sourceTokenHash = hashAuthToken(token);
+
+  const sourceChallenge = await prisma.authChallenge.findFirst({
+    where: {
+      type: AuthChallengeType.EMAIL_VERIFICATION,
+      secretHash: sourceTokenHash,
+    },
+
+    select: {
+      target: true,
+
+      user: {
+        select: {
+          id: true,
+          email: true,
+          emailVerifiedAt: true,
+        },
+      },
+    },
+  });
+
+  if (
+    !sourceChallenge ||
+    sourceChallenge.target !== sourceChallenge.user.email
+  ) {
+    return null;
+  }
+
+  return sourceChallenge.user;
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const prisma = getPrisma();
+
+    const token =
+      request.nextUrl.searchParams.get("token")?.trim() || undefined;
+
+    const user = await findResendUser(request, token);
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          code: "VERIFICATION_CONTEXT_INVALID",
+        },
+        {
+          status: 400,
+
+          headers: {
+            "Cache-Control": "no-store",
+          },
+        },
+      );
+    }
+
+    if (user.emailVerifiedAt) {
+      return NextResponse.json(
+        {
+          code: "EMAIL_ALREADY_VERIFIED",
+          retryAfterSeconds: 0,
+        },
+        {
+          status: 200,
+
+          headers: {
+            "Cache-Control": "no-store",
+          },
+        },
+      );
+    }
+
+    const latestChallenge = await prisma.authChallenge.findFirst({
+      where: {
+        userId: user.id,
+        type: AuthChallengeType.EMAIL_VERIFICATION,
+      },
+
+      select: {
+        createdAt: true,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const retryAfterSeconds = getRetryAfterSeconds(
+      latestChallenge?.createdAt,
+      new Date(),
+    );
+
+    return NextResponse.json(
+      {
+        code: "RESEND_STATUS",
+        retryAfterSeconds,
+      },
+      {
+        status: 200,
+
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  } catch (error) {
+    console.error("Getting resend email verification status failed:", error);
+
+    return NextResponse.json(
+      {
+        code: "INTERNAL_SERVER_ERROR",
+      },
+      {
+        status: 500,
+
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      },
+    );
+  }
+}
 
 export async function POST(request: NextRequest) {
   let body: unknown = {};
@@ -60,49 +215,19 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const requestedLocale =
+    typeof validationResult.data.locale === "string"
+      ? validationResult.data.locale
+      : "";
+
+  const emailLocale = isAppLocale(requestedLocale)
+    ? requestedLocale
+    : routing.defaultLocale;
+
   try {
     const prisma = getPrisma();
-    const session = await getCurrentSession(request);
 
-    let user: ResendUser | null = null;
-
-    if (session) {
-      user = {
-        id: session.user.id,
-        email: session.user.email,
-        emailVerifiedAt: session.user.emailVerifiedAt,
-      };
-    }
-
-    if (!user && validationResult.data.token) {
-      const sourceTokenHash = hashAuthToken(validationResult.data.token);
-
-      const sourceChallenge = await prisma.authChallenge.findFirst({
-        where: {
-          type: AuthChallengeType.EMAIL_VERIFICATION,
-          secretHash: sourceTokenHash,
-        },
-
-        select: {
-          target: true,
-
-          user: {
-            select: {
-              id: true,
-              email: true,
-              emailVerifiedAt: true,
-            },
-          },
-        },
-      });
-
-      if (
-        sourceChallenge &&
-        sourceChallenge.target === sourceChallenge.user.email
-      ) {
-        user = sourceChallenge.user;
-      }
-    }
+    const user = await findResendUser(request, validationResult.data.token);
 
     if (!user) {
       return NextResponse.json(
@@ -119,6 +244,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           code: "EMAIL_ALREADY_VERIFIED",
+          retryAfterSeconds: 0,
         },
         {
           status: 200,
@@ -127,6 +253,7 @@ export async function POST(request: NextRequest) {
     }
 
     const now = new Date();
+
     const resendWindowStart = new Date(now.getTime() - RESEND_WINDOW_MS);
 
     const recentChallenges = await prisma.authChallenge.findMany({
@@ -151,44 +278,16 @@ export async function POST(request: NextRequest) {
     });
 
     const latestChallenge = recentChallenges[0];
-    if (latestChallenge) {
-      const nextAllowedAt =
-        latestChallenge.createdAt.getTime() + RESEND_COOLDOWN_MS;
 
-      if (nextAllowedAt > now.getTime()) {
-        const retryAfterSeconds = Math.ceil(
-          (nextAllowedAt - now.getTime()) / 1000,
-        );
+    const retryAfterSeconds = getRetryAfterSeconds(
+      latestChallenge?.createdAt,
+      now,
+    );
 
-        return NextResponse.json(
-          {
-            code: "RESEND_TOO_SOON",
-            retryAfterSeconds,
-          },
-          {
-            status: 429,
-
-            headers: {
-              "Retry-After": retryAfterSeconds.toString(),
-            },
-          },
-        );
-      }
-    }
-    if (recentChallenges.length >= RESEND_LIMIT_PER_HOUR) {
-      const oldestChallenge = recentChallenges[recentChallenges.length - 1];
-
-      const nextAllowedAt =
-        oldestChallenge.createdAt.getTime() + RESEND_WINDOW_MS;
-
-      const retryAfterSeconds = Math.max(
-        1,
-        Math.ceil((nextAllowedAt - now.getTime()) / 1000),
-      );
-
+    if (retryAfterSeconds > 0) {
       return NextResponse.json(
         {
-          code: "RESEND_LIMIT_REACHED",
+          code: "RESEND_TOO_SOON",
           retryAfterSeconds,
         },
         {
@@ -201,12 +300,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (recentChallenges.length >= RESEND_LIMIT_PER_HOUR) {
+      const oldestChallenge = recentChallenges[recentChallenges.length - 1];
+
+      const nextAllowedAt =
+        oldestChallenge.createdAt.getTime() + RESEND_WINDOW_MS;
+
+      const limitRetryAfterSeconds = Math.max(
+        1,
+        Math.ceil((nextAllowedAt - now.getTime()) / 1000),
+      );
+
+      return NextResponse.json(
+        {
+          code: "RESEND_LIMIT_REACHED",
+          retryAfterSeconds: limitRetryAfterSeconds,
+        },
+        {
+          status: 429,
+
+          headers: {
+            "Retry-After": limitRetryAfterSeconds.toString(),
+          },
+        },
+      );
+    }
+
     const { token: verificationToken, tokenHash: verificationTokenHash } =
       createAuthToken();
 
     const verificationExpiresAt = new Date(
       now.getTime() + EMAIL_VERIFICATION_TTL_MS,
     );
+
     const newChallenge = await prisma.authChallenge.create({
       data: {
         userId: user.id,
@@ -218,6 +344,7 @@ export async function POST(request: NextRequest) {
 
       select: {
         id: true,
+        createdAt: true,
       },
     });
 
@@ -225,6 +352,7 @@ export async function POST(request: NextRequest) {
       const sentEmail = await sendEmailVerificationEmail({
         to: user.email,
         verificationToken,
+        locale: emailLocale,
       });
 
       console.info("Verification email resent:", sentEmail.id);
@@ -280,9 +408,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const newRetryAfterSeconds = getRetryAfterSeconds(
+      newChallenge.createdAt,
+      new Date(),
+    );
+
     return NextResponse.json(
       {
         code: "VERIFICATION_TOKEN_REISSUED",
+        retryAfterSeconds: newRetryAfterSeconds,
 
         ...(process.env.NODE_ENV === "development"
           ? {

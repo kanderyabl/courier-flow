@@ -12,6 +12,7 @@ export const resendEmailVerificationRequestSchema = z
         error: "TOKEN_TOO_LONG",
       })
       .optional(),
+    locale: z.unknown().optional(),
   })
   .strict();
 

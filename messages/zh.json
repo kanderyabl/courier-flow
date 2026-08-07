@@ -81,6 +81,11 @@
         "nameTooShort": "姓名至少需要包含 2 个字符",
         "nameTooLong": "姓名不能超过 80 个字符",
         "termsRequired": "您必须接受相关条款才能继续"
+      },
+      "errors": {
+        "emailAlreadyInUse": "使用此电子邮箱的账户已存在。",
+        "phoneAlreadyInUse": "使用此电话号码的账户已存在。",
+        "submitFailed": "无法创建账户，请重试。"
       }
     },
     "verifyEmail": {
@@ -88,9 +93,12 @@
       "description": "我们已向您的电子邮箱发送了一封验证邮件。",
       "descriptionWithEmail": "我们已向 {email} 发送了一封验证邮件。",
       "resent": "新的验证邮件已发送。",
+      "resendFailed": "无法重新发送邮件，请重试。",
       "actions": {
         "resend": "重新发送邮件",
         "resending": "发送中...",
+        "checking": "正在检查...",
+        "resendIn": "{seconds} 秒后重新发送邮件",
         "changeEmail": "更改电子邮箱"
       }
     },
@@ -253,6 +261,18 @@
         "retry": "重试",
         "signIn": "前往登录"
       }
+    }
+  },
+  "emails": {
+    "verifyEmail": {
+      "subject": "验证您的 Courier Flow 邮箱",
+      "welcome": "欢迎使用 Courier Flow！",
+      "heading": "验证您的邮箱",
+      "description": "请确认您的邮箱地址，以完成 Courier Flow 账户设置。",
+      "linkInstruction": "请打开以下链接确认您的邮箱地址：",
+      "action": "验证邮箱",
+      "expires": "此验证链接将在 24 小时后失效。",
+      "ignore": "如果您没有创建此账户，请忽略此邮件。"
     }
   }
 }

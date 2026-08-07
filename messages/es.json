@@ -81,6 +81,11 @@
         "nameTooShort": "El nombre completo debe contener al menos 2 caracteres",
         "nameTooLong": "El nombre completo no debe superar los 80 caracteres",
         "termsRequired": "Debes aceptar los términos para continuar"
+      },
+      "errors": {
+        "emailAlreadyInUse": "Ya existe una cuenta con este correo electrónico.",
+        "phoneAlreadyInUse": "Ya existe una cuenta con este número de teléfono.",
+        "submitFailed": "No se pudo crear la cuenta. Inténtalo de nuevo."
       }
     },
     "verifyEmail": {
@@ -88,9 +93,12 @@
       "description": "Hemos enviado un enlace de verificación a tu correo electrónico.",
       "descriptionWithEmail": "Hemos enviado un enlace de verificación a {email}.",
       "resent": "Se ha enviado un nuevo correo de verificación.",
+      "resendFailed": "No se pudo reenviar el correo. Inténtalo de nuevo.",
       "actions": {
         "resend": "Reenviar correo",
         "resending": "Enviando...",
+        "checking": "Comprobando...",
+        "resendIn": "Reenviar correo en {seconds} s",
         "changeEmail": "Cambiar correo electrónico"
       }
     },
@@ -253,6 +261,18 @@
         "retry": "Intentar de nuevo",
         "signIn": "Ir a iniciar sesión"
       }
+    }
+  },
+  "emails": {
+    "verifyEmail": {
+      "subject": "Verifica tu correo electrónico de Courier Flow",
+      "welcome": "¡Te damos la bienvenida a Courier Flow!",
+      "heading": "Verifica tu correo electrónico",
+      "description": "Confirma tu dirección de correo electrónico para terminar de configurar tu cuenta de Courier Flow.",
+      "linkInstruction": "Confirma tu dirección de correo electrónico abriendo este enlace:",
+      "action": "Verificar correo",
+      "expires": "Este enlace de verificación caduca en 24 horas.",
+      "ignore": "Si no has creado esta cuenta, ignora este correo."
     }
   }
 }
