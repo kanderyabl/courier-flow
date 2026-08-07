@@ -13,6 +13,7 @@ const meta = {
   },
   tags: ["autodocs"],
   args: {
+    variant: "pending",
     email: "vladyslav@example.com",
     secondsLeft: 0,
     isStatusLoading: false,
@@ -22,6 +23,10 @@ const meta = {
     onResendAction: async () => undefined,
   },
   argTypes: {
+    variant: {
+      control: "select",
+      options: ["pending", "expired", "success", "invalid"],
+    },
     email: {
       control: "text",
     },
@@ -62,6 +67,30 @@ export const Default: Story = {
 
 export const WithoutEmail: Story = {
   args: {
+    email: undefined,
+  },
+  render: renderWithLayout,
+};
+
+export const Expired: Story = {
+  args: {
+    variant: "expired",
+    email: undefined,
+  },
+  render: renderWithLayout,
+};
+
+export const AlreadyVerified: Story = {
+  args: {
+    variant: "success",
+    email: undefined,
+  },
+  render: renderWithLayout,
+};
+
+export const InvalidContext: Story = {
+  args: {
+    variant: "invalid",
     email: undefined,
   },
   render: renderWithLayout,

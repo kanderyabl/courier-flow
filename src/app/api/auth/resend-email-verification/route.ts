@@ -12,6 +12,7 @@ import { getCurrentSession } from "@/shared/lib/session";
 export const runtime = "nodejs";
 
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
+const RESEND_CONTEXT_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
 
 const RESEND_COOLDOWN_MS = 60 * 1000;
 const RESEND_WINDOW_MS = 60 * 60 * 1000;
@@ -40,18 +41,18 @@ async function findResendUser(
   request: NextRequest,
   token?: string,
 ): Promise<ResendUser | null> {
-  const session = await getCurrentSession(request);
+  if (!token) {
+    const session = await getCurrentSession(request);
 
-  if (session) {
+    if (!session) {
+      return null;
+    }
+
     return {
       id: session.user.id,
       email: session.user.email,
       emailVerifiedAt: session.user.emailVerifiedAt,
     };
-  }
-
-  if (!token) {
-    return null;
   }
 
   const prisma = getPrisma();
@@ -65,6 +66,7 @@ async function findResendUser(
 
     select: {
       target: true,
+      expiresAt: true,
 
       user: {
         select: {
@@ -78,7 +80,8 @@ async function findResendUser(
 
   if (
     !sourceChallenge ||
-    sourceChallenge.target !== sourceChallenge.user.email
+    sourceChallenge.target !== sourceChallenge.user.email ||
+    sourceChallenge.expiresAt.getTime() + RESEND_CONTEXT_GRACE_MS <= Date.now()
   ) {
     return null;
   }

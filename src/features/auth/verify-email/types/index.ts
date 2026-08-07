@@ -1,4 +1,11 @@
+export type VerifyEmailCardVariant =
+  | "pending"
+  | "expired"
+  | "success"
+  | "invalid";
+
 export type VerifyEmailCardProps = {
+  variant?: VerifyEmailCardVariant;
   email?: string;
 
   secondsLeft: number;
@@ -24,6 +31,7 @@ export type VerifyEmailResultCardProps = {
 };
 
 export type VerifyEmailCardContainerProps = {
+  variant?: VerifyEmailCardVariant;
   email?: string;
   token?: string;
 };

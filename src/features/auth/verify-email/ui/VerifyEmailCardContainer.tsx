@@ -21,6 +21,7 @@ function normalizeRetryAfterSeconds(value: unknown): number {
 }
 
 export function VerifyEmailCardContainer({
+  variant = "pending",
   email,
   token,
 }: VerifyEmailCardContainerProps) {
@@ -39,6 +40,10 @@ export function VerifyEmailCardContainer({
   const [isResent, setIsResent] = useState(false);
 
   const [hasResendError, setHasResendError] = useState(false);
+
+  const [terminalVariant, setTerminalVariant] = useState<
+    "success" | "invalid" | null
+  >(null);
 
   const statusUrl = useMemo(() => {
     const searchParams = new URLSearchParams();
@@ -94,10 +99,18 @@ export function VerifyEmailCardContainer({
 
   const applyResendStatus = useCallback(
     (data: ResendEmailApiResponse) => {
+      if (data.code === "EMAIL_ALREADY_VERIFIED") {
+        setTerminalVariant("success");
+        setCooldown(0);
+        setHasResendError(false);
+        return;
+      }
+
       const retryAfterSeconds = normalizeRetryAfterSeconds(
         data.retryAfterSeconds,
       );
 
+      setTerminalVariant(null);
       setCooldown(retryAfterSeconds);
       setHasResendError(false);
     },
@@ -117,6 +130,15 @@ export function VerifyEmailCardContainer({
       })
       .catch((error: unknown) => {
         if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
+
+        if (
+          error instanceof Error &&
+          error.message === "VERIFICATION_CONTEXT_INVALID"
+        ) {
+          setTerminalVariant("invalid");
+          setHasResendError(false);
           return;
         }
 
@@ -156,6 +178,15 @@ export function VerifyEmailCardContainer({
           applyResendStatus(data);
         })
         .catch((error: unknown) => {
+          if (
+            error instanceof Error &&
+            error.message === "VERIFICATION_CONTEXT_INVALID"
+          ) {
+            setTerminalVariant("invalid");
+            setHasResendError(false);
+            return;
+          }
+
           console.error("Resynchronizing resend status failed:", error);
 
           setHasResendError(true);
@@ -222,10 +253,16 @@ export function VerifyEmailCardContainer({
       }
 
       if (!response.ok) {
+        if (data?.code === "VERIFICATION_CONTEXT_INVALID") {
+          setTerminalVariant("invalid");
+          return;
+        }
+
         throw new Error(data?.code ?? "RESEND_EMAIL_FAILED");
       }
 
       if (data?.code === "EMAIL_ALREADY_VERIFIED") {
+        setTerminalVariant("success");
         setCooldown(0);
         return;
       }
@@ -244,6 +281,7 @@ export function VerifyEmailCardContainer({
 
   return (
     <VerifyEmailCard
+      variant={terminalVariant ?? variant}
       email={email}
       secondsLeft={secondsLeft}
       isStatusLoading={isStatusLoading}
