@@ -11,6 +11,7 @@ import type {
   VerifyEmailResultCardProps,
   VerifyEmailViewStatus,
 } from "../types";
+import { VerifyEmailCardContainer } from "./VerifyEmailCardContainer";
 
 import styles from "./VerifyEmailCard.module.css";
 
@@ -53,6 +54,10 @@ export function VerifyEmailResultCard({
       controller.abort();
     };
   }, [token, attempt, onVerifyAction]);
+
+  if (status === "expired") {
+    return <VerifyEmailCardContainer variant="expired" token={token} />;
+  }
 
   const content = {
     loading: {
@@ -127,9 +132,7 @@ export function VerifyEmailResultCard({
         </div>
       )}
 
-      {(status === "success" ||
-        status === "expired" ||
-        status === "invalid") && (
+      {(status === "success" || status === "invalid") && (
         <div className={styles.actions}>
           <Button as="link" href={`/${locale}/sign-in`} fullWidth>
             {t("actions.signIn")}

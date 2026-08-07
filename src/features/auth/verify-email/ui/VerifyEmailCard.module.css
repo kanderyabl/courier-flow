@@ -27,7 +27,7 @@
   gap: 12px;
 }
 
-.changeEmail {
+.secondaryLink {
   width: fit-content;
   justify-self: center;
   color: var(--color-primary);
@@ -35,7 +35,7 @@
   font-weight: 600;
 }
 
-.changeEmail:hover {
+.secondaryLink:hover {
   color: var(--color-primary-hover);
   text-decoration: underline;
   text-underline-offset: 3px;
