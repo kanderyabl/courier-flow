@@ -160,6 +160,16 @@
         "submit": "Save and send verification email",
         "submitting": "Saving..."
       },
+      "errors": {
+        "emailAlreadyInUse": "An account with this email already exists.",
+        "emailUnchanged": "Enter an email address different from your current one.",
+        "unauthorized": "Your session has expired. Sign in again and try again.",
+        "emailAlreadyVerified": "Your email is already verified and cannot be changed here.",
+        "deliveryFailed": "Could not send the verification email. Please try again.",
+        "rateLimited": "Please wait before changing your email again.",
+        "conflict": "Your account changed during this request. Please try again.",
+        "submitFailed": "Could not change the email address. Please try again."
+      },
       "validation": {}
     },
     "signIn": {

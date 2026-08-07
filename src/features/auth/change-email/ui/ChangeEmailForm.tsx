@@ -34,6 +34,8 @@ export function ChangeEmailForm({
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<ChangeEmailFormValues>({
     resolver: zodResolver(schema),
@@ -44,7 +46,58 @@ export function ChangeEmailForm({
   });
 
   const handleValidSubmit = async (values: ChangeEmailFormValues) => {
-    await onSubmitAction?.(values);
+    clearErrors("email");
+    clearErrors("root.server");
+
+    try {
+      await onSubmitAction(values);
+    } catch (error) {
+      const errorCode =
+        error instanceof Error ? error.message : "CHANGE_EMAIL_FAILED";
+
+      if (errorCode === "EMAIL_ALREADY_IN_USE") {
+        setError(
+          "email",
+          {
+            type: "server",
+            message: t("errors.emailAlreadyInUse"),
+          },
+          {
+            shouldFocus: true,
+          },
+        );
+
+        return;
+      }
+
+      if (errorCode === "EMAIL_UNCHANGED") {
+        setError(
+          "email",
+          {
+            type: "server",
+            message: t("errors.emailUnchanged"),
+          },
+          {
+            shouldFocus: true,
+          },
+        );
+
+        return;
+      }
+
+      const messageByCode: Record<string, string> = {
+        UNAUTHORIZED: t("errors.unauthorized"),
+        EMAIL_ALREADY_VERIFIED: t("errors.emailAlreadyVerified"),
+        EMAIL_DELIVERY_FAILED: t("errors.deliveryFailed"),
+        CHANGE_EMAIL_RATE_LIMITED: t("errors.rateLimited"),
+        EMAIL_CHANGE_CONFLICT: t("errors.conflict"),
+      };
+
+      setError("root.server", {
+        type: "server",
+        message: messageByCode[errorCode] ?? t("errors.submitFailed"),
+      });
+    }
   };
 
   return (
@@ -66,17 +119,25 @@ export function ChangeEmailForm({
       </div>
 
       <TextInput
+        id="change-email-email"
         type="email"
         inputMode="email"
         autoComplete="email"
         autoFocus={autoFocus}
+        required
+        readOnly={isSubmitting}
         label={t("fields.email.label")}
         placeholder={t("fields.email.placeholder")}
         hint={t("fields.email.hint")}
         error={errors.email?.message}
-        disabled={isSubmitting}
         {...register("email")}
       />
+
+      {errors.root?.server?.message && (
+        <Text role="alert" className={styles.submitError}>
+          {errors.root.server.message}
+        </Text>
+      )}
 
       <div className={styles.actions}>
         {cancelHref && (

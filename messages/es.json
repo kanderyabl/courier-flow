@@ -160,6 +160,16 @@
         "submit": "Guardar y enviar correo de verificación",
         "submitting": "Guardando..."
       },
+      "errors": {
+        "emailAlreadyInUse": "Ya existe una cuenta con esta dirección de correo electrónico.",
+        "emailUnchanged": "Introduce una dirección de correo electrónico distinta de la actual.",
+        "unauthorized": "Tu sesión ha caducado. Inicia sesión de nuevo e inténtalo otra vez.",
+        "emailAlreadyVerified": "Tu correo electrónico ya está verificado y no se puede cambiar aquí.",
+        "deliveryFailed": "No se pudo enviar el correo de verificación. Inténtalo de nuevo.",
+        "rateLimited": "Espera antes de volver a cambiar tu correo electrónico.",
+        "conflict": "Tu cuenta cambió durante esta solicitud. Inténtalo de nuevo.",
+        "submitFailed": "No se pudo cambiar la dirección de correo electrónico. Inténtalo de nuevo."
+      },
       "validation": {}
     },
     "signIn": {

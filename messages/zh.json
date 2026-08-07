@@ -160,6 +160,16 @@
         "submit": "保存并发送验证邮件",
         "submitting": "正在保存..."
       },
+      "errors": {
+        "emailAlreadyInUse": "已有账户使用此电子邮箱地址。",
+        "emailUnchanged": "请输入与当前地址不同的电子邮箱地址。",
+        "unauthorized": "您的会话已过期。请重新登录后再试。",
+        "emailAlreadyVerified": "您的电子邮箱已验证，无法在此处更改。",
+        "deliveryFailed": "无法发送验证邮件。请重试。",
+        "rateLimited": "请稍后再更改电子邮箱地址。",
+        "conflict": "处理请求期间，您的账户已发生变化。请重试。",
+        "submitFailed": "无法更改电子邮箱地址。请重试。"
+      },
       "validation": {}
     },
     "signIn": {
