@@ -24,6 +24,27 @@ type ResendUser = {
   emailVerifiedAt: Date | null;
 };
 
+type ResendContext = {
+  user: ResendUser;
+  sessionId?: string;
+  sourceTokenHash?: string;
+};
+
+function jsonResponse(
+  body: Record<string, unknown>,
+  status: number,
+  headers?: HeadersInit,
+) {
+  const response = NextResponse.json(body, {
+    status,
+    headers,
+  });
+
+  response.headers.set("Cache-Control", "no-store");
+
+  return response;
+}
+
 function getRetryAfterSeconds(
   challengeCreatedAt: Date | undefined,
   now: Date,
@@ -37,10 +58,10 @@ function getRetryAfterSeconds(
   return Math.max(0, Math.ceil((nextAllowedAt - now.getTime()) / 1000));
 }
 
-async function findResendUser(
+async function findResendContext(
   request: NextRequest,
   token?: string,
-): Promise<ResendUser | null> {
+): Promise<ResendContext | null> {
   if (!token) {
     const session = await getCurrentSession(request);
 
@@ -49,9 +70,13 @@ async function findResendUser(
     }
 
     return {
-      id: session.user.id,
-      email: session.user.email,
-      emailVerifiedAt: session.user.emailVerifiedAt,
+      sessionId: session.id,
+
+      user: {
+        id: session.user.id,
+        email: session.user.email,
+        emailVerifiedAt: session.user.emailVerifiedAt,
+      },
     };
   }
 
@@ -62,6 +87,8 @@ async function findResendUser(
     where: {
       type: AuthChallengeType.EMAIL_VERIFICATION,
       secretHash: sourceTokenHash,
+      consumedAt: null,
+      revokedAt: null,
     },
 
     select: {
@@ -86,7 +113,10 @@ async function findResendUser(
     return null;
   }
 
-  return sourceChallenge.user;
+  return {
+    user: sourceChallenge.user,
+    sourceTokenHash,
+  };
 }
 
 export async function GET(request: NextRequest) {
@@ -96,36 +126,60 @@ export async function GET(request: NextRequest) {
     const token =
       request.nextUrl.searchParams.get("token")?.trim() || undefined;
 
-    const user = await findResendUser(request, token);
+    const context = await findResendContext(request, token);
 
-    if (!user) {
-      return NextResponse.json(
+    if (!context) {
+      return jsonResponse(
         {
           code: "VERIFICATION_CONTEXT_INVALID",
         },
-        {
-          status: 400,
-
-          headers: {
-            "Cache-Control": "no-store",
-          },
-        },
+        400,
       );
     }
 
+    const { user } = context;
+
     if (user.emailVerifiedAt) {
-      return NextResponse.json(
+      return jsonResponse(
         {
           code: "EMAIL_ALREADY_VERIFIED",
           retryAfterSeconds: 0,
         },
-        {
-          status: 200,
+        200,
+      );
+    }
 
-          headers: {
-            "Cache-Control": "no-store",
-          },
+    const now = new Date();
+
+    const pendingEmailChange = await prisma.authChallenge.findFirst({
+      where: {
+        userId: user.id,
+        type: AuthChallengeType.EMAIL_CHANGE,
+        consumedAt: null,
+        revokedAt: null,
+
+        expiresAt: {
+          gt: now,
         },
+      },
+
+      select: {
+        expiresAt: true,
+      },
+    });
+
+    if (pendingEmailChange) {
+      return jsonResponse(
+        {
+          code: "RESEND_STATUS",
+          retryAfterSeconds: Math.max(
+            1,
+            Math.ceil(
+              (pendingEmailChange.expiresAt.getTime() - now.getTime()) / 1000,
+            ),
+          ),
+        },
+        200,
       );
     }
 
@@ -133,6 +187,7 @@ export async function GET(request: NextRequest) {
       where: {
         userId: user.id,
         type: AuthChallengeType.EMAIL_VERIFICATION,
+        target: user.email,
       },
 
       select: {
@@ -146,36 +201,24 @@ export async function GET(request: NextRequest) {
 
     const retryAfterSeconds = getRetryAfterSeconds(
       latestChallenge?.createdAt,
-      new Date(),
+      now,
     );
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "RESEND_STATUS",
         retryAfterSeconds,
       },
-      {
-        status: 200,
-
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      },
+      200,
     );
   } catch (error) {
     console.error("Getting resend email verification status failed:", error);
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "INTERNAL_SERVER_ERROR",
       },
-      {
-        status: 500,
-
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      },
+      500,
     );
   }
 }
@@ -189,13 +232,11 @@ export async function POST(request: NextRequest) {
     try {
       body = JSON.parse(rawBody);
     } catch {
-      return NextResponse.json(
+      return jsonResponse(
         {
           code: "INVALID_JSON",
         },
-        {
-          status: 400,
-        },
+        400,
       );
     }
   }
@@ -203,7 +244,7 @@ export async function POST(request: NextRequest) {
   const validationResult = resendEmailVerificationRequestSchema.safeParse(body);
 
   if (!validationResult.success) {
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "VALIDATION_ERROR",
 
@@ -212,9 +253,7 @@ export async function POST(request: NextRequest) {
           code: issue.message,
         })),
       },
-      {
-        status: 400,
-      },
+      400,
     );
   }
 
@@ -229,171 +268,355 @@ export async function POST(request: NextRequest) {
 
   try {
     const prisma = getPrisma();
+    const context = await findResendContext(
+      request,
+      validationResult.data.token,
+    );
 
-    const user = await findResendUser(request, validationResult.data.token);
-
-    if (!user) {
-      return NextResponse.json(
+    if (!context) {
+      return jsonResponse(
         {
           code: "VERIFICATION_CONTEXT_INVALID",
         },
-        {
-          status: 400,
-        },
+        400,
       );
     }
 
-    if (user.emailVerifiedAt) {
-      return NextResponse.json(
+    const issueResult = await prisma.$transaction(async (transaction) => {
+      await transaction.$queryRaw<Array<{ id: string }>>`
+        SELECT "id"
+        FROM "users"
+        WHERE "id" = ${context.user.id}::uuid
+        FOR UPDATE
+      `;
+
+      const user = await transaction.user.findUnique({
+        where: {
+          id: context.user.id,
+        },
+
+        select: {
+          id: true,
+          email: true,
+          emailVerifiedAt: true,
+        },
+      });
+
+      if (!user) {
+        return {
+          status: "CONTEXT_INVALID",
+        } as const;
+      }
+
+      const now = new Date();
+
+      if (context.sessionId) {
+        const liveSession = await transaction.session.findFirst({
+          where: {
+            id: context.sessionId,
+            userId: user.id,
+            revokedAt: null,
+
+            expiresAt: {
+              gt: now,
+            },
+          },
+
+          select: {
+            id: true,
+          },
+        });
+
+        if (!liveSession) {
+          return {
+            status: "CONTEXT_INVALID",
+          } as const;
+        }
+      }
+
+      if (context.sourceTokenHash) {
+        const sourceChallenge = await transaction.authChallenge.findFirst({
+          where: {
+            userId: user.id,
+            type: AuthChallengeType.EMAIL_VERIFICATION,
+            secretHash: context.sourceTokenHash,
+            consumedAt: null,
+            revokedAt: null,
+          },
+
+          select: {
+            target: true,
+            expiresAt: true,
+          },
+        });
+
+        if (
+          !sourceChallenge ||
+          sourceChallenge.target !== user.email ||
+          sourceChallenge.expiresAt.getTime() + RESEND_CONTEXT_GRACE_MS <=
+            now.getTime()
+        ) {
+          return {
+            status: "CONTEXT_INVALID",
+          } as const;
+        }
+      }
+
+      if (user.emailVerifiedAt) {
+        return {
+          status: "ALREADY_VERIFIED",
+        } as const;
+      }
+
+      await transaction.authChallenge.updateMany({
+        where: {
+          userId: user.id,
+          type: AuthChallengeType.EMAIL_CHANGE,
+          consumedAt: null,
+          revokedAt: null,
+
+          expiresAt: {
+            lte: now,
+          },
+        },
+
+        data: {
+          revokedAt: now,
+        },
+      });
+
+      const pendingEmailChange = await transaction.authChallenge.findFirst({
+        where: {
+          userId: user.id,
+          type: AuthChallengeType.EMAIL_CHANGE,
+          consumedAt: null,
+          revokedAt: null,
+
+          expiresAt: {
+            gt: now,
+          },
+        },
+
+        select: {
+          expiresAt: true,
+        },
+      });
+
+      if (pendingEmailChange) {
+        return {
+          status: "RATE_LIMITED",
+          retryAfterSeconds: Math.max(
+            1,
+            Math.ceil(
+              (pendingEmailChange.expiresAt.getTime() - now.getTime()) / 1000,
+            ),
+          ),
+        } as const;
+      }
+
+      const resendWindowStart = new Date(now.getTime() - RESEND_WINDOW_MS);
+
+      const recentChallenges = await transaction.authChallenge.findMany({
+        where: {
+          userId: user.id,
+          type: AuthChallengeType.EMAIL_VERIFICATION,
+          target: user.email,
+
+          createdAt: {
+            gte: resendWindowStart,
+          },
+        },
+
+        select: {
+          createdAt: true,
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+
+        take: RESEND_LIMIT_PER_HOUR,
+      });
+
+      const latestChallenge = recentChallenges[0];
+      const retryAfterSeconds = getRetryAfterSeconds(
+        latestChallenge?.createdAt,
+        now,
+      );
+
+      if (retryAfterSeconds > 0) {
+        return {
+          status: "RATE_LIMITED",
+          retryAfterSeconds,
+        } as const;
+      }
+
+      if (recentChallenges.length >= RESEND_LIMIT_PER_HOUR) {
+        const oldestChallenge = recentChallenges[recentChallenges.length - 1];
+        const nextAllowedAt =
+          oldestChallenge.createdAt.getTime() + RESEND_WINDOW_MS;
+
+        const limitRetryAfterSeconds = Math.max(
+          1,
+          Math.ceil((nextAllowedAt - now.getTime()) / 1000),
+        );
+
+        return {
+          status: "RATE_LIMITED",
+          retryAfterSeconds: limitRetryAfterSeconds,
+        } as const;
+      }
+
+      const { token: verificationToken, tokenHash } = createAuthToken();
+
+      const newChallenge = await transaction.authChallenge.create({
+        data: {
+          userId: user.id,
+          type: AuthChallengeType.EMAIL_VERIFICATION,
+          secretHash: tokenHash,
+          target: user.email,
+          expiresAt: new Date(now.getTime() + EMAIL_VERIFICATION_TTL_MS),
+        },
+
+        select: {
+          id: true,
+          createdAt: true,
+        },
+      });
+
+      return {
+        status: "ISSUED",
+        challengeId: newChallenge.id,
+        challengeCreatedAt: newChallenge.createdAt,
+        email: user.email,
+        verificationToken,
+      } as const;
+    });
+
+    if (issueResult.status === "CONTEXT_INVALID") {
+      return jsonResponse(
+        {
+          code: "VERIFICATION_CONTEXT_INVALID",
+        },
+        400,
+      );
+    }
+
+    if (issueResult.status === "ALREADY_VERIFIED") {
+      return jsonResponse(
         {
           code: "EMAIL_ALREADY_VERIFIED",
           retryAfterSeconds: 0,
         },
-        {
-          status: 200,
-        },
+        200,
       );
     }
 
-    const now = new Date();
-
-    const resendWindowStart = new Date(now.getTime() - RESEND_WINDOW_MS);
-
-    const recentChallenges = await prisma.authChallenge.findMany({
-      where: {
-        userId: user.id,
-        type: AuthChallengeType.EMAIL_VERIFICATION,
-
-        createdAt: {
-          gte: resendWindowStart,
-        },
-      },
-
-      select: {
-        createdAt: true,
-      },
-
-      orderBy: {
-        createdAt: "desc",
-      },
-
-      take: RESEND_LIMIT_PER_HOUR,
-    });
-
-    const latestChallenge = recentChallenges[0];
-
-    const retryAfterSeconds = getRetryAfterSeconds(
-      latestChallenge?.createdAt,
-      now,
-    );
-
-    if (retryAfterSeconds > 0) {
-      return NextResponse.json(
+    if (issueResult.status === "RATE_LIMITED") {
+      return jsonResponse(
         {
           code: "RESEND_TOO_SOON",
-          retryAfterSeconds,
+          retryAfterSeconds: issueResult.retryAfterSeconds,
         },
+        429,
         {
-          status: 429,
-
-          headers: {
-            "Retry-After": retryAfterSeconds.toString(),
-          },
+          "Retry-After": issueResult.retryAfterSeconds.toString(),
         },
       );
     }
-
-    if (recentChallenges.length >= RESEND_LIMIT_PER_HOUR) {
-      const oldestChallenge = recentChallenges[recentChallenges.length - 1];
-
-      const nextAllowedAt =
-        oldestChallenge.createdAt.getTime() + RESEND_WINDOW_MS;
-
-      const limitRetryAfterSeconds = Math.max(
-        1,
-        Math.ceil((nextAllowedAt - now.getTime()) / 1000),
-      );
-
-      return NextResponse.json(
-        {
-          code: "RESEND_LIMIT_REACHED",
-          retryAfterSeconds: limitRetryAfterSeconds,
-        },
-        {
-          status: 429,
-
-          headers: {
-            "Retry-After": limitRetryAfterSeconds.toString(),
-          },
-        },
-      );
-    }
-
-    const { token: verificationToken, tokenHash: verificationTokenHash } =
-      createAuthToken();
-
-    const verificationExpiresAt = new Date(
-      now.getTime() + EMAIL_VERIFICATION_TTL_MS,
-    );
-
-    const newChallenge = await prisma.authChallenge.create({
-      data: {
-        userId: user.id,
-        type: AuthChallengeType.EMAIL_VERIFICATION,
-        secretHash: verificationTokenHash,
-        target: user.email,
-        expiresAt: verificationExpiresAt,
-      },
-
-      select: {
-        id: true,
-        createdAt: true,
-      },
-    });
 
     try {
       const sentEmail = await sendEmailVerificationEmail({
-        to: user.email,
-        verificationToken,
+        to: issueResult.email,
+        verificationToken: issueResult.verificationToken,
         locale: emailLocale,
       });
 
       console.info("Verification email resent:", sentEmail.id);
     } catch (error) {
       try {
-        await prisma.authChallenge.deleteMany({
+        await prisma.authChallenge.updateMany({
           where: {
-            id: newChallenge.id,
+            id: issueResult.challengeId,
             consumedAt: null,
+            revokedAt: null,
+          },
+
+          data: {
+            revokedAt: new Date(),
           },
         });
       } catch (cleanupError) {
         console.error(
-          "Failed to remove undelivered verification challenge:",
+          "Failed to revoke undelivered verification challenge:",
           cleanupError,
         );
       }
 
       console.error("Verification email delivery failed:", error);
 
-      return NextResponse.json(
+      return jsonResponse(
         {
           code: "EMAIL_DELIVERY_FAILED",
         },
-        {
-          status: 503,
-        },
+        503,
       );
     }
 
-    try {
-      await prisma.authChallenge.updateMany({
+    const finalizeResult = await prisma.$transaction(async (transaction) => {
+      await transaction.$queryRaw<Array<{ id: string }>>`
+        SELECT "id"
+        FROM "users"
+        WHERE "id" = ${context.user.id}::uuid
+        FOR UPDATE
+      `;
+
+      const user = await transaction.user.findUnique({
         where: {
-          userId: user.id,
+          id: context.user.id,
+        },
+
+        select: {
+          email: true,
+          emailVerifiedAt: true,
+        },
+      });
+
+      if (user?.emailVerifiedAt) {
+        return {
+          status: "ALREADY_VERIFIED",
+        } as const;
+      }
+
+      const newChallenge = await transaction.authChallenge.findFirst({
+        where: {
+          id: issueResult.challengeId,
+          userId: context.user.id,
           type: AuthChallengeType.EMAIL_VERIFICATION,
+          target: issueResult.email,
+          consumedAt: null,
+          revokedAt: null,
+        },
+
+        select: {
+          id: true,
+        },
+      });
+
+      if (!user || user.email !== issueResult.email || !newChallenge) {
+        return {
+          status: "CONTEXT_INVALID",
+        } as const;
+      }
+
+      await transaction.authChallenge.updateMany({
+        where: {
+          userId: context.user.id,
+          type: AuthChallengeType.EMAIL_VERIFICATION,
+          target: issueResult.email,
 
           id: {
-            not: newChallenge.id,
+            not: issueResult.challengeId,
           },
 
           consumedAt: null,
@@ -404,43 +627,57 @@ export async function POST(request: NextRequest) {
           revokedAt: new Date(),
         },
       });
-    } catch (error) {
-      console.error(
-        "Failed to revoke previous verification challenges:",
-        error,
+
+      return {
+        status: "FINALIZED",
+      } as const;
+    });
+
+    if (finalizeResult.status === "ALREADY_VERIFIED") {
+      return jsonResponse(
+        {
+          code: "EMAIL_ALREADY_VERIFIED",
+          retryAfterSeconds: 0,
+        },
+        200,
+      );
+    }
+
+    if (finalizeResult.status === "CONTEXT_INVALID") {
+      return jsonResponse(
+        {
+          code: "VERIFICATION_CONTEXT_INVALID",
+        },
+        409,
       );
     }
 
     const newRetryAfterSeconds = getRetryAfterSeconds(
-      newChallenge.createdAt,
+      issueResult.challengeCreatedAt,
       new Date(),
     );
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "VERIFICATION_TOKEN_REISSUED",
         retryAfterSeconds: newRetryAfterSeconds,
 
         ...(process.env.NODE_ENV === "development"
           ? {
-              verificationToken,
+              verificationToken: issueResult.verificationToken,
             }
           : {}),
       },
-      {
-        status: 201,
-      },
+      201,
     );
   } catch (error) {
     console.error("Resend email verification failed:", error);
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "INTERNAL_SERVER_ERROR",
       },
-      {
-        status: 500,
-      },
+      500,
     );
   }
 }

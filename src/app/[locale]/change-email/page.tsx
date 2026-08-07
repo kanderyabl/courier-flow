@@ -1,4 +1,4 @@
-import { ChangeEmailForm } from "@/features/auth/change-email";
+import { ChangeEmailFormContainer } from "@/features/auth/change-email";
 import { AuthLayout } from "@/widgets/AuthLayout";
 
 type ChangeEmailPageProps = {
@@ -14,7 +14,7 @@ export default async function ChangeEmailPage({
 
   return (
     <AuthLayout>
-      <ChangeEmailForm cancelHref={`/${locale}/verify-email`} />
+      <ChangeEmailFormContainer cancelHref={`/${locale}/verify-email`} />
     </AuthLayout>
   );
 }

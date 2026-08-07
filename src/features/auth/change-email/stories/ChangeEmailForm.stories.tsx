@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, userEvent, within } from "storybook/test";
 
 import { Text } from "@/components/Text";
 import { AuthLayout } from "@/widgets/AuthLayout";
@@ -83,16 +84,184 @@ export const WithoutCancelLink: Story = {
 };
 
 export const WithSubmittingState: Story = {
-  render: () => (
+  render: (args) => (
     <AuthLayout>
       <ChangeEmailForm
-        cancelHref="/en/verify-email"
-        onSubmitAction={() =>
-          new Promise<void>((resolve) => {
-            window.setTimeout(resolve, 3000);
-          })
-        }
+        {...args}
+        onSubmitAction={() => new Promise<void>(() => undefined)}
       />
     </AuthLayout>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(
+      canvas.getByLabelText("New email address"),
+      "new@example.com",
+    );
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Save and send verification email",
+      }),
+    );
+
+    await expect(
+      canvas.getByRole("button", {
+        name: "Saving...",
+      }),
+    ).toBeDisabled();
+  },
+};
+
+export const EmailAlreadyInUse: Story = {
+  args: {
+    onSubmitAction: async () => {
+      throw new Error("EMAIL_ALREADY_IN_USE");
+    },
+  },
+  render: (args) => (
+    <AuthLayout>
+      <ChangeEmailForm {...args} />
+    </AuthLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const emailInput = canvas.getByLabelText("New email address");
+
+    await userEvent.type(
+      emailInput,
+      "taken@example.com",
+    );
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Save and send verification email",
+      }),
+    );
+
+    await expect(await canvas.findByRole("alert")).toHaveTextContent(
+      "An account with this email already exists.",
+    );
+    await expect(emailInput).toHaveAttribute("aria-invalid", "true");
+    await expect(emailInput).toHaveFocus();
+  },
+};
+
+export const DeliveryFailure: Story = {
+  args: {
+    onSubmitAction: async () => {
+      throw new Error("EMAIL_DELIVERY_FAILED");
+    },
+  },
+  render: (args) => (
+    <AuthLayout>
+      <ChangeEmailForm {...args} />
+    </AuthLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(
+      canvas.getByLabelText("New email address"),
+      "new@example.com",
+    );
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Save and send verification email",
+      }),
+    );
+
+    await expect(await canvas.findByRole("alert")).toHaveTextContent(
+      "Could not send the verification email. Please try again.",
+    );
+  },
+};
+
+export const EmailUnchanged: Story = {
+  args: {
+    onSubmitAction: async () => {
+      throw new Error("EMAIL_UNCHANGED");
+    },
+  },
+  render: (args) => (
+    <AuthLayout>
+      <ChangeEmailForm {...args} />
+    </AuthLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const emailInput = canvas.getByLabelText("New email address");
+
+    await userEvent.type(emailInput, "current@example.com");
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Save and send verification email",
+      }),
+    );
+
+    await expect(await canvas.findByRole("alert")).toHaveTextContent(
+      "Enter an email address different from your current one.",
+    );
+    await expect(emailInput).toHaveAttribute("aria-invalid", "true");
+    await expect(emailInput).toHaveFocus();
+  },
+};
+
+export const Unauthorized: Story = {
+  args: {
+    onSubmitAction: async () => {
+      throw new Error("UNAUTHORIZED");
+    },
+  },
+  render: (args) => (
+    <AuthLayout>
+      <ChangeEmailForm {...args} />
+    </AuthLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(
+      canvas.getByLabelText("New email address"),
+      "new@example.com",
+    );
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Save and send verification email",
+      }),
+    );
+
+    await expect(await canvas.findByRole("alert")).toHaveTextContent(
+      "Your session has expired. Sign in again and try again.",
+    );
+  },
+};
+
+export const UnknownFailure: Story = {
+  args: {
+    onSubmitAction: async () => {
+      throw new Error("UNEXPECTED_ERROR");
+    },
+  },
+  render: (args) => (
+    <AuthLayout>
+      <ChangeEmailForm {...args} />
+    </AuthLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(
+      canvas.getByLabelText("New email address"),
+      "new@example.com",
+    );
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Save and send verification email",
+      }),
+    );
+
+    await expect(await canvas.findByRole("alert")).toHaveTextContent(
+      "Could not change the email address. Please try again.",
+    );
+  },
 };

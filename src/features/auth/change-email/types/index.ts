@@ -10,5 +10,5 @@ export type ChangeEmailFormProps = {
   autoFocus?: boolean;
   cancelHref?: string;
 
-  onSubmitAction?: (values: ChangeEmailFormValues) => void | Promise<void>;
+  onSubmitAction: (values: ChangeEmailFormValues) => Promise<void>;
 };

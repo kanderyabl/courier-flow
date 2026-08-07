@@ -160,6 +160,16 @@
         "submit": "Enregistrer et envoyer l’e-mail de vérification",
         "submitting": "Enregistrement..."
       },
+      "errors": {
+        "emailAlreadyInUse": "Un compte existe déjà avec cette adresse e-mail.",
+        "emailUnchanged": "Saisissez une adresse e-mail différente de votre adresse actuelle.",
+        "unauthorized": "Votre session a expiré. Reconnectez-vous et réessayez.",
+        "emailAlreadyVerified": "Votre adresse e-mail est déjà vérifiée et ne peut pas être modifiée ici.",
+        "deliveryFailed": "Impossible d’envoyer l’e-mail de vérification. Réessayez.",
+        "rateLimited": "Patientez avant de modifier à nouveau votre adresse e-mail.",
+        "conflict": "Votre compte a été modifié pendant cette demande. Réessayez.",
+        "submitFailed": "Impossible de modifier l’adresse e-mail. Réessayez."
+      },
       "validation": {}
     },
     "signIn": {

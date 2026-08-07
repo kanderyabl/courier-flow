@@ -47,9 +47,51 @@ export async function POST(request: Request) {
     const prisma = getPrisma();
     const now = new Date();
 
+    const candidateChallenge = await prisma.authChallenge.findFirst({
+      where: {
+        type: AuthChallengeType.EMAIL_VERIFICATION,
+        secretHash: tokenHash,
+      },
+
+      select: {
+        id: true,
+        userId: true,
+      },
+    });
+
+    if (!candidateChallenge) {
+      return Response.json(
+        {
+          code: "VERIFICATION_TOKEN_INVALID",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     const result = await prisma.$transaction(async (transaction) => {
+      await transaction.$queryRaw<Array<{ id: string }>>`
+        SELECT "id"
+        FROM "users"
+        WHERE "id" = ${candidateChallenge.userId}::uuid
+        FOR UPDATE
+      `;
+
+      const user = await transaction.user.findUnique({
+        where: {
+          id: candidateChallenge.userId,
+        },
+
+        select: {
+          email: true,
+          emailVerifiedAt: true,
+        },
+      });
+
       const challenge = await transaction.authChallenge.findFirst({
         where: {
+          id: candidateChallenge.id,
           type: AuthChallengeType.EMAIL_VERIFICATION,
           secretHash: tokenHash,
         },
@@ -61,23 +103,39 @@ export async function POST(request: Request) {
           expiresAt: true,
           consumedAt: true,
           revokedAt: true,
-
-          user: {
-            select: {
-              email: true,
-              emailVerifiedAt: true,
-            },
-          },
         },
       });
 
-      if (!challenge) {
+      if (!user || !challenge) {
         return {
           status: "INVALID",
         } as const;
       }
 
-      if (challenge.target !== challenge.user.email) {
+      const pendingEmailChange = await transaction.authChallenge.findFirst({
+        where: {
+          userId: challenge.userId,
+          type: AuthChallengeType.EMAIL_CHANGE,
+          consumedAt: null,
+          revokedAt: null,
+
+          expiresAt: {
+            gt: now,
+          },
+        },
+
+        select: {
+          id: true,
+        },
+      });
+
+      if (pendingEmailChange) {
+        return {
+          status: "INVALID",
+        } as const;
+      }
+
+      if (challenge.target !== user.email) {
         return {
           status: "INVALID",
         } as const;
@@ -90,7 +148,7 @@ export async function POST(request: Request) {
       }
 
       if (challenge.consumedAt) {
-        if (challenge.user.emailVerifiedAt) {
+        if (user.emailVerifiedAt) {
           return {
             status: "ALREADY_VERIFIED",
           } as const;
@@ -112,6 +170,7 @@ export async function POST(request: Request) {
           id: challenge.id,
           consumedAt: null,
           revokedAt: null,
+
           expiresAt: {
             gt: now,
           },
@@ -134,7 +193,7 @@ export async function POST(request: Request) {
         },
 
         data: {
-          emailVerifiedAt: challenge.user.emailVerifiedAt ?? now,
+          emailVerifiedAt: user.emailVerifiedAt ?? now,
         },
       });
 
