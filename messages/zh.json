@@ -189,10 +189,17 @@
         "forgotPassword": "忘记密码？",
         "submit": "登录",
         "submitting": "正在登录...",
-        "signUp": "创建账户"
+        "signUp": "创建账户",
+        "showPassword": "显示密码",
+        "hidePassword": "隐藏密码"
       },
       "footer": {
         "noAccount": "还没有账户？"
+      },
+      "errors": {
+        "invalidCredentials": "电子邮箱或密码不正确。",
+        "rateLimited": "登录尝试次数过多。请稍后重试。",
+        "submitFailed": "无法登录。请重试。"
       },
       "validation": {}
     },

@@ -30,6 +30,7 @@ export function SignInForm({
         emailRequired: validationT("email.required"),
         emailInvalid: validationT("email.invalid"),
         passwordRequired: validationT("password.required"),
+        passwordTooLong: validationT("password.tooLong"),
       }),
     [validationT],
   );
@@ -37,6 +38,8 @@ export function SignInForm({
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<SignInFormValues>({
     resolver: zodResolver(schema),
@@ -48,13 +51,31 @@ export function SignInForm({
   });
 
   const handleValidSubmit = async (values: SignInFormValues) => {
-    await onSubmitAction?.(values);
+    clearErrors("root.server");
+
+    try {
+      await onSubmitAction(values);
+    } catch (error) {
+      const errorCode =
+        error instanceof Error ? error.message : "SIGN_IN_FAILED";
+
+      const messageByCode: Record<string, string> = {
+        INVALID_CREDENTIALS: t("errors.invalidCredentials"),
+        SIGN_IN_RATE_LIMITED: t("errors.rateLimited"),
+      };
+
+      setError("root.server", {
+        type: "server",
+        message: messageByCode[errorCode] ?? t("errors.submitFailed"),
+      });
+    }
   };
 
   return (
     <form
       className={styles.form}
       onSubmit={handleSubmit(handleValidSubmit)}
+      aria-busy={isSubmitting}
       noValidate
     >
       <div className={styles.header}>
@@ -67,10 +88,12 @@ export function SignInForm({
 
       <div className={styles.fields}>
         <TextInput
+          id="sign-in-email"
           type="email"
           inputMode="email"
-          autoComplete="email"
+          autoComplete="username"
           autoFocus={autoFocus}
+          required
           label={t("fields.email.label")}
           placeholder={t("fields.email.placeholder")}
           error={errors.email?.message}
@@ -80,9 +103,13 @@ export function SignInForm({
 
         <div className={styles.passwordField}>
           <PasswordInput
+            id="sign-in-password"
             autoComplete="current-password"
+            required
             label={t("fields.password.label")}
             placeholder={t("fields.password.placeholder")}
+            showPasswordLabel={t("actions.showPassword")}
+            hidePasswordLabel={t("actions.hidePassword")}
             error={errors.password?.message}
             disabled={isSubmitting}
             {...register("password")}
@@ -96,6 +123,12 @@ export function SignInForm({
           </Link>
         </div>
       </div>
+
+      {errors.root?.server?.message && (
+        <Text role="alert" className={styles.submitError}>
+          {errors.root.server.message}
+        </Text>
+      )}
 
       <Button type="submit" fullWidth disabled={isSubmitting}>
         {isSubmitting ? t("actions.submitting") : t("actions.submit")}

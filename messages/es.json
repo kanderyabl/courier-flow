@@ -189,10 +189,17 @@
         "forgotPassword": "¿Olvidaste tu contraseña?",
         "submit": "Iniciar sesión",
         "submitting": "Iniciando sesión...",
-        "signUp": "Crear una cuenta"
+        "signUp": "Crear una cuenta",
+        "showPassword": "Mostrar contraseña",
+        "hidePassword": "Ocultar contraseña"
       },
       "footer": {
         "noAccount": "¿No tienes una cuenta?"
+      },
+      "errors": {
+        "invalidCredentials": "El correo electrónico o la contraseña son incorrectos.",
+        "rateLimited": "Demasiados intentos de inicio de sesión. Espera e inténtalo de nuevo.",
+        "submitFailed": "No se pudo iniciar sesión. Inténtalo de nuevo."
       },
       "validation": {}
     },

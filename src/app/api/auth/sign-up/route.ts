@@ -8,21 +8,12 @@ import { createAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
 import { hashPassword } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
+import { getRequestIp, getRequestUserAgent } from "@/shared/lib/request";
 import { createSessionToken, setSessionCookie } from "@/shared/lib/session";
 
 export const runtime = "nodejs";
 
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
-
-function getRequestIp(request: Request): string | undefined {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-
-  if (forwardedFor) {
-    return forwardedFor.split(",")[0]?.trim() || undefined;
-  }
-
-  return request.headers.get("x-real-ip") ?? undefined;
-}
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -146,7 +137,7 @@ export async function POST(request: Request) {
             tokenHash: sessionTokenHash,
             expiresAt: sessionExpiresAt,
             ipAddress: getRequestIp(request),
-            userAgent: request.headers.get("user-agent") ?? undefined,
+            userAgent: getRequestUserAgent(request),
           },
         },
       },

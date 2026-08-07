@@ -189,10 +189,17 @@
         "forgotPassword": "Mot de passe oublié ?",
         "submit": "Se connecter",
         "submitting": "Connexion...",
-        "signUp": "Créer un compte"
+        "signUp": "Créer un compte",
+        "showPassword": "Afficher le mot de passe",
+        "hidePassword": "Masquer le mot de passe"
       },
       "footer": {
         "noAccount": "Vous n’avez pas de compte ?"
+      },
+      "errors": {
+        "invalidCredentials": "L’adresse e-mail ou le mot de passe est incorrect.",
+        "rateLimited": "Trop de tentatives de connexion. Patientez puis réessayez.",
+        "submitFailed": "Impossible de vous connecter. Réessayez."
       },
       "validation": {}
     },

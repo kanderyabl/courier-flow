@@ -58,3 +58,9 @@
 .signUpLink:hover {
   text-decoration: underline;
 }
+
+.submitError {
+  margin: 0;
+  color: var(--color-error, #d92d20);
+  text-align: center;
+}
