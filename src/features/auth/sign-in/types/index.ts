@@ -7,5 +7,5 @@ export type SignInFormValues = z.infer<ReturnType<typeof createSignInSchema>>;
 export type SignInFormProps = {
   autoFocus?: boolean;
 
-  onSubmitAction?: (values: SignInFormValues) => void | Promise<void>;
+  onSubmitAction: (values: SignInFormValues) => Promise<void>;
 };

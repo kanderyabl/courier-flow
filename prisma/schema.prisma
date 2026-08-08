@@ -89,3 +89,16 @@ model AuthChallenge {
   @@index([expiresAt])
   @@map("auth_challenges")
 }
+
+model AuthRateLimitBucket {
+  keyHash String @id @map("key_hash") @db.VarChar(64)
+
+  attempts        Int       @default(0)
+  windowStartedAt DateTime  @map("window_started_at") @db.Timestamptz(3)
+  blockedUntil    DateTime? @map("blocked_until") @db.Timestamptz(3)
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([expiresAt])
+  @@map("auth_rate_limit_buckets")
+}

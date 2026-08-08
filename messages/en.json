@@ -189,10 +189,17 @@
         "forgotPassword": "Forgot password?",
         "submit": "Sign in",
         "submitting": "Signing in...",
-        "signUp": "Create account"
+        "signUp": "Create account",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password"
       },
       "footer": {
         "noAccount": "Don't have an account?"
+      },
+      "errors": {
+        "invalidCredentials": "The email or password is incorrect.",
+        "rateLimited": "Too many sign-in attempts. Please wait and try again.",
+        "submitFailed": "Could not sign in. Please try again."
       },
       "validation": {}
     },
