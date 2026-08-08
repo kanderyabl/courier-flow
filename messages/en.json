@@ -203,6 +203,11 @@
       },
       "validation": {}
     },
+    "signOut": {
+      "submit": "Sign out",
+      "submitting": "Signing out...",
+      "error": "Could not sign out. Please try again."
+    },
     "forgotPassword": {
       "title": "Forgot your password?",
       "description": "Enter your email address and we will send you a link to reset your password.",

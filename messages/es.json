@@ -203,6 +203,11 @@
       },
       "validation": {}
     },
+    "signOut": {
+      "submit": "Cerrar sesión",
+      "submitting": "Cerrando sesión...",
+      "error": "No se pudo cerrar la sesión. Inténtalo de nuevo."
+    },
     "forgotPassword": {
       "title": "¿Olvidaste tu contraseña?",
       "description": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",

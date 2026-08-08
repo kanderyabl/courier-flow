@@ -203,6 +203,11 @@
       },
       "validation": {}
     },
+    "signOut": {
+      "submit": "退出登录",
+      "submitting": "正在退出...",
+      "error": "无法退出登录，请重试。"
+    },
     "forgotPassword": {
       "title": "忘记密码？",
       "description": "请输入您的电子邮箱地址，我们会发送密码重置链接。",

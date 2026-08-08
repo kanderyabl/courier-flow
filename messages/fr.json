@@ -203,6 +203,11 @@
       },
       "validation": {}
     },
+    "signOut": {
+      "submit": "Se déconnecter",
+      "submitting": "Déconnexion...",
+      "error": "Impossible de se déconnecter. Réessayez."
+    },
     "forgotPassword": {
       "title": "Mot de passe oublié ?",
       "description": "Saisissez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
