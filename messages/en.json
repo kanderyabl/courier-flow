@@ -226,6 +226,10 @@
         "title": "Check your inbox",
         "description": "If an account exists for this email address, we sent a password reset link."
       },
+      "errors": {
+        "rateLimited": "Too many reset requests. Please wait and try again.",
+        "submitFailed": "Could not request a password reset. Please try again."
+      },
       "validation": {}
     },
     "resetPassword": {
@@ -256,6 +260,12 @@
       "invalid": {
         "title": "Invalid reset link",
         "description": "This password reset link is missing or invalid. Request a new link and try again."
+      },
+      "errors": {
+        "invalidToken": "This reset link is invalid or has already been used.",
+        "expiredToken": "This reset link has expired. Request a new one.",
+        "rateLimited": "Too many reset attempts. Please wait and try again.",
+        "submitFailed": "Could not reset your password. Please try again."
       }
     },
     "verifyEmailResult": {
@@ -295,6 +305,15 @@
       "action": "Verify email",
       "expires": "This verification link expires in 24 hours.",
       "ignore": "If you did not create this account, ignore this email."
+    },
+    "passwordReset": {
+      "subject": "Reset your Courier Flow password",
+      "heading": "Reset your password",
+      "description": "We received a request to reset the password for your Courier Flow account.",
+      "linkInstruction": "Set a new password by opening this link:",
+      "action": "Reset password",
+      "expires": "This password reset link expires in 30 minutes.",
+      "ignore": "If you did not request a password reset, ignore this email."
     }
   }
 }

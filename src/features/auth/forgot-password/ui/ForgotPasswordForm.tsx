@@ -40,6 +40,8 @@ export function ForgotPasswordForm({
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(schema),
@@ -54,8 +56,23 @@ export function ForgotPasswordForm({
       return;
     }
 
-    await onSubmitAction(values);
-    setIsSubmitted(true);
+    clearErrors("root.server");
+
+    try {
+      await onSubmitAction(values);
+      setIsSubmitted(true);
+    } catch (error) {
+      const errorCode =
+        error instanceof Error ? error.message : "FORGOT_PASSWORD_FAILED";
+
+      setError("root.server", {
+        type: "server",
+        message:
+          errorCode === "FORGOT_PASSWORD_RATE_LIMITED"
+            ? t("errors.rateLimited")
+            : t("errors.submitFailed"),
+      });
+    }
   };
 
   if (isSubmitted) {
@@ -95,6 +112,7 @@ export function ForgotPasswordForm({
       </div>
 
       <TextInput
+        id="forgot-password-email"
         type="email"
         inputMode="email"
         autoComplete="email"
@@ -103,8 +121,15 @@ export function ForgotPasswordForm({
         placeholder={t("fields.email.placeholder")}
         error={errors.email?.message}
         disabled={isSubmitting}
+        required
         {...register("email")}
       />
+
+      {errors.root?.server?.message ? (
+        <Text role="alert" className={styles.submitError}>
+          {errors.root.server.message}
+        </Text>
+      ) : null}
 
       <Button type="submit" fullWidth disabled={isSubmitting}>
         {isSubmitting ? t("actions.submitting") : t("actions.submit")}

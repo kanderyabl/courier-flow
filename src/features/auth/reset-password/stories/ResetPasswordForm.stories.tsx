@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, userEvent, within } from "storybook/test";
 
 import { AuthLayout } from "@/widgets/AuthLayout";
 
@@ -70,4 +71,68 @@ export const MissingToken: Story = {
       <ResetPasswordForm autoFocus={false} />
     </AuthLayout>
   ),
+};
+
+export const ExpiredToken: Story = {
+  args: {
+    onSubmitAction: async () => {
+      throw new Error("RESET_TOKEN_EXPIRED");
+    },
+  },
+  render: (args) => (
+    <AuthLayout>
+      <ResetPasswordForm {...args} />
+    </AuthLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(
+      canvas.getByLabelText("New password"),
+      "NewPassword1!",
+    );
+    await userEvent.type(
+      canvas.getByLabelText("Confirm new password"),
+      "NewPassword1!",
+    );
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Reset password" }),
+    );
+
+    await expect(await canvas.findByRole("alert")).toHaveTextContent(
+      "This reset link has expired. Request a new one.",
+    );
+  },
+};
+
+export const InvalidToken: Story = {
+  args: {
+    onSubmitAction: async () => {
+      throw new Error("RESET_TOKEN_INVALID");
+    },
+  },
+  render: (args) => (
+    <AuthLayout>
+      <ResetPasswordForm {...args} />
+    </AuthLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(
+      canvas.getByLabelText("New password"),
+      "NewPassword1!",
+    );
+    await userEvent.type(
+      canvas.getByLabelText("Confirm new password"),
+      "NewPassword1!",
+    );
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Reset password" }),
+    );
+
+    await expect(await canvas.findByRole("alert")).toHaveTextContent(
+      "This reset link is invalid or has already been used.",
+    );
+  },
 };

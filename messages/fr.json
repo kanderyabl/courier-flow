@@ -226,6 +226,10 @@
         "title": "Consultez votre boîte de réception",
         "description": "Si un compte existe pour cette adresse e-mail, nous avons envoyé un lien de réinitialisation."
       },
+      "errors": {
+        "rateLimited": "Trop de demandes. Veuillez patienter et réessayer.",
+        "submitFailed": "Impossible de demander la réinitialisation. Réessayez."
+      },
       "validation": {}
     },
     "resetPassword": {
@@ -256,6 +260,12 @@
       "invalid": {
         "title": "Lien non valide",
         "description": "Ce lien de réinitialisation est manquant ou non valide. Demandez un nouveau lien."
+      },
+      "errors": {
+        "invalidToken": "Ce lien n’est pas valide ou a déjà été utilisé.",
+        "expiredToken": "Ce lien a expiré. Demandez-en un nouveau.",
+        "rateLimited": "Trop de tentatives. Veuillez patienter et réessayer.",
+        "submitFailed": "Impossible de réinitialiser le mot de passe. Réessayez."
       }
     },
     "verifyEmailResult": {
@@ -295,6 +305,15 @@
       "action": "Vérifier l’adresse e-mail",
       "expires": "Ce lien de vérification expire dans 24 heures.",
       "ignore": "Si vous n’avez pas créé ce compte, ignorez cet e-mail."
+    },
+    "passwordReset": {
+      "subject": "Réinitialisez votre mot de passe Courier Flow",
+      "heading": "Réinitialisez votre mot de passe",
+      "description": "Nous avons reçu une demande de réinitialisation du mot de passe de votre compte Courier Flow.",
+      "linkInstruction": "Définissez un nouveau mot de passe en ouvrant ce lien :",
+      "action": "Réinitialiser le mot de passe",
+      "expires": "Ce lien expire dans 30 minutes.",
+      "ignore": "Si vous n’avez pas demandé cette réinitialisation, ignorez cet e-mail."
     }
   }
 }

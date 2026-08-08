@@ -226,6 +226,10 @@
         "title": "请检查您的收件箱",
         "description": "如果此电子邮箱地址对应的账户存在，我们已发送密码重置链接。"
       },
+      "errors": {
+        "rateLimited": "重置请求过多，请稍后重试。",
+        "submitFailed": "无法请求重置密码，请重试。"
+      },
       "validation": {}
     },
     "resetPassword": {
@@ -256,6 +260,12 @@
       "invalid": {
         "title": "重置链接无效",
         "description": "密码重置链接缺失或无效。请获取新的链接。"
+      },
+      "errors": {
+        "invalidToken": "此重置链接无效或已被使用。",
+        "expiredToken": "此重置链接已过期，请获取新链接。",
+        "rateLimited": "重置尝试过多，请稍后重试。",
+        "submitFailed": "无法重置密码，请重试。"
       }
     },
     "verifyEmailResult": {
@@ -295,6 +305,15 @@
       "action": "验证邮箱",
       "expires": "此验证链接将在 24 小时后失效。",
       "ignore": "如果您没有创建此账户，请忽略此邮件。"
+    },
+    "passwordReset": {
+      "subject": "重置您的 Courier Flow 密码",
+      "heading": "重置密码",
+      "description": "我们收到了重置您 Courier Flow 账户密码的请求。",
+      "linkInstruction": "请打开以下链接设置新密码：",
+      "action": "重置密码",
+      "expires": "此密码重置链接将在 30 分钟后失效。",
+      "ignore": "如果您没有请求重置密码，请忽略此邮件。"
     }
   }
 }

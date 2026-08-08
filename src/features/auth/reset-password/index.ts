@@ -1,4 +1,4 @@
-export { ResetPasswordForm } from "./ui";
+export { ResetPasswordForm, ResetPasswordFormContainer } from "./ui";
 
 export type {
   ResetPasswordFormProps,
