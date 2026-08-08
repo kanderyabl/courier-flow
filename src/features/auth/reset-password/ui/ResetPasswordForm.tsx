@@ -45,6 +45,8 @@ export function ResetPasswordForm({
   const {
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(schema),
@@ -60,12 +62,30 @@ export function ResetPasswordForm({
       return;
     }
 
-    await onSubmitAction({
-      token,
-      password: values.password,
-    });
+    clearErrors("root.server");
 
-    setIsCompleted(true);
+    try {
+      await onSubmitAction({
+        token,
+        password: values.password,
+      });
+
+      setIsCompleted(true);
+    } catch (error) {
+      const errorCode =
+        error instanceof Error ? error.message : "RESET_PASSWORD_FAILED";
+
+      const messageByCode: Record<string, string> = {
+        RESET_TOKEN_INVALID: t("errors.invalidToken"),
+        RESET_TOKEN_EXPIRED: t("errors.expiredToken"),
+        RESET_PASSWORD_RATE_LIMITED: t("errors.rateLimited"),
+      };
+
+      setError("root.server", {
+        type: "server",
+        message: messageByCode[errorCode] ?? t("errors.submitFailed"),
+      });
+    }
   };
 
   if (!token) {
@@ -132,6 +152,7 @@ export function ResetPasswordForm({
 
       <div className={styles.fields}>
         <PasswordInput
+          id="reset-password-password"
           autoComplete="new-password"
           autoFocus={autoFocus}
           label={t("fields.password.label")}
@@ -139,18 +160,27 @@ export function ResetPasswordForm({
           hint={t("fields.password.hint")}
           error={errors.password?.message}
           disabled={isSubmitting}
+          required
           {...register("password")}
         />
 
         <PasswordInput
+          id="reset-password-confirm-password"
           autoComplete="new-password"
           label={t("fields.confirmPassword.label")}
           placeholder={t("fields.confirmPassword.placeholder")}
           error={errors.confirmPassword?.message}
           disabled={isSubmitting}
+          required
           {...register("confirmPassword")}
         />
       </div>
+
+      {errors.root?.server?.message ? (
+        <Text role="alert" className={styles.submitError}>
+          {errors.root.server.message}
+        </Text>
+      ) : null}
 
       <Button type="submit" fullWidth disabled={isSubmitting}>
         {isSubmitting ? t("actions.submitting") : t("actions.submit")}

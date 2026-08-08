@@ -226,6 +226,10 @@
         "title": "Revisa tu bandeja de entrada",
         "description": "Si existe una cuenta con este correo electrónico, hemos enviado un enlace para restablecer la contraseña."
       },
+      "errors": {
+        "rateLimited": "Demasiadas solicitudes. Espera un momento e inténtalo de nuevo.",
+        "submitFailed": "No se pudo solicitar el restablecimiento. Inténtalo de nuevo."
+      },
       "validation": {}
     },
     "resetPassword": {
@@ -256,6 +260,12 @@
       "invalid": {
         "title": "Enlace no válido",
         "description": "Este enlace para restablecer la contraseña no existe o no es válido. Solicita uno nuevo."
+      },
+      "errors": {
+        "invalidToken": "Este enlace no es válido o ya se ha utilizado.",
+        "expiredToken": "Este enlace ha caducado. Solicita uno nuevo.",
+        "rateLimited": "Demasiados intentos. Espera un momento e inténtalo de nuevo.",
+        "submitFailed": "No se pudo restablecer la contraseña. Inténtalo de nuevo."
       }
     },
     "verifyEmailResult": {
@@ -295,6 +305,15 @@
       "action": "Verificar correo",
       "expires": "Este enlace de verificación caduca en 24 horas.",
       "ignore": "Si no has creado esta cuenta, ignora este correo."
+    },
+    "passwordReset": {
+      "subject": "Restablece tu contraseña de Courier Flow",
+      "heading": "Restablece tu contraseña",
+      "description": "Recibimos una solicitud para restablecer la contraseña de tu cuenta de Courier Flow.",
+      "linkInstruction": "Crea una nueva contraseña abriendo este enlace:",
+      "action": "Restablecer contraseña",
+      "expires": "Este enlace caduca en 30 minutos.",
+      "ignore": "Si no solicitaste restablecer la contraseña, ignora este correo."
     }
   }
 }

@@ -1,4 +1,4 @@
-export { ForgotPasswordForm } from "./ui";
+export { ForgotPasswordForm, ForgotPasswordFormContainer } from "./ui";
 
 export type {
   ForgotPasswordFormProps,

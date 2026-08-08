@@ -1,4 +1,4 @@
-import { ResetPasswordForm } from "@/features/auth/reset-password";
+import { ResetPasswordFormContainer } from "@/features/auth/reset-password";
 import { AuthLayout } from "@/widgets/AuthLayout";
 
 type ResetPasswordPageProps = {
@@ -17,7 +17,7 @@ export default async function ResetPasswordPage({
 
   return (
     <AuthLayout>
-      <ResetPasswordForm token={resetToken} />
+      <ResetPasswordFormContainer token={resetToken} />
     </AuthLayout>
   );
 }
