@@ -4,19 +4,15 @@ import { AuthChallengeType } from "@/generated/prisma/client";
 
 import { resendEmailVerificationRequestSchema } from "@/features/auth/verify-email/model/resendEmailVerificationRequestSchema";
 import { isAppLocale, routing } from "@/i18n/routing";
+import { EMAIL_VERIFICATION_TTL_MS } from "@/shared/config/auth";
 import { createAuthToken, hashAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getCurrentSession } from "@/shared/lib/session";
 
+import { EMAIL_VERIFICATION_RESEND_POLICY } from "./constants";
+
 export const runtime = "nodejs";
-
-const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
-const RESEND_CONTEXT_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
-
-const RESEND_COOLDOWN_MS = 60 * 1000;
-const RESEND_WINDOW_MS = 60 * 60 * 1000;
-const RESEND_LIMIT_PER_HOUR = 5;
 
 type ResendUser = {
   id: string;
@@ -53,7 +49,9 @@ function getRetryAfterSeconds(
     return 0;
   }
 
-  const nextAllowedAt = challengeCreatedAt.getTime() + RESEND_COOLDOWN_MS;
+  const nextAllowedAt =
+    challengeCreatedAt.getTime() +
+    EMAIL_VERIFICATION_RESEND_POLICY.cooldownMs;
 
   return Math.max(0, Math.ceil((nextAllowedAt - now.getTime()) / 1000));
 }
@@ -108,7 +106,9 @@ async function findResendContext(
   if (
     !sourceChallenge ||
     sourceChallenge.target !== sourceChallenge.user.email ||
-    sourceChallenge.expiresAt.getTime() + RESEND_CONTEXT_GRACE_MS <= Date.now()
+    sourceChallenge.expiresAt.getTime() +
+      EMAIL_VERIFICATION_RESEND_POLICY.contextGraceMs <=
+      Date.now()
   ) {
     return null;
   }
@@ -353,7 +353,8 @@ export async function POST(request: NextRequest) {
         if (
           !sourceChallenge ||
           sourceChallenge.target !== user.email ||
-          sourceChallenge.expiresAt.getTime() + RESEND_CONTEXT_GRACE_MS <=
+          sourceChallenge.expiresAt.getTime() +
+            EMAIL_VERIFICATION_RESEND_POLICY.contextGraceMs <=
             now.getTime()
         ) {
           return {
@@ -414,7 +415,9 @@ export async function POST(request: NextRequest) {
         } as const;
       }
 
-      const resendWindowStart = new Date(now.getTime() - RESEND_WINDOW_MS);
+      const resendWindowStart = new Date(
+        now.getTime() - EMAIL_VERIFICATION_RESEND_POLICY.windowMs,
+      );
 
       const recentChallenges = await transaction.authChallenge.findMany({
         where: {
@@ -435,7 +438,7 @@ export async function POST(request: NextRequest) {
           createdAt: "desc",
         },
 
-        take: RESEND_LIMIT_PER_HOUR,
+        take: EMAIL_VERIFICATION_RESEND_POLICY.limitPerWindow,
       });
 
       const latestChallenge = recentChallenges[0];
@@ -451,10 +454,14 @@ export async function POST(request: NextRequest) {
         } as const;
       }
 
-      if (recentChallenges.length >= RESEND_LIMIT_PER_HOUR) {
+      if (
+        recentChallenges.length >=
+        EMAIL_VERIFICATION_RESEND_POLICY.limitPerWindow
+      ) {
         const oldestChallenge = recentChallenges[recentChallenges.length - 1];
         const nextAllowedAt =
-          oldestChallenge.createdAt.getTime() + RESEND_WINDOW_MS;
+          oldestChallenge.createdAt.getTime() +
+          EMAIL_VERIFICATION_RESEND_POLICY.windowMs;
 
         const limitRetryAfterSeconds = Math.max(
           1,

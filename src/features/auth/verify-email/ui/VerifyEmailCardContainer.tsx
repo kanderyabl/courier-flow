@@ -3,14 +3,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale } from "next-intl";
 
+import { DEFAULT_RESEND_DELAY_SECONDS } from "../constants";
+
 import { VerifyEmailCard } from "./VerifyEmailCard";
 
 import type {
   VerifyEmailCardContainerProps,
   ResendEmailApiResponse,
 } from "../types";
-
-const DEFAULT_RESEND_DELAY_SECONDS = 60;
 
 function normalizeRetryAfterSeconds(value: unknown): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {

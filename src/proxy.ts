@@ -3,16 +3,10 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { isAppLocale, routing } from "./i18n/routing";
 import { SESSION_COOKIE_NAME } from "./shared/config/auth";
+import { PUBLIC_AUTH_PATHNAMES } from "./shared/config/routes";
 
 const handleI18nRouting = createMiddleware(routing);
-
-const PUBLIC_PATHNAMES = new Set([
-  "/sign-in",
-  "/sign-up",
-  "/forgot-password",
-  "/reset-password",
-  "/verify-email",
-]);
+const publicPathnames = new Set<string>(PUBLIC_AUTH_PATHNAMES);
 
 function getLocalizedPathname(pathname: string) {
   const [, localeCandidate, ...segments] = pathname.split("/");
@@ -40,7 +34,7 @@ export default function proxy(request: NextRequest) {
     return handleI18nRouting(request);
   }
 
-  const isPublicPathname = PUBLIC_PATHNAMES.has(
+  const isPublicPathname = publicPathnames.has(
     localizedPathname.pathname,
   );
 

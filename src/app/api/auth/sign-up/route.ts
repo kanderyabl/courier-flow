@@ -4,6 +4,7 @@ import { AuthChallengeType, Prisma, UserRole } from "@/generated/prisma/client";
 
 import { signUpRequestSchema } from "@/features/auth/sign-up/model/signUpRequestSchema";
 import { isAppLocale, routing } from "@/i18n/routing";
+import { EMAIL_VERIFICATION_TTL_MS } from "@/shared/config/auth";
 import { createAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
 import { hashPassword } from "@/shared/lib/password";
@@ -12,8 +13,6 @@ import { getRequestIp, getRequestUserAgent } from "@/shared/lib/request";
 import { createSessionToken, setSessionCookie } from "@/shared/lib/session";
 
 export const runtime = "nodejs";
-
-const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 
 export async function POST(request: Request) {
   let body: unknown;

@@ -4,18 +4,15 @@ import { AuthChallengeType, Prisma } from "@/generated/prisma/client";
 
 import { changeEmailRequestSchema } from "@/features/auth/change-email/model/changeEmailRequestSchema";
 import { isAppLocale, routing } from "@/i18n/routing";
+import { EMAIL_VERIFICATION_TTL_MS } from "@/shared/config/auth";
 import { createAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getCurrentSession } from "@/shared/lib/session";
 
-export const runtime = "nodejs";
+import { CHANGE_EMAIL_POLICY } from "./constants";
 
-const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
-const CHANGE_EMAIL_STAGE_TTL_MS = 5 * 60 * 1000;
-const CHANGE_EMAIL_COOLDOWN_MS = 60 * 1000;
-const CHANGE_EMAIL_WINDOW_MS = 60 * 60 * 1000;
-const CHANGE_EMAIL_LIMIT_PER_HOUR = 5;
+export const runtime = "nodejs";
 
 class EmailChangeConflictError extends Error {
   constructor() {
@@ -279,7 +276,7 @@ export async function POST(request: NextRequest) {
       }
 
       const changeWindowStart = new Date(
-        now.getTime() - CHANGE_EMAIL_WINDOW_MS,
+        now.getTime() - CHANGE_EMAIL_POLICY.windowMs,
       );
 
       const recentChanges = await transaction.authChallenge.findMany({
@@ -300,7 +297,7 @@ export async function POST(request: NextRequest) {
           createdAt: "desc",
         },
 
-        take: CHANGE_EMAIL_LIMIT_PER_HOUR,
+        take: CHANGE_EMAIL_POLICY.limitPerWindow,
       });
 
       const latestChangeAt = recentChanges[0]?.createdAt;
@@ -308,7 +305,7 @@ export async function POST(request: NextRequest) {
       if (latestChangeAt) {
         const cooldownRetryAfterSeconds = getRetryAfterSeconds(
           latestChangeAt,
-          CHANGE_EMAIL_COOLDOWN_MS,
+          CHANGE_EMAIL_POLICY.cooldownMs,
           now,
         );
 
@@ -320,14 +317,14 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      if (recentChanges.length >= CHANGE_EMAIL_LIMIT_PER_HOUR) {
+      if (recentChanges.length >= CHANGE_EMAIL_POLICY.limitPerWindow) {
         const oldestChangeAt =
           recentChanges[recentChanges.length - 1]?.createdAt;
 
         if (oldestChangeAt) {
           const limitRetryAfterSeconds = getRetryAfterSeconds(
             oldestChangeAt,
-            CHANGE_EMAIL_WINDOW_MS,
+            CHANGE_EMAIL_POLICY.windowMs,
             now,
           );
 
@@ -342,7 +339,7 @@ export async function POST(request: NextRequest) {
 
       const { token: verificationToken, tokenHash } = createAuthToken();
       const stageExpiresAt = new Date(
-        now.getTime() + CHANGE_EMAIL_STAGE_TTL_MS,
+        now.getTime() + CHANGE_EMAIL_POLICY.stageTtlMs,
       );
 
       const stagedChallenge = await transaction.authChallenge.create({
