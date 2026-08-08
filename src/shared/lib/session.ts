@@ -3,13 +3,14 @@ import "server-only";
 import { cookies } from "next/headers";
 import type { NextRequest, NextResponse } from "next/server";
 
-import { SESSION_COOKIE_NAME } from "@/shared/config/auth";
+import {
+  SESSION_COOKIE_NAME,
+  SESSION_TTL_MS,
+} from "@/shared/config/auth";
 import { createAuthToken, hashAuthToken } from "@/shared/lib/authToken";
 import { getPrisma } from "@/shared/lib/prisma";
 
 export { SESSION_COOKIE_NAME } from "@/shared/config/auth";
-
-const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
 export type CreatedSessionToken = {
   token: string;

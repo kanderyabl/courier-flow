@@ -18,18 +18,13 @@ import {
   setSessionCookie,
 } from "@/shared/lib/session";
 
+import {
+  MAX_SIGN_IN_BODY_BYTES,
+  SESSION_TOKEN_GENERATION_ATTEMPTS,
+  SIGN_IN_RATE_LIMITS,
+} from "./constants";
+
 export const runtime = "nodejs";
-
-const MAX_SIGN_IN_BODY_BYTES = 4 * 1024;
-
-const SIGN_IN_PAIR_LIMIT = 5;
-const SIGN_IN_ACCOUNT_LIMIT = 10;
-const SIGN_IN_IP_BURST_LIMIT = 30;
-const SIGN_IN_IP_HOURLY_LIMIT = 100;
-
-const FIVE_MINUTES_MS = 5 * 60 * 1000;
-const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-const ONE_HOUR_MS = 60 * 60 * 1000;
 
 type AuthenticatedUserSnapshot = {
   id: string;
@@ -101,16 +96,12 @@ function createIpRateLimitRules(ipAddress: string | undefined) {
 
   return [
     {
-      scope: "sign-in:ip:5m",
+      ...SIGN_IN_RATE_LIMITS.ipBurst,
       value: rateLimitIdentity,
-      limit: SIGN_IN_IP_BURST_LIMIT,
-      windowMs: FIVE_MINUTES_MS,
     },
     {
-      scope: "sign-in:ip:1h",
+      ...SIGN_IN_RATE_LIMITS.ipHourly,
       value: rateLimitIdentity,
-      limit: SIGN_IN_IP_HOURLY_LIMIT,
-      windowMs: ONE_HOUR_MS,
     },
   ] satisfies AuthRateLimitRule[];
 }
@@ -118,10 +109,8 @@ function createIpRateLimitRules(ipAddress: string | undefined) {
 function createAccountRateLimitRules(email: string) {
   return [
     {
-      scope: "sign-in:account:15m",
+      ...SIGN_IN_RATE_LIMITS.account,
       value: email,
-      limit: SIGN_IN_ACCOUNT_LIMIT,
-      windowMs: FIFTEEN_MINUTES_MS,
     },
   ] satisfies AuthRateLimitRule[];
 }
@@ -136,10 +125,8 @@ function createPairRateLimitRules(
 
   return [
     {
-      scope: "sign-in:pair:15m",
+      ...SIGN_IN_RATE_LIMITS.pair,
       value: `${email}\0${ipAddress}`,
-      limit: SIGN_IN_PAIR_LIMIT,
-      windowMs: FIFTEEN_MINUTES_MS,
     },
   ] satisfies AuthRateLimitRule[];
 }
@@ -170,7 +157,11 @@ async function createFreshSession({
 }) {
   const prisma = getPrisma();
 
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  for (
+    let attempt = 0;
+    attempt < SESSION_TOKEN_GENERATION_ATTEMPTS;
+    attempt += 1
+  ) {
     const {
       token: sessionToken,
       tokenHash: sessionTokenHash,

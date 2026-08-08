@@ -1,0 +1,1 @@
+export const DEFAULT_RESEND_DELAY_SECONDS = 60;

@@ -4,29 +4,24 @@ import { createHmac } from "node:crypto";
 
 import { getPrisma } from "@/shared/lib/prisma";
 
-const RATE_LIMIT_BUCKET_RETENTION_MS = 24 * 60 * 60 * 1000;
-const RATE_LIMIT_CLEANUP_INTERVAL_MS = 60 * 60 * 1000;
-const DEVELOPMENT_RATE_LIMIT_SECRET =
-  "courier-flow-development-rate-limit-secret-only";
+import {
+  DEVELOPMENT_RATE_LIMIT_SECRET,
+  RATE_LIMIT_BUCKET_RETENTION_MS,
+  RATE_LIMIT_CLEANUP_INTERVAL_MS,
+  RATE_LIMIT_CLEANUP_RETRY_INTERVAL_MS,
+  RATE_LIMIT_SECRET_MIN_LENGTH,
+} from "./constants";
+import type {
+  AuthRateLimitResult,
+  AuthRateLimitRule,
+} from "./types";
 
 let nextCleanupAt = 0;
-
-export type AuthRateLimitRule = {
-  scope: string;
-  value: string;
-  limit: number;
-  windowMs: number;
-};
-
-export type AuthRateLimitResult = {
-  allowed: boolean;
-  retryAfterSeconds: number;
-};
 
 function getRateLimitSecret(): string {
   const secret = process.env.AUTH_RATE_LIMIT_SECRET?.trim();
 
-  if (secret && secret.length >= 32) {
+  if (secret && secret.length >= RATE_LIMIT_SECRET_MIN_LENGTH) {
     return secret;
   }
 
@@ -63,7 +58,8 @@ async function maybeCleanupExpiredBuckets(now: Date): Promise<void> {
       },
     });
   } catch (error) {
-    nextCleanupAt = now.getTime() + 60 * 1000;
+    nextCleanupAt =
+      now.getTime() + RATE_LIMIT_CLEANUP_RETRY_INTERVAL_MS;
     console.error("Cleaning expired auth rate limits failed:", error);
   }
 }
