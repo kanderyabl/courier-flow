@@ -1,11 +1,13 @@
 import "server-only";
 
+import { cookies } from "next/headers";
 import type { NextRequest, NextResponse } from "next/server";
 
+import { SESSION_COOKIE_NAME } from "@/shared/config/auth";
 import { createAuthToken, hashAuthToken } from "@/shared/lib/authToken";
 import { getPrisma } from "@/shared/lib/prisma";
 
-export const SESSION_COOKIE_NAME = "courier_flow_session";
+export { SESSION_COOKIE_NAME } from "@/shared/config/auth";
 
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -49,9 +51,7 @@ export function clearSessionCookie(response: NextResponse): void {
   });
 }
 
-export async function getCurrentSession(request: NextRequest) {
-  const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-
+export async function getSessionByToken(sessionToken: string | undefined) {
   if (!sessionToken) {
     return null;
   }
@@ -100,4 +100,16 @@ export async function getCurrentSession(request: NextRequest) {
     expiresAt: session.expiresAt,
     user: session.user,
   };
+}
+
+export async function getCurrentSession(request: NextRequest) {
+  return getSessionByToken(
+    request.cookies.get(SESSION_COOKIE_NAME)?.value,
+  );
+}
+
+export async function getCurrentSessionFromCookies() {
+  const cookieStore = await cookies();
+
+  return getSessionByToken(cookieStore.get(SESSION_COOKIE_NAME)?.value);
 }
