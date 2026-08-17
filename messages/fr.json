@@ -64,7 +64,7 @@
           "placeholder": "Saisissez à nouveau le mot de passe"
         },
         "acceptTerms": {
-          "label": "J’accepte les <terms>Conditions d’utilisation</terms> et la <privacy>Politique de confidentialité</privacy>"
+          "label": "J’accepte les <terms>Conditions d’utilisation</terms> et je confirme avoir lu l’<privacy>Avis de confidentialité</privacy>"
         }
       },
 
@@ -81,6 +81,12 @@
         "nameTooShort": "Le nom complet doit contenir au moins 2 caractères",
         "nameTooLong": "Le nom complet ne doit pas dépasser 80 caractères",
         "termsRequired": "Vous devez accepter les conditions pour continuer"
+      },
+      "errors": {
+        "emailAlreadyInUse": "Un compte existe déjà avec cette adresse e-mail.",
+        "phoneAlreadyInUse": "Un compte existe déjà avec ce numéro de téléphone.",
+        "rateLimited": "Trop de tentatives d’inscription. Patientez puis réessayez.",
+        "submitFailed": "Impossible de créer le compte. Réessayez."
       }
     },
     "verifyEmail": {
@@ -95,11 +101,6 @@
         "checking": "Vérification...",
         "resendIn": "Renvoyer l’e-mail dans {seconds} s",
         "changeEmail": "Modifier l'adresse e-mail"
-      },
-      "errors": {
-        "emailAlreadyInUse": "Un compte existe déjà avec cette adresse e-mail.",
-        "phoneAlreadyInUse": "Un compte existe déjà avec ce numéro de téléphone.",
-        "submitFailed": "Impossible de créer le compte. Réessayez."
       }
     },
     "verifyPhone": {
@@ -292,6 +293,135 @@
       "actions": {
         "retry": "Réessayer",
         "signIn": "Aller à la connexion"
+      }
+    }
+  },
+  "legal": {
+    "shared": {
+      "draft": {
+        "title": "Projet — révision juridique requise",
+        "description": "Cette page est un modèle de travail, et non une déclaration de conformité juridique. Elle ne doit pas être utilisée en production tant que les informations sur l’opérateur ne sont pas complètes et que le texte n’a pas été approuvé par une personne qualifiée."
+      },
+      "publication": {
+        "title": "Informations de publication",
+        "description": "Ces valeurs proviennent de la configuration du déploiement. Toute valeur manquante doit être renseignée avant la mise en production.",
+        "fields": {
+          "operatorName": "Opérateur du service",
+          "operatorRegistration": "Identifiants d’immatriculation et fiscaux",
+          "operatorAddress": "Adresse de l’opérateur",
+          "contactEmail": "Contact juridique et vie privée",
+          "effectiveDate": "Date d’entrée en vigueur",
+          "jurisdiction": "Droit applicable et juridiction"
+        },
+        "missingValue": "Non configuré — requis avant la mise en production."
+      },
+      "actions": {
+        "backToSignUp": "Retour à l’inscription",
+        "viewTerms": "Voir les Conditions d’utilisation",
+        "viewPrivacy": "Voir l’Avis de confidentialité"
+      }
+    },
+    "terms": {
+      "metaTitle": "Conditions d’utilisation | Courier Flow",
+      "title": "Conditions d’utilisation",
+      "summary": "Ces conditions décrivent le compte et le parcours de livraison en prototype actuellement disponibles dans Courier Flow.",
+      "sections": {
+        "currentService": {
+          "title": "1. Service actuel",
+          "body": "Courier Flow propose actuellement l’inscription des comptes clients, l’authentification, la vérification de l’adresse e-mail, la récupération du mot de passe et un tableau de bord en prototype. Les fonctions de commande, de coursier et de suivi en direct peuvent évoluer avant le lancement."
+        },
+        "accounts": {
+          "title": "2. Comptes",
+          "body": "Fournissez des coordonnées exactes, protégez vos identifiants et n’utilisez que les comptes auxquels vous êtes autorisé à accéder. La vérification de l’adresse e-mail peut être exigée avant l’accès aux fonctions protégées."
+        },
+        "acceptableUse": {
+          "title": "3. Utilisation acceptable",
+          "body": "N’utilisez pas Courier Flow à des fins illégales, frauduleuses ou abusives, pour perturber le service, tester ou contourner la sécurité, ni pour transmettre du contenu que vous n’êtes pas autorisé à fournir."
+        },
+        "deliveries": {
+          "title": "4. Parcours de livraison",
+          "body": "Les statuts de commande décrivent le flux de travail et ne garantissent pas à eux seuls un délai de livraison. Les prix, zones desservies, annulations, remboursements, responsabilités des coursiers et preuves de livraison doivent être définis avant toute livraison réelle."
+        },
+        "pricing": {
+          "title": "5. Prix et paiement",
+          "body": "L’application actuelle ne met en œuvre ni tarification ni encaissement. Avant tout débit, les conditions définitives doivent préciser les prix, la devise, les taxes, le moment du paiement, le prestataire de paiement, les reçus et les règles en cas d’échec ou de contestation."
+        },
+        "cancellation": {
+          "title": "6. Annulations et remboursements",
+          "body": "L’application actuelle ne définit aucune politique d’annulation ou de remboursement pour la production. Avant d’accepter de vraies commandes, l’opérateur doit préciser qui peut annuler, les délais et frais, l’éligibilité et le mode de remboursement ainsi que les droits impératifs des consommateurs."
+        },
+        "liability": {
+          "title": "7. Responsabilité et réclamations",
+          "body": "Ce projet ne fixe ni répartition de responsabilité ni procédure de réclamation pour la production. Les conditions définitives doivent décrire le canal et le traitement des réclamations, la responsabilité en cas de perte, retard ou dommage, les limites licites et les droits qui ne peuvent être exclus."
+        },
+        "availability": {
+          "title": "8. Disponibilité",
+          "body": "Le service actuel est en développement et peut être suspendu ou indisponible. Ce projet ne prévoit aucun engagement de niveau de service ou de disponibilité. Tout engagement de production et toute politique de maintenance doivent être définis séparément."
+        },
+        "changes": {
+          "title": "9. Modification des présentes conditions",
+          "body": "Ce texte de travail peut évoluer avant le lancement. Les conditions définitives doivent comporter une date d’effet et expliquer comment les modifications importantes seront communiquées et quand elles s’appliqueront ; l’utilisation du prototype ne vaut pas acceptation de futures conditions inconnues."
+        },
+        "completion": {
+          "title": "10. Éléments requis avant la production",
+          "body": "Les informations sur l’opérateur, critères d’éligibilité, frais, remboursements, responsabilités, règlement des litiges et droit applicable doivent être adaptés au marché visé et approuvés dans le cadre d’une révision juridique qualifiée avant la production."
+        }
+      }
+    },
+    "privacy": {
+      "metaTitle": "Avis de confidentialité | Courier Flow",
+      "title": "Avis de confidentialité",
+      "summary": "Cet avis décrit les données personnelles traitées par les fonctions actuelles de compte et d’authentification et signale les éléments à compléter avant la production.",
+      "sections": {
+        "scope": {
+          "title": "1. Champ d’application",
+          "body": "Cet avis couvre l’application Courier Flow actuelle. Il doit être mis à jour avant la production si les commandes, paiements, la géolocalisation précise, l’intégration des coursiers ou tout autre traitement important sont activés."
+        },
+        "data": {
+          "title": "2. Données actuellement traitées",
+          "body": "L’application est conçue pour traiter les catégories suivantes :",
+          "items": {
+            "account": "Données de compte : nom, adresse e-mail, numéro de téléphone, rôle, empreinte du mot de passe et dates de vérification.",
+            "security": "Données d’authentification et de sécurité : sessions, métadonnées des défis, adresse IP, agent utilisateur et enregistrements de limitation des requêtes.",
+            "delivery": "Les données de livraison ne figurent pas encore dans le modèle de données actuel. Avant leur activation, cet avis doit décrire les adresses, destinataires, instructions, historiques de statut et données de localisation réellement collectées."
+          }
+        },
+        "use": {
+          "title": "3. Finalités du traitement",
+          "body": "Le traitement actuel permet la création de compte, la connexion, la vérification de l’e-mail, la réinitialisation du mot de passe, la gestion des sessions, la prévention des abus et l’envoi de messages transactionnels. L’avis définitif doit préciser les bases juridiques du marché de lancement."
+        },
+        "legalBases": {
+          "title": "4. Bases juridiques",
+          "body": "L’opérateur n’a pas encore publié d’analyse définitive des bases juridiques. Selon le marché et la finalité, le traitement peut relever du contrat, d’une obligation légale, de l’intérêt légitime ou du consentement. Chaque finalité doit être documentée avant la production ; cette liste n’affirme pas que toutes ces bases s’appliquent."
+        },
+        "recipients": {
+          "title": "5. Destinataires et prestataires",
+          "body": "Les données de compte sont conservées dans la base configurée et les adresses e-mail sont transmises au prestataire d’e-mail transactionnel lors d’une vérification ou réinitialisation. Avant la production, l’opérateur doit identifier ses hébergeurs, bases, services d’e-mail et autres sous-traitants, leurs lieux et garanties."
+        },
+        "internationalTransfers": {
+          "title": "6. Transferts internationaux",
+          "body": "Le transfert de données au-delà des frontières dépend du déploiement et du lieu des prestataires. Aucun inventaire ni garantie définitive n’est indiqué ici. L’opérateur doit documenter les destinations et toute décision d’adéquation, clause contractuelle ou autre garantie requise avant la production."
+        },
+        "retention": {
+          "title": "7. Conservation",
+          "body": "Les sessions et défis de vérification ont des durées d’expiration configurées, mais aucun calendrier de suppression des comptes n’est publié. Les durées exactes et règles de suppression doivent être définies et documentées avant la production."
+        },
+        "security": {
+          "title": "8. Sécurité",
+          "body": "L’application hache les mots de passe et secrets d’authentification et réserve les pages protégées aux utilisateurs authentifiés. Ces mesures réduisent les risques sans garantir une sécurité absolue ; configuration, accès, sauvegardes et réponse aux incidents exigent une analyse distincte."
+        },
+        "cookies": {
+          "title": "9. Cookies",
+          "body": "L’application utilise un cookie de session nécessaire à l’accès authentifié. Le middleware de langue peut mémoriser une préférence selon le déploiement. Aucun cookie publicitaire n’est documenté dans le code actuel, mais le déploiement final doit être audité et les choix ou avis requis ajoutés."
+        },
+        "rights": {
+          "title": "10. Demandes et droits",
+          "body": "Les droits d’accès, rectification, effacement, limitation, portabilité, opposition et autres dépendent du droit applicable et peuvent comporter des exceptions. Les demandes doivent être adressées au contact indiqué. Les contrôles d’identité, procédures et délais doivent être définis avant la production."
+        },
+        "complaints": {
+          "title": "11. Questions et réclamations",
+          "body": "Contactez d’abord l’opérateur à l’aide des informations ci-dessus. L’autorité compétente et le droit de réclamation dépendent de l’établissement de l’opérateur et du lieu de l’utilisateur ; les informations définitives doivent être ajoutées après analyse de la juridiction."
+        }
       }
     }
   },
