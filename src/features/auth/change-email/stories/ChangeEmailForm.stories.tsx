@@ -7,6 +7,8 @@ import { AuthLayout } from "@/widgets/AuthLayout";
 
 import { ChangeEmailForm } from "../ui";
 
+const NEW_EMAIL_LABEL = /^New email address\s*\*?$/;
+
 function ChangeEmailFormExample() {
   const [submittedEmail, setSubmittedEmail] = useState<string>();
 
@@ -96,7 +98,7 @@ export const WithSubmittingState: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("New email address"),
+      canvas.getByLabelText(NEW_EMAIL_LABEL),
       "new@example.com",
     );
     await userEvent.click(
@@ -126,7 +128,7 @@ export const EmailAlreadyInUse: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const emailInput = canvas.getByLabelText("New email address");
+    const emailInput = canvas.getByLabelText(NEW_EMAIL_LABEL);
 
     await userEvent.type(
       emailInput,
@@ -161,7 +163,7 @@ export const DeliveryFailure: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("New email address"),
+      canvas.getByLabelText(NEW_EMAIL_LABEL),
       "new@example.com",
     );
     await userEvent.click(
@@ -189,7 +191,7 @@ export const EmailUnchanged: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const emailInput = canvas.getByLabelText("New email address");
+    const emailInput = canvas.getByLabelText(NEW_EMAIL_LABEL);
 
     await userEvent.type(emailInput, "current@example.com");
     await userEvent.click(
@@ -221,7 +223,7 @@ export const Unauthorized: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("New email address"),
+      canvas.getByLabelText(NEW_EMAIL_LABEL),
       "new@example.com",
     );
     await userEvent.click(
@@ -251,7 +253,7 @@ export const UnknownFailure: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("New email address"),
+      canvas.getByLabelText(NEW_EMAIL_LABEL),
       "new@example.com",
     );
     await userEvent.click(

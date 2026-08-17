@@ -5,6 +5,8 @@ import { AuthLayout } from "@/widgets/AuthLayout";
 
 import { ForgotPasswordForm } from "../ui";
 
+const EMAIL_LABEL = /^Email address\s*\*?$/;
+
 const meta = {
   title: "Features/Auth/ForgotPasswordForm",
   component: ForgotPasswordForm,
@@ -83,7 +85,7 @@ export const RateLimited: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("Email address"),
+      canvas.getByLabelText(EMAIL_LABEL),
       "user@example.com",
     );
     await userEvent.click(
@@ -111,7 +113,7 @@ export const UnknownFailure: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("Email address"),
+      canvas.getByLabelText(EMAIL_LABEL),
       "user@example.com",
     );
     await userEvent.click(

@@ -1,7 +1,6 @@
 import type { Preview } from "@storybook/nextjs-vite";
 import { NextIntlClientProvider } from "next-intl";
 
-import { inter } from "../src/shared/config/fonts";
 import "../src/app/globals.css";
 
 import enMessages from "../messages/en.json";
@@ -48,7 +47,7 @@ const preview: Preview = {
 
       return (
         <NextIntlClientProvider locale={locale} messages={messages[locale]}>
-          <div className={inter.className}>
+          <div style={{ fontFamily: "Inter, Arial, sans-serif" }}>
             <Story />
           </div>
         </NextIntlClientProvider>
