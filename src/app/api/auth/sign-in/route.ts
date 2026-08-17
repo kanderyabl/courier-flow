@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { Prisma, type UserRole } from "@/generated/prisma/client";
 
@@ -9,6 +9,11 @@ import {
   consumeAuthRateLimits,
 } from "@/shared/lib/authRateLimit";
 import { hashAuthToken } from "@/shared/lib/authToken";
+import {
+  createNoStoreJsonResponse as jsonResponse,
+  isJsonRequest,
+  isTrustedOrigin,
+} from "@/shared/lib/http";
 import { verifyPasswordOrDummy } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getRequestIp, getRequestUserAgent } from "@/shared/lib/request";
@@ -42,53 +47,6 @@ class CredentialsChangedError extends Error {
     super("Credentials changed while sign-in was in progress");
     this.name = "CredentialsChangedError";
   }
-}
-
-function jsonResponse(
-  body: Record<string, unknown>,
-  status: number,
-  headers?: HeadersInit,
-) {
-  const response = NextResponse.json(body, {
-    status,
-    headers,
-  });
-
-  response.headers.set("Cache-Control", "no-store");
-
-  return response;
-}
-
-function isTrustedOrigin(request: NextRequest): boolean {
-  const origin = request.headers.get("origin");
-
-  if (!origin) {
-    return false;
-  }
-
-  try {
-    const requestOrigin = new URL(origin).origin;
-    const trustedOrigins = new Set([request.nextUrl.origin]);
-    const configuredAppUrl = process.env.APP_URL?.trim();
-
-    if (configuredAppUrl) {
-      trustedOrigins.add(new URL(configuredAppUrl).origin);
-    }
-
-    return trustedOrigins.has(requestOrigin);
-  } catch {
-    return false;
-  }
-}
-
-function isJsonRequest(request: NextRequest): boolean {
-  return (
-    request.headers
-      .get("content-type")
-      ?.split(";", 1)[0]
-      ?.trim()
-      .toLowerCase() === "application/json"
-  );
 }
 
 function createIpRateLimitRules(ipAddress: string | undefined) {

@@ -113,6 +113,15 @@ export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
         return;
       }
 
+      if (errorCode === "SIGN_UP_RATE_LIMITED") {
+        setError("root.server", {
+          type: "server",
+          message: t("errors.submitFailed"),
+        });
+
+        return;
+      }
+
       setError("root.server", {
         type: "server",
         message: t("errors.submitFailed"),
