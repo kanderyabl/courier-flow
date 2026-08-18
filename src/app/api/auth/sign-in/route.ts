@@ -13,10 +13,14 @@ import {
   createNoStoreJsonResponse as jsonResponse,
   isJsonRequest,
   isTrustedOrigin,
+  readLimitedJsonBody,
 } from "@/shared/lib/http";
 import { verifyPasswordOrDummy } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
-import { getRequestIp, getRequestUserAgent } from "@/shared/lib/request";
+import {
+  getRequestUserAgent,
+  resolveRequestIp,
+} from "@/shared/lib/request";
 import {
   createSessionToken,
   SESSION_COOKIE_NAME,
@@ -50,16 +54,18 @@ class CredentialsChangedError extends Error {
 }
 
 function createIpRateLimitRules(ipAddress: string | undefined) {
-  const rateLimitIdentity = ipAddress ?? "unknown";
+  if (!ipAddress) {
+    return [];
+  }
 
   return [
     {
       ...SIGN_IN_RATE_LIMITS.ipBurst,
-      value: rateLimitIdentity,
+      value: ipAddress,
     },
     {
       ...SIGN_IN_RATE_LIMITS.ipHourly,
-      value: rateLimitIdentity,
+      value: ipAddress,
     },
   ] satisfies AuthRateLimitRule[];
 }
@@ -224,45 +230,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const declaredBodyLength = Number(request.headers.get("content-length"));
+  const bodyResult = await readLimitedJsonBody(
+    request,
+    MAX_SIGN_IN_BODY_BYTES,
+  );
 
-  if (
-    Number.isFinite(declaredBodyLength) &&
-    declaredBodyLength > MAX_SIGN_IN_BODY_BYTES
-  ) {
+  if (!bodyResult.ok) {
     return jsonResponse(
       {
-        code: "PAYLOAD_TOO_LARGE",
+        code: bodyResult.code,
       },
-      413,
+      bodyResult.code === "PAYLOAD_TOO_LARGE" ? 413 : 400,
     );
   }
 
-  const rawBody = await request.text();
-
-  if (Buffer.byteLength(rawBody, "utf8") > MAX_SIGN_IN_BODY_BYTES) {
-    return jsonResponse(
-      {
-        code: "PAYLOAD_TOO_LARGE",
-      },
-      413,
-    );
-  }
-
-  let body: unknown;
-
-  try {
-    body = JSON.parse(rawBody);
-  } catch {
-    return jsonResponse(
-      {
-        code: "INVALID_JSON",
-      },
-      400,
-    );
-  }
-
-  const validationResult = signInRequestSchema.safeParse(body);
+  const validationResult = signInRequestSchema.safeParse(bodyResult.body);
 
   if (!validationResult.success) {
     return jsonResponse(
@@ -279,7 +261,15 @@ export async function POST(request: NextRequest) {
   }
 
   const { email, password } = validationResult.data;
-  const ipAddress = getRequestIp(request);
+  const ipResolution = resolveRequestIp(request);
+
+  if (!ipResolution.ok && ipResolution.failClosed) {
+    console.error("Sign-in client IP resolution failed:", ipResolution.reason);
+
+    return jsonResponse({ code: "SERVICE_UNAVAILABLE" }, 503);
+  }
+
+  const ipAddress = ipResolution.ok ? ipResolution.ipAddress : undefined;
   const userAgent = getRequestUserAgent(request);
 
   const ipRateLimitRules = createIpRateLimitRules(ipAddress);

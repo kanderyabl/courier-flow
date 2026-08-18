@@ -18,7 +18,7 @@ const mocks = vi.hoisted(() => {
     findFirstUser: vi.fn(),
     createUser: vi.fn(),
     getPrisma: vi.fn(),
-    getRequestIp: vi.fn(),
+    resolveRequestIp: vi.fn(),
     getRequestUserAgent: vi.fn(),
     hashPassword: vi.fn(),
     sendEmailVerificationEmail: vi.fn(),
@@ -68,8 +68,8 @@ vi.mock("@/shared/lib/prisma", () => ({
 }));
 
 vi.mock("@/shared/lib/request", () => ({
-  getRequestIp: mocks.getRequestIp,
   getRequestUserAgent: mocks.getRequestUserAgent,
+  resolveRequestIp: mocks.resolveRequestIp,
 }));
 
 vi.mock("@/shared/lib/session", () => ({
@@ -168,7 +168,10 @@ describe("POST /api/auth/sign-up", () => {
         create: mocks.createUser,
       },
     });
-    mocks.getRequestIp.mockReturnValue("203.0.113.10");
+    mocks.resolveRequestIp.mockReturnValue({
+      ok: true,
+      ipAddress: "203.0.113.10",
+    });
     mocks.getRequestUserAgent.mockReturnValue("Vitest");
     mocks.hashPassword.mockResolvedValue("password-hash");
     mocks.sendEmailVerificationEmail.mockResolvedValue({
@@ -346,8 +349,12 @@ describe("POST /api/auth/sign-up", () => {
     );
   });
 
-  it("does not collapse requests without a trusted IP into a shared low-limit bucket", async () => {
-    mocks.getRequestIp.mockReturnValue(undefined);
+  it("does not collapse development requests without an IP into a shared bucket", async () => {
+    mocks.resolveRequestIp.mockReturnValue({
+      ok: false,
+      failClosed: false,
+      reason: "CLIENT_IP_MISSING_OR_INVALID",
+    });
 
     const response = await POST(createRequest());
 
@@ -364,5 +371,23 @@ describe("POST /api/auth/sign-up", () => {
         }),
       }),
     );
+  });
+
+  it("fails closed before rate limiting or business work when trusted proxy resolution fails", async () => {
+    mocks.resolveRequestIp.mockReturnValue({
+      ok: false,
+      failClosed: true,
+      reason: "TRUSTED_PROXY_NOT_CONFIGURED",
+    });
+
+    const response = await POST(createRequest());
+
+    expect(response.status).toBe(503);
+    expect(response.headers.get("Cache-Control")).toBe("no-store");
+    await expect(response.json()).resolves.toEqual({
+      code: "SERVICE_UNAVAILABLE",
+    });
+    expect(mocks.consumeAuthRateLimits).not.toHaveBeenCalled();
+    expectNoBusinessWork();
   });
 });

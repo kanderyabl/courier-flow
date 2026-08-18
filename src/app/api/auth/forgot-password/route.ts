@@ -14,9 +14,10 @@ import {
   createNoStoreJsonResponse as jsonResponse,
   isJsonRequest,
   isTrustedOrigin,
+  readLimitedJsonBody,
 } from "@/shared/lib/http";
 import { getPrisma } from "@/shared/lib/prisma";
-import { getRequestIp } from "@/shared/lib/request";
+import { resolveRequestIp } from "@/shared/lib/request";
 
 import {
   FORGOT_PASSWORD_RATE_LIMITS,
@@ -30,13 +31,15 @@ function createRateLimitRules(
   email: string,
   ipAddress: string | undefined,
 ) {
-  const ipIdentity = ipAddress ?? "unknown";
-
   return [
-    {
-      ...FORGOT_PASSWORD_RATE_LIMITS.ip,
-      value: ipIdentity,
-    },
+    ...(ipAddress
+      ? [
+          {
+            ...FORGOT_PASSWORD_RATE_LIMITS.ip,
+            value: ipAddress,
+          },
+        ]
+      : []),
     {
       ...FORGOT_PASSWORD_RATE_LIMITS.accountCooldown,
       value: email,
@@ -79,32 +82,21 @@ export async function POST(request: NextRequest) {
     return jsonResponse({ code: "UNSUPPORTED_MEDIA_TYPE" }, 415);
   }
 
-  const declaredBodyLength = Number(request.headers.get("content-length"));
+  const bodyResult = await readLimitedJsonBody(
+    request,
+    MAX_FORGOT_PASSWORD_BODY_BYTES,
+  );
 
-  if (
-    Number.isFinite(declaredBodyLength) &&
-    declaredBodyLength > MAX_FORGOT_PASSWORD_BODY_BYTES
-  ) {
-    return jsonResponse({ code: "PAYLOAD_TOO_LARGE" }, 413);
+  if (!bodyResult.ok) {
+    return jsonResponse(
+      { code: bodyResult.code },
+      bodyResult.code === "PAYLOAD_TOO_LARGE" ? 413 : 400,
+    );
   }
 
-  const rawBody = await request.text();
-
-  if (
-    Buffer.byteLength(rawBody, "utf8") > MAX_FORGOT_PASSWORD_BODY_BYTES
-  ) {
-    return jsonResponse({ code: "PAYLOAD_TOO_LARGE" }, 413);
-  }
-
-  let body: unknown;
-
-  try {
-    body = JSON.parse(rawBody);
-  } catch {
-    return jsonResponse({ code: "INVALID_JSON" }, 400);
-  }
-
-  const validationResult = forgotPasswordRequestSchema.safeParse(body);
+  const validationResult = forgotPasswordRequestSchema.safeParse(
+    bodyResult.body,
+  );
 
   if (!validationResult.success) {
     return jsonResponse(
@@ -124,10 +116,20 @@ export async function POST(request: NextRequest) {
     typeof requestedLocale === "string" && isAppLocale(requestedLocale)
       ? requestedLocale
       : routing.defaultLocale;
+  const ipResolution = resolveRequestIp(request);
+
+  if (!ipResolution.ok && ipResolution.failClosed) {
+    console.error(
+      "Forgot-password client IP resolution failed:",
+      ipResolution.reason,
+    );
+
+    return jsonResponse({ code: "SERVICE_UNAVAILABLE" }, 503);
+  }
 
   const rateLimitRules = createRateLimitRules(
     email,
-    getRequestIp(request),
+    ipResolution.ok ? ipResolution.ipAddress : undefined,
   );
 
   try {

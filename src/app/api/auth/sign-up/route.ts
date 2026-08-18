@@ -17,7 +17,10 @@ import {
 } from "@/shared/lib/http";
 import { hashPassword } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
-import { getRequestIp, getRequestUserAgent } from "@/shared/lib/request";
+import {
+  getRequestUserAgent,
+  resolveRequestIp,
+} from "@/shared/lib/request";
 import { createSessionToken, setSessionCookie } from "@/shared/lib/session";
 
 import { MAX_SIGN_UP_BODY_BYTES, SIGN_UP_RATE_LIMITS } from "./constants";
@@ -120,7 +123,25 @@ export async function POST(request: Request) {
     typeof requestedLocale === "string" && isAppLocale(requestedLocale)
       ? requestedLocale
       : routing.defaultLocale;
-  const ipAddress = getRequestIp(request);
+  const ipResolution = resolveRequestIp(request);
+
+  if (!ipResolution.ok && ipResolution.failClosed) {
+    console.error(
+      "Resolving sign-up client IP failed:",
+      ipResolution.reason,
+    );
+
+    return jsonResponse(
+      {
+        code: "SERVICE_UNAVAILABLE",
+      },
+      503,
+    );
+  }
+
+  const ipAddress = ipResolution.ok
+    ? ipResolution.ipAddress
+    : undefined;
   const userAgent = getRequestUserAgent(request);
   const rateLimitRules = createIpRateLimitRules(ipAddress);
 
