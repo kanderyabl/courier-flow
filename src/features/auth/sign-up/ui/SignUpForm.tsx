@@ -116,7 +116,7 @@ export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
       if (errorCode === "SIGN_UP_RATE_LIMITED") {
         setError("root.server", {
           type: "server",
-          message: t("errors.submitFailed"),
+          message: t("errors.rateLimited"),
         });
 
         return;
@@ -210,10 +210,24 @@ export function SignUpForm({ onSubmitAction }: SignUpFormProps) {
           required
           error={errors.acceptTerms?.message}
           label={t.rich("fields.acceptTerms.label", {
-            terms: (chunks) => <Link href={`/${locale}/terms`}>{chunks}</Link>,
+            terms: (chunks) => (
+              <Link
+                href={`/${locale}/terms`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {chunks}
+              </Link>
+            ),
 
             privacy: (chunks) => (
-              <Link href={`/${locale}/privacy`}>{chunks}</Link>
+              <Link
+                href={`/${locale}/privacy`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {chunks}
+              </Link>
             ),
           })}
           {...register("acceptTerms")}
