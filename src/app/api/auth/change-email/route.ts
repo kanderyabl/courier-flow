@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { AuthChallengeType, Prisma } from "@/generated/prisma/client";
 
@@ -7,6 +7,13 @@ import { isAppLocale, routing } from "@/i18n/routing";
 import { EMAIL_VERIFICATION_TTL_MS } from "@/shared/config/auth";
 import { createAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
+import {
+  MAX_AUTH_JSON_BODY_BYTES,
+  createNoStoreJsonResponse as jsonResponse,
+  isJsonRequest,
+  isTrustedOrigin,
+  readLimitedJsonBody,
+} from "@/shared/lib/http";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getCurrentSession } from "@/shared/lib/session";
 
@@ -35,21 +42,6 @@ class EmailAlreadyVerifiedError extends Error {
   }
 }
 
-function jsonResponse(
-  body: Record<string, unknown>,
-  status: number,
-  headers?: HeadersInit,
-) {
-  const response = NextResponse.json(body, {
-    status,
-    headers,
-  });
-
-  response.headers.set("Cache-Control", "no-store");
-
-  return response;
-}
-
 function getRetryAfterSeconds(
   startedAt: Date,
   durationMs: number,
@@ -58,30 +50,6 @@ function getRetryAfterSeconds(
   return Math.max(
     0,
     Math.ceil((startedAt.getTime() + durationMs - now.getTime()) / 1000),
-  );
-}
-
-function isSameOrigin(request: NextRequest): boolean {
-  const origin = request.headers.get("origin");
-
-  if (!origin) {
-    return false;
-  }
-
-  try {
-    return new URL(origin).origin === request.nextUrl.origin;
-  } catch {
-    return false;
-  }
-}
-
-function isJsonRequest(request: NextRequest): boolean {
-  return (
-    request.headers
-      .get("content-type")
-      ?.split(";", 1)[0]
-      ?.trim()
-      .toLowerCase() === "application/json"
   );
 }
 
@@ -108,7 +76,7 @@ async function revokeStagedChallenge(
 }
 
 export async function POST(request: NextRequest) {
-  if (!isSameOrigin(request)) {
+  if (!isTrustedOrigin(request)) {
     return jsonResponse(
       {
         code: "INVALID_ORIGIN",
@@ -126,20 +94,34 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let body: unknown;
+  let bodyResult: Awaited<ReturnType<typeof readLimitedJsonBody>>;
 
   try {
-    body = await request.json();
-  } catch {
+    bodyResult = await readLimitedJsonBody(
+      request,
+      MAX_AUTH_JSON_BODY_BYTES,
+    );
+  } catch (error) {
+    console.error("Reading email change request body failed:", error);
+
     return jsonResponse(
       {
-        code: "INVALID_JSON",
+        code: "INTERNAL_SERVER_ERROR",
       },
-      400,
+      500,
     );
   }
 
-  const validationResult = changeEmailRequestSchema.safeParse(body);
+  if (!bodyResult.ok) {
+    return jsonResponse(
+      {
+        code: bodyResult.code,
+      },
+      bodyResult.code === "PAYLOAD_TOO_LARGE" ? 413 : 400,
+    );
+  }
+
+  const validationResult = changeEmailRequestSchema.safeParse(bodyResult.body);
 
   if (!validationResult.success) {
     return jsonResponse(

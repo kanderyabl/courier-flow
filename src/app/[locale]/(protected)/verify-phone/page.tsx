@@ -1,10 +1,15 @@
-import { VerifyPhoneForm } from "@/features/auth/verify-phone";
-import { AuthLayout } from "@/widgets/AuthLayout";
+import { redirect } from "next/navigation";
 
-export default function VerifyPhonePage() {
-  return (
-    <AuthLayout>
-      <VerifyPhoneForm />
-    </AuthLayout>
-  );
+type VerifyPhonePageProps = {
+  params: Promise<{
+    locale: string;
+  }>;
+};
+
+export default async function VerifyPhonePage({
+  params,
+}: VerifyPhonePageProps) {
+  const { locale } = await params;
+
+  redirect(`/${locale}`);
 }

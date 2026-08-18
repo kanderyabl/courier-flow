@@ -1,5 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
+import { createNoStoreJsonResponse as jsonResponse } from "@/shared/lib/http";
 import { getCurrentSession } from "@/shared/lib/session";
 
 export const runtime = "nodejs";
@@ -9,29 +10,28 @@ export async function GET(request: NextRequest) {
     const session = await getCurrentSession(request);
 
     if (!session) {
-      return NextResponse.json(
+      return jsonResponse(
         {
           code: "UNAUTHORIZED",
         },
-        {
-          status: 401,
-        },
+        401,
       );
     }
 
-    return NextResponse.json({
-      user: session.user,
-    });
+    return jsonResponse(
+      {
+        user: session.user,
+      },
+      200,
+    );
   } catch (error) {
     console.error("Get current user failed:", error);
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "INTERNAL_SERVER_ERROR",
       },
-      {
-        status: 500,
-      },
+      500,
     );
   }
 }

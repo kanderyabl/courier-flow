@@ -1,5 +1,4 @@
-import { ChangePhoneForm } from "@/features/auth/change-phone";
-import { AuthLayout } from "@/widgets/AuthLayout";
+import { redirect } from "next/navigation";
 
 type ChangePhonePageProps = {
   params: Promise<{
@@ -12,9 +11,5 @@ export default async function ChangePhonePage({
 }: ChangePhonePageProps) {
   const { locale } = await params;
 
-  return (
-    <AuthLayout>
-      <ChangePhoneForm cancelHref={`/${locale}/verify-phone`} />
-    </AuthLayout>
-  );
+  redirect(`/${locale}`);
 }

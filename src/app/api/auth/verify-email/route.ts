@@ -2,30 +2,67 @@ import { AuthChallengeType } from "@/generated/prisma/client";
 
 import { verifyEmailRequestSchema } from "@/features/auth/verify-email/model/verifyEmailRequestSchema";
 import { hashAuthToken } from "@/shared/lib/authToken";
+import {
+  MAX_AUTH_JSON_BODY_BYTES,
+  createNoStoreJsonResponse as jsonResponse,
+  isJsonRequest,
+  isTrustedOrigin,
+  readLimitedJsonBody,
+} from "@/shared/lib/http";
 import { getPrisma } from "@/shared/lib/prisma";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  let body: unknown;
-
-  try {
-    body = await request.json();
-  } catch {
-    return Response.json(
+  if (!isTrustedOrigin(request)) {
+    return jsonResponse(
       {
-        code: "INVALID_JSON",
+        code: "INVALID_ORIGIN",
       },
-      {
-        status: 400,
-      },
+      403,
     );
   }
 
-  const validationResult = verifyEmailRequestSchema.safeParse(body);
+  if (!isJsonRequest(request)) {
+    return jsonResponse(
+      {
+        code: "UNSUPPORTED_MEDIA_TYPE",
+      },
+      415,
+    );
+  }
+
+  let bodyResult: Awaited<ReturnType<typeof readLimitedJsonBody>>;
+
+  try {
+    bodyResult = await readLimitedJsonBody(
+      request,
+      MAX_AUTH_JSON_BODY_BYTES,
+    );
+  } catch (error) {
+    console.error("Reading email verification request body failed:", error);
+
+    return jsonResponse(
+      {
+        code: "INTERNAL_SERVER_ERROR",
+      },
+      500,
+    );
+  }
+
+  if (!bodyResult.ok) {
+    return jsonResponse(
+      {
+        code: bodyResult.code,
+      },
+      bodyResult.code === "PAYLOAD_TOO_LARGE" ? 413 : 400,
+    );
+  }
+
+  const validationResult = verifyEmailRequestSchema.safeParse(bodyResult.body);
 
   if (!validationResult.success) {
-    return Response.json(
+    return jsonResponse(
       {
         code: "VALIDATION_ERROR",
 
@@ -34,9 +71,7 @@ export async function POST(request: Request) {
           code: issue.message,
         })),
       },
-      {
-        status: 400,
-      },
+      400,
     );
   }
 
@@ -60,13 +95,11 @@ export async function POST(request: Request) {
     });
 
     if (!candidateChallenge) {
-      return Response.json(
+      return jsonResponse(
         {
           code: "VERIFICATION_TOKEN_INVALID",
         },
-        {
-          status: 400,
-        },
+        400,
       );
     }
 
@@ -221,46 +254,46 @@ export async function POST(request: Request) {
     });
 
     if (result.status === "VERIFIED") {
-      return Response.json({
-        code: "EMAIL_VERIFIED",
-      });
-    }
-
-    if (result.status === "ALREADY_VERIFIED") {
-      return Response.json({
-        code: "EMAIL_ALREADY_VERIFIED",
-      });
-    }
-
-    if (result.status === "EXPIRED") {
-      return Response.json(
+      return jsonResponse(
         {
-          code: "VERIFICATION_TOKEN_EXPIRED",
+          code: "EMAIL_VERIFIED",
         },
-        {
-          status: 410,
-        },
+        200,
       );
     }
 
-    return Response.json(
+    if (result.status === "ALREADY_VERIFIED") {
+      return jsonResponse(
+        {
+          code: "EMAIL_ALREADY_VERIFIED",
+        },
+        200,
+      );
+    }
+
+    if (result.status === "EXPIRED") {
+      return jsonResponse(
+        {
+          code: "VERIFICATION_TOKEN_EXPIRED",
+        },
+        410,
+      );
+    }
+
+    return jsonResponse(
       {
         code: "VERIFICATION_TOKEN_INVALID",
       },
-      {
-        status: 400,
-      },
+      400,
     );
   } catch (error) {
     console.error("Email verification failed:", error);
 
-    return Response.json(
+    return jsonResponse(
       {
         code: "INTERNAL_SERVER_ERROR",
       },
-      {
-        status: 500,
-      },
+      500,
     );
   }
 }

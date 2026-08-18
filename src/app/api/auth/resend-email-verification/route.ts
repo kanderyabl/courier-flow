@@ -1,16 +1,31 @@
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { AuthChallengeType } from "@/generated/prisma/client";
 
 import { resendEmailVerificationRequestSchema } from "@/features/auth/verify-email/model/resendEmailVerificationRequestSchema";
 import { isAppLocale, routing } from "@/i18n/routing";
 import { EMAIL_VERIFICATION_TTL_MS } from "@/shared/config/auth";
+import {
+  type AuthRateLimitRule,
+  consumeAuthRateLimits,
+} from "@/shared/lib/authRateLimit";
 import { createAuthToken, hashAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
+import {
+  MAX_AUTH_JSON_BODY_BYTES,
+  createNoStoreJsonResponse as jsonResponse,
+  isJsonRequest,
+  isTrustedOrigin,
+  readLimitedJsonBody,
+} from "@/shared/lib/http";
 import { getPrisma } from "@/shared/lib/prisma";
+import { resolveRequestIp } from "@/shared/lib/request";
 import { getCurrentSession } from "@/shared/lib/session";
 
-import { EMAIL_VERIFICATION_RESEND_POLICY } from "./constants";
+import {
+  EMAIL_VERIFICATION_RESEND_POLICY,
+  EMAIL_VERIFICATION_RESEND_RATE_LIMITS,
+} from "./constants";
 
 export const runtime = "nodejs";
 
@@ -26,21 +41,6 @@ type ResendContext = {
   sourceTokenHash?: string;
 };
 
-function jsonResponse(
-  body: Record<string, unknown>,
-  status: number,
-  headers?: HeadersInit,
-) {
-  const response = NextResponse.json(body, {
-    status,
-    headers,
-  });
-
-  response.headers.set("Cache-Control", "no-store");
-
-  return response;
-}
-
 function getRetryAfterSeconds(
   challengeCreatedAt: Date | undefined,
   now: Date,
@@ -54,6 +54,43 @@ function getRetryAfterSeconds(
     EMAIL_VERIFICATION_RESEND_POLICY.cooldownMs;
 
   return Math.max(0, Math.ceil((nextAllowedAt - now.getTime()) / 1000));
+}
+
+function createIpRateLimitRules(
+  ipAddress: string | undefined,
+): AuthRateLimitRule[] {
+  if (!ipAddress) {
+    return [];
+  }
+
+  return [
+    {
+      ...EMAIL_VERIFICATION_RESEND_RATE_LIMITS.ip,
+      value: ipAddress,
+    },
+  ];
+}
+
+function createUserRateLimitRules(userId: string): AuthRateLimitRule[] {
+  return [
+    {
+      ...EMAIL_VERIFICATION_RESEND_RATE_LIMITS.user,
+      value: userId,
+    },
+  ];
+}
+
+function rateLimitedResponse(retryAfterSeconds: number) {
+  return jsonResponse(
+    {
+      code: "RESEND_TOO_SOON",
+      retryAfterSeconds,
+    },
+    429,
+    {
+      "Retry-After": retryAfterSeconds.toString(),
+    },
+  );
 }
 
 async function findResendContext(
@@ -224,24 +261,54 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  let body: unknown = {};
-
-  const rawBody = await request.text();
-
-  if (rawBody.trim()) {
-    try {
-      body = JSON.parse(rawBody);
-    } catch {
-      return jsonResponse(
-        {
-          code: "INVALID_JSON",
-        },
-        400,
-      );
-    }
+  if (!isTrustedOrigin(request)) {
+    return jsonResponse(
+      {
+        code: "INVALID_ORIGIN",
+      },
+      403,
+    );
   }
 
-  const validationResult = resendEmailVerificationRequestSchema.safeParse(body);
+  if (!isJsonRequest(request)) {
+    return jsonResponse(
+      {
+        code: "UNSUPPORTED_MEDIA_TYPE",
+      },
+      415,
+    );
+  }
+
+  let bodyResult: Awaited<ReturnType<typeof readLimitedJsonBody>>;
+
+  try {
+    bodyResult = await readLimitedJsonBody(
+      request,
+      MAX_AUTH_JSON_BODY_BYTES,
+    );
+  } catch (error) {
+    console.error("Reading resend verification request body failed:", error);
+
+    return jsonResponse(
+      {
+        code: "INTERNAL_SERVER_ERROR",
+      },
+      500,
+    );
+  }
+
+  if (!bodyResult.ok) {
+    return jsonResponse(
+      {
+        code: bodyResult.code,
+      },
+      bodyResult.code === "PAYLOAD_TOO_LARGE" ? 413 : 400,
+    );
+  }
+
+  const validationResult = resendEmailVerificationRequestSchema.safeParse(
+    bodyResult.body,
+  );
 
   if (!validationResult.success) {
     return jsonResponse(
@@ -267,7 +334,30 @@ export async function POST(request: NextRequest) {
     : routing.defaultLocale;
 
   try {
-    const prisma = getPrisma();
+    const clientIp = resolveRequestIp(request);
+
+    if (!clientIp.ok && clientIp.failClosed) {
+      console.error(
+        "Resolving resend verification request IP failed:",
+        clientIp.reason,
+      );
+
+      return jsonResponse(
+        {
+          code: "SERVICE_UNAVAILABLE",
+        },
+        503,
+      );
+    }
+
+    const ipRateLimit = await consumeAuthRateLimits(
+      createIpRateLimitRules(clientIp.ok ? clientIp.ipAddress : undefined),
+    );
+
+    if (!ipRateLimit.allowed) {
+      return rateLimitedResponse(ipRateLimit.retryAfterSeconds);
+    }
+
     const context = await findResendContext(
       request,
       validationResult.data.token,
@@ -281,6 +371,16 @@ export async function POST(request: NextRequest) {
         400,
       );
     }
+
+    const userRateLimit = await consumeAuthRateLimits(
+      createUserRateLimitRules(context.user.id),
+    );
+
+    if (!userRateLimit.allowed) {
+      return rateLimitedResponse(userRateLimit.retryAfterSeconds);
+    }
+
+    const prisma = getPrisma();
 
     const issueResult = await prisma.$transaction(async (transaction) => {
       await transaction.$queryRaw<Array<{ id: string }>>`

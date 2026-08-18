@@ -2,10 +2,12 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
+export const MAX_AUTH_JSON_BODY_BYTES = 4 * 1_024;
+
 export type LimitedJsonBodyResult =
   | {
       ok: true;
-      body: unknown;
+      body: Record<string, unknown>;
     }
   | {
       ok: false;
@@ -37,6 +39,20 @@ export function isJsonRequest(request: Request): boolean {
   );
 }
 
+function getHttpOrigin(value: string): string | undefined {
+  try {
+    const url = new URL(value);
+
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return undefined;
+    }
+
+    return url.origin;
+  } catch {
+    return undefined;
+  }
+}
+
 export function isTrustedOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
 
@@ -44,23 +60,53 @@ export function isTrustedOrigin(request: Request): boolean {
     return false;
   }
 
-  try {
-    const trustedOrigins = new Set([new URL(request.url).origin]);
-    const configuredAppUrl = process.env.APP_URL?.trim();
+  const requestOrigin = getHttpOrigin(origin);
 
-    if (configuredAppUrl) {
-      trustedOrigins.add(new URL(configuredAppUrl).origin);
-    }
-
-    return trustedOrigins.has(new URL(origin).origin);
-  } catch {
+  if (!requestOrigin) {
     return false;
   }
+
+  const trustedOrigins = new Set<string>();
+  const configuredAppUrl = process.env.APP_URL?.trim();
+
+  if (configuredAppUrl) {
+    const configuredAppOrigin = getHttpOrigin(configuredAppUrl);
+
+    if (!configuredAppOrigin) {
+      return false;
+    }
+
+    trustedOrigins.add(configuredAppOrigin);
+  } else if (process.env.NODE_ENV === "production") {
+    return false;
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    const urlOrigin = getHttpOrigin(request.url);
+
+    if (urlOrigin) {
+      trustedOrigins.add(urlOrigin);
+    }
+  }
+
+  if (process.env.VERCEL === "1") {
+    const vercelUrl = process.env.VERCEL_URL?.trim();
+
+    if (vercelUrl) {
+      const vercelOrigin = getHttpOrigin(`https://${vercelUrl}`);
+
+      if (vercelOrigin) {
+        trustedOrigins.add(vercelOrigin);
+      }
+    }
+  }
+
+  return trustedOrigins.has(requestOrigin);
 }
 
 export async function readLimitedJsonBody(
   request: Request,
-  maxBytes: number,
+  maxBytes = MAX_AUTH_JSON_BODY_BYTES,
 ): Promise<LimitedJsonBodyResult> {
   const contentLength = request.headers.get("content-length");
 
@@ -79,7 +125,17 @@ export async function readLimitedJsonBody(
     }
   }
 
-  const reader = request.body?.getReader();
+  let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+
+  try {
+    reader = request.body?.getReader();
+  } catch {
+    return {
+      ok: false,
+      code: "INVALID_JSON",
+    };
+  }
+
   const chunks: Uint8Array[] = [];
   let totalBytes = 0;
 
@@ -109,8 +165,17 @@ export async function readLimitedJsonBody(
 
         chunks.push(value);
       }
+    } catch {
+      return {
+        ok: false,
+        code: "INVALID_JSON",
+      };
     } finally {
-      reader.releaseLock();
+      try {
+        reader.releaseLock();
+      } catch {
+        // A malformed stream still maps to a deterministic JSON error.
+      }
     }
   }
 
@@ -123,9 +188,20 @@ export async function readLimitedJsonBody(
   }
 
   try {
+    const body: unknown = JSON.parse(
+      new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+    );
+
+    if (typeof body !== "object" || body === null || Array.isArray(body)) {
+      return {
+        ok: false,
+        code: "INVALID_JSON",
+      };
+    }
+
     return {
       ok: true,
-      body: JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes)),
+      body: body as Record<string, unknown>,
     };
   } catch {
     return {
