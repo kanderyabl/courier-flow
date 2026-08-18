@@ -1,39 +1,106 @@
-import { NextResponse } from "next/server";
-
 import { AuthChallengeType, Prisma, UserRole } from "@/generated/prisma/client";
 
 import { signUpRequestSchema } from "@/features/auth/sign-up/model/signUpRequestSchema";
 import { isAppLocale, routing } from "@/i18n/routing";
 import { EMAIL_VERIFICATION_TTL_MS } from "@/shared/config/auth";
+import {
+  type AuthRateLimitRule,
+  consumeAuthRateLimits,
+} from "@/shared/lib/authRateLimit";
 import { createAuthToken } from "@/shared/lib/authToken";
 import { sendEmailVerificationEmail } from "@/shared/lib/email";
+import {
+  createNoStoreJsonResponse as jsonResponse,
+  isJsonRequest,
+  isTrustedOrigin,
+  readLimitedJsonBody,
+} from "@/shared/lib/http";
 import { hashPassword } from "@/shared/lib/password";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getRequestIp, getRequestUserAgent } from "@/shared/lib/request";
 import { createSessionToken, setSessionCookie } from "@/shared/lib/session";
 
+import { MAX_SIGN_UP_BODY_BYTES, SIGN_UP_RATE_LIMITS } from "./constants";
+
 export const runtime = "nodejs";
 
-export async function POST(request: Request) {
-  let body: unknown;
+function createIpRateLimitRules(ipAddress: string | undefined) {
+  if (!ipAddress) {
+    return [];
+  }
 
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json(
+  return [
+    {
+      ...SIGN_UP_RATE_LIMITS.ipBurst,
+      value: ipAddress,
+    },
+    {
+      ...SIGN_UP_RATE_LIMITS.ipHourly,
+      value: ipAddress,
+    },
+  ] satisfies AuthRateLimitRule[];
+}
+
+function rateLimitedResponse(retryAfterSeconds: number) {
+  return jsonResponse(
+    {
+      code: "SIGN_UP_RATE_LIMITED",
+      retryAfterSeconds,
+    },
+    429,
+    {
+      "Retry-After": retryAfterSeconds.toString(),
+    },
+  );
+}
+
+export async function POST(request: Request) {
+  if (!isTrustedOrigin(request)) {
+    return jsonResponse(
       {
-        code: "INVALID_JSON",
+        code: "INVALID_ORIGIN",
       },
-      {
-        status: 400,
-      },
+      403,
     );
   }
 
-  const validationResult = signUpRequestSchema.safeParse(body);
+  if (!isJsonRequest(request)) {
+    return jsonResponse(
+      {
+        code: "UNSUPPORTED_MEDIA_TYPE",
+      },
+      415,
+    );
+  }
+
+  let bodyResult: Awaited<ReturnType<typeof readLimitedJsonBody>>;
+
+  try {
+    bodyResult = await readLimitedJsonBody(request, MAX_SIGN_UP_BODY_BYTES);
+  } catch (error) {
+    console.error("Reading sign-up request body failed:", error);
+
+    return jsonResponse(
+      {
+        code: "INTERNAL_SERVER_ERROR",
+      },
+      500,
+    );
+  }
+
+  if (!bodyResult.ok) {
+    return jsonResponse(
+      {
+        code: bodyResult.code,
+      },
+      bodyResult.code === "PAYLOAD_TOO_LARGE" ? 413 : 400,
+    );
+  }
+
+  const validationResult = signUpRequestSchema.safeParse(bodyResult.body);
 
   if (!validationResult.success) {
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "VALIDATION_ERROR",
 
@@ -42,9 +109,7 @@ export async function POST(request: Request) {
           code: issue.message,
         })),
       },
-      {
-        status: 400,
-      },
+      400,
     );
   }
 
@@ -55,8 +120,17 @@ export async function POST(request: Request) {
     typeof requestedLocale === "string" && isAppLocale(requestedLocale)
       ? requestedLocale
       : routing.defaultLocale;
+  const ipAddress = getRequestIp(request);
+  const userAgent = getRequestUserAgent(request);
+  const rateLimitRules = createIpRateLimitRules(ipAddress);
 
   try {
+    const rateLimit = await consumeAuthRateLimits(rateLimitRules);
+
+    if (!rateLimit.allowed) {
+      return rateLimitedResponse(rateLimit.retryAfterSeconds);
+    }
+
     const prisma = getPrisma();
 
     const existingUser = await prisma.user.findFirst({
@@ -78,24 +152,20 @@ export async function POST(request: Request) {
     });
 
     if (existingUser?.email === email) {
-      return NextResponse.json(
+      return jsonResponse(
         {
           code: "EMAIL_ALREADY_IN_USE",
         },
-        {
-          status: 409,
-        },
+        409,
       );
     }
 
     if (existingUser?.phone === phone) {
-      return NextResponse.json(
+      return jsonResponse(
         {
           code: "PHONE_ALREADY_IN_USE",
         },
-        {
-          status: 409,
-        },
+        409,
       );
     }
 
@@ -135,8 +205,8 @@ export async function POST(request: Request) {
           create: {
             tokenHash: sessionTokenHash,
             expiresAt: sessionExpiresAt,
-            ipAddress: getRequestIp(request),
-            userAgent: getRequestUserAgent(request),
+            ipAddress,
+            userAgent,
           },
         },
       },
@@ -168,7 +238,7 @@ export async function POST(request: Request) {
       console.error("Verification email delivery failed:", error);
     }
 
-    const response = NextResponse.json(
+    const response = jsonResponse(
       {
         user,
         emailDelivery,
@@ -178,9 +248,7 @@ export async function POST(request: Request) {
             }
           : {}),
       },
-      {
-        status: 201,
-      },
+      201,
     );
 
     setSessionCookie(response, sessionToken, sessionExpiresAt);
@@ -191,25 +259,21 @@ export async function POST(request: Request) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return NextResponse.json(
+      return jsonResponse(
         {
           code: "ACCOUNT_ALREADY_EXISTS",
         },
-        {
-          status: 409,
-        },
+        409,
       );
     }
 
     console.error("Sign-up failed:", error);
 
-    return NextResponse.json(
+    return jsonResponse(
       {
         code: "INTERNAL_SERVER_ERROR",
       },
-      {
-        status: 500,
-      },
+      500,
     );
   }
 }

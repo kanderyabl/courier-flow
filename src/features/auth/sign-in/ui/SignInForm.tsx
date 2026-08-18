@@ -97,7 +97,7 @@ export function SignInForm({
           label={t("fields.email.label")}
           placeholder={t("fields.email.placeholder")}
           error={errors.email?.message}
-          disabled={isSubmitting}
+          readOnly={isSubmitting}
           {...register("email")}
         />
 
@@ -111,7 +111,7 @@ export function SignInForm({
             showPasswordLabel={t("actions.showPassword")}
             hidePasswordLabel={t("actions.hidePassword")}
             error={errors.password?.message}
-            disabled={isSubmitting}
+            readOnly={isSubmitting}
             {...register("password")}
           />
 

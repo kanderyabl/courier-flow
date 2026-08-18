@@ -5,6 +5,9 @@ import { AuthLayout } from "@/widgets/AuthLayout";
 
 import { ResetPasswordForm } from "../ui";
 
+const NEW_PASSWORD_LABEL = /^New password\s*\*?$/;
+const CONFIRM_NEW_PASSWORD_LABEL = /^Confirm new password\s*\*?$/;
+
 const meta = {
   title: "Features/Auth/ResetPasswordForm",
   component: ResetPasswordForm,
@@ -88,11 +91,11 @@ export const ExpiredToken: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("New password"),
+      canvas.getByLabelText(NEW_PASSWORD_LABEL),
       "NewPassword1!",
     );
     await userEvent.type(
-      canvas.getByLabelText("Confirm new password"),
+      canvas.getByLabelText(CONFIRM_NEW_PASSWORD_LABEL),
       "NewPassword1!",
     );
     await userEvent.click(
@@ -120,11 +123,11 @@ export const InvalidToken: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("New password"),
+      canvas.getByLabelText(NEW_PASSWORD_LABEL),
       "NewPassword1!",
     );
     await userEvent.type(
-      canvas.getByLabelText("Confirm new password"),
+      canvas.getByLabelText(CONFIRM_NEW_PASSWORD_LABEL),
       "NewPassword1!",
     );
     await userEvent.click(

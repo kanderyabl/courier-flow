@@ -1,11 +1,14 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 import { Text } from "@/components/Text";
 import { AuthLayout } from "@/widgets/AuthLayout";
 
 import { SignInForm } from "../ui";
+
+const EMAIL_LABEL = /^Email address\s*\*?$/;
+const PASSWORD_LABEL = /^Password\s*\*?$/;
 
 function SignInFormExample() {
   const [submittedEmail, setSubmittedEmail] = useState<string>();
@@ -84,8 +87,8 @@ export const ValidationErrors: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const emailInput = canvas.getByLabelText("Email address");
-    const passwordInput = canvas.getByLabelText("Password");
+    const emailInput = canvas.getByLabelText(EMAIL_LABEL);
+    const passwordInput = canvas.getByLabelText(PASSWORD_LABEL);
 
     await userEvent.click(
       canvas.getByRole("button", {
@@ -95,7 +98,7 @@ export const ValidationErrors: Story = {
 
     await expect(emailInput).toHaveAttribute("aria-invalid", "true");
     await expect(passwordInput).toHaveAttribute("aria-invalid", "true");
-    await expect(emailInput).toHaveFocus();
+    await waitFor(() => expect(emailInput).toHaveFocus());
   },
 };
 
@@ -110,12 +113,11 @@ export const WithSubmittingState: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const emailInput = canvas.getByLabelText(EMAIL_LABEL);
+    const passwordInput = canvas.getByLabelText(PASSWORD_LABEL);
 
-    await userEvent.type(
-      canvas.getByLabelText("Email address"),
-      "user@example.com",
-    );
-    await userEvent.type(canvas.getByLabelText("Password"), "Password1!");
+    await userEvent.type(emailInput, "user@example.com");
+    await userEvent.type(passwordInput, "Password1!");
     await userEvent.click(
       canvas.getByRole("button", {
         name: "Sign in",
@@ -127,6 +129,10 @@ export const WithSubmittingState: Story = {
         name: "Signing in...",
       }),
     ).toBeDisabled();
+    await expect(emailInput).toHaveAttribute("readonly");
+    await expect(emailInput).not.toBeDisabled();
+    await expect(passwordInput).toHaveAttribute("readonly");
+    await expect(passwordInput).not.toBeDisabled();
   },
 };
 
@@ -145,10 +151,10 @@ export const InvalidCredentials: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("Email address"),
+      canvas.getByLabelText(EMAIL_LABEL),
       "user@example.com",
     );
-    await userEvent.type(canvas.getByLabelText("Password"), "WrongPassword");
+    await userEvent.type(canvas.getByLabelText(PASSWORD_LABEL), "WrongPassword");
     await userEvent.click(
       canvas.getByRole("button", {
         name: "Sign in",
@@ -176,10 +182,10 @@ export const RateLimited: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("Email address"),
+      canvas.getByLabelText(EMAIL_LABEL),
       "user@example.com",
     );
-    await userEvent.type(canvas.getByLabelText("Password"), "Password1!");
+    await userEvent.type(canvas.getByLabelText(PASSWORD_LABEL), "Password1!");
     await userEvent.click(
       canvas.getByRole("button", {
         name: "Sign in",
@@ -207,10 +213,10 @@ export const UnknownFailure: Story = {
     const canvas = within(canvasElement);
 
     await userEvent.type(
-      canvas.getByLabelText("Email address"),
+      canvas.getByLabelText(EMAIL_LABEL),
       "user@example.com",
     );
-    await userEvent.type(canvas.getByLabelText("Password"), "Password1!");
+    await userEvent.type(canvas.getByLabelText(PASSWORD_LABEL), "Password1!");
     await userEvent.click(
       canvas.getByRole("button", {
         name: "Sign in",

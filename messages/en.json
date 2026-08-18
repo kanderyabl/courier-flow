@@ -64,7 +64,7 @@
           "placeholder": "Enter the password again"
         },
         "acceptTerms": {
-          "label": "I agree to the <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>"
+          "label": "I agree to the <terms>Terms of Service</terms> and confirm that I have read the <privacy>Privacy Notice</privacy>"
         }
       },
 
@@ -85,6 +85,7 @@
       "errors": {
         "emailAlreadyInUse": "An account with this email already exists.",
         "phoneAlreadyInUse": "An account with this phone number already exists.",
+        "rateLimited": "Too many sign-up attempts. Please try again later.",
         "submitFailed": "Could not create the account. Please try again."
       }
     },
@@ -292,6 +293,135 @@
       "actions": {
         "retry": "Try again",
         "signIn": "Go to sign in"
+      }
+    }
+  },
+  "legal": {
+    "shared": {
+      "draft": {
+        "title": "Draft — legal review required",
+        "description": "This page is a working template, not a statement of legal compliance. Do not rely on it for production until the operator details are complete and a qualified reviewer has approved the text."
+      },
+      "publication": {
+        "title": "Publication details",
+        "description": "These values come from deployment configuration. Missing values must be completed before production.",
+        "fields": {
+          "operatorName": "Service operator",
+          "operatorRegistration": "Registration and tax identifiers",
+          "operatorAddress": "Operator address",
+          "contactEmail": "Legal and privacy contact",
+          "effectiveDate": "Effective date",
+          "jurisdiction": "Governing law and jurisdiction"
+        },
+        "missingValue": "Not configured — required before production."
+      },
+      "actions": {
+        "backToSignUp": "Back to sign up",
+        "viewTerms": "View Terms of Service",
+        "viewPrivacy": "View Privacy Notice"
+      }
+    },
+    "terms": {
+      "metaTitle": "Terms of Service | Courier Flow",
+      "title": "Terms of Service",
+      "summary": "These terms describe the account and prototype delivery workflow currently available in Courier Flow.",
+      "sections": {
+        "currentService": {
+          "title": "1. Current service",
+          "body": "Courier Flow currently provides client account registration, authentication, email verification, password recovery and a prototype dashboard. Order, courier and live delivery features may change before production release."
+        },
+        "accounts": {
+          "title": "2. Accounts",
+          "body": "Provide accurate contact details, keep your credentials confidential and use only accounts you are authorised to access. Email verification may be required before protected features become available."
+        },
+        "acceptableUse": {
+          "title": "3. Acceptable use",
+          "body": "Do not use Courier Flow for unlawful, fraudulent or abusive activity; to interfere with the service; to probe or bypass security; or to submit content you are not authorised to provide."
+        },
+        "deliveries": {
+          "title": "4. Delivery workflow",
+          "body": "Order statuses are workflow information and are not, by themselves, a delivery-time guarantee. Pricing, service areas, cancellation and refund rules, courier responsibilities and proof of delivery must be defined before real deliveries are offered."
+        },
+        "pricing": {
+          "title": "5. Pricing and payment",
+          "body": "The current application does not implement pricing or payment collection. Before any charge is taken, final terms must state prices, currency, taxes, payment timing, payment provider, receipts and the rules for failed or disputed payments."
+        },
+        "cancellation": {
+          "title": "6. Cancellation and refunds",
+          "body": "The current application does not define a production cancellation or refund policy. Before real orders are accepted, the operator must specify who may cancel, applicable deadlines and fees, refund eligibility, refund method and mandatory consumer rights."
+        },
+        "liability": {
+          "title": "7. Liability and complaints",
+          "body": "No production allocation of liability or complaint procedure is established by this draft. Final terms must describe the complaint channel and process, responsibility for loss, delay or damage, any lawful limits and rights that cannot be excluded under applicable law."
+        },
+        "availability": {
+          "title": "8. Availability",
+          "body": "The current service is a developing product and may be suspended or unavailable. No service-level or uptime commitment is stated in this draft. Any production commitment and maintenance policy must be stated separately."
+        },
+        "changes": {
+          "title": "9. Changes to these terms",
+          "body": "This working text may change before launch. Final terms must carry an effective date and explain how material changes are communicated and when they take effect; this draft does not treat continued prototype use as consent to unknown future terms."
+        },
+        "completion": {
+          "title": "10. Items required before production",
+          "body": "The operator details above, eligibility rules, fees, refunds, liability terms, dispute process and applicable law must be completed for the intended market and approved through qualified legal review before production use."
+        }
+      }
+    },
+    "privacy": {
+      "metaTitle": "Privacy Notice | Courier Flow",
+      "title": "Privacy Notice",
+      "summary": "This notice describes personal data handled by the current account and authentication features and highlights items that require completion before production.",
+      "sections": {
+        "scope": {
+          "title": "1. Scope",
+          "body": "This notice covers the current Courier Flow application. It must be updated before production if ordering, payments, precise location tracking, courier onboarding or other material processing is enabled."
+        },
+        "data": {
+          "title": "2. Data currently handled",
+          "body": "The application is designed to handle the following categories:",
+          "items": {
+            "account": "Account data: name, email address, phone number, role, password hash and verification timestamps.",
+            "security": "Authentication and security data: sessions, challenge metadata, IP address, user agent and rate-limit records.",
+            "delivery": "Delivery data is not yet represented in the current database model. Before it is enabled, this notice must describe addresses, recipient details, instructions, status history and any location data actually collected."
+          }
+        },
+        "use": {
+          "title": "3. Why data is used",
+          "body": "Current processing supports account creation, sign-in, email verification, password reset, session management, abuse prevention and transactional service messages. A final notice must identify the applicable legal bases for the launch market."
+        },
+        "legalBases": {
+          "title": "4. Legal bases",
+          "body": "The operator has not yet published a final legal-basis assessment. Depending on the launch market and purpose, processing may need to rely on contract, legal obligations, legitimate interests or consent. Each purpose must be mapped and documented before production; this list is not a claim that every basis applies."
+        },
+        "recipients": {
+          "title": "5. Recipients and service providers",
+          "body": "Account data is stored in the configured database, and email addresses are sent to the configured transactional email provider when verification or password-reset messages are requested. The operator must identify its actual hosting, database, email and other processors, locations and transfer safeguards before production."
+        },
+        "internationalTransfers": {
+          "title": "6. International transfers",
+          "body": "Whether personal data crosses national borders depends on the operator’s deployment and provider locations. No final transfer inventory or safeguard is stated here. The operator must document destinations and any required adequacy decision, contract or other safeguard before production."
+        },
+        "retention": {
+          "title": "7. Retention",
+          "body": "Sessions and verification challenges have configured expiry periods, while account records currently have no published deletion schedule. Exact retention and deletion rules must be defined and documented before production."
+        },
+        "security": {
+          "title": "8. Security",
+          "body": "The application hashes passwords and authentication secrets and restricts protected pages to authenticated users. These controls reduce risk but cannot guarantee absolute security; deployment configuration, access controls, backups and incident response require separate review."
+        },
+        "cookies": {
+          "title": "9. Cookies",
+          "body": "The application uses a necessary authentication session cookie for signed-in access. Locale middleware may store a language preference depending on deployment. No advertising-cookie use is documented in the current code, but the final deployment must be audited and any required choices or notices added."
+        },
+        "rights": {
+          "title": "10. Requests and rights",
+          "body": "Access, correction, deletion, restriction, portability, objection and other rights depend on applicable law and may have exceptions. Requests should go to the configured contact above. The operator must define identity checks, response procedures and deadlines before production."
+        },
+        "complaints": {
+          "title": "11. Questions and complaints",
+          "body": "Contact the operator first using the details above. The competent privacy authority and any right to complain depend on the operator’s establishment and the user’s location, so final authority information must be added after jurisdictional review."
+        }
       }
     }
   },
