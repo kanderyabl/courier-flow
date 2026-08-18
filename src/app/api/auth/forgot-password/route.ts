@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 import { AuthChallengeType } from "@/generated/prisma/client";
 
@@ -10,6 +10,11 @@ import {
 } from "@/shared/lib/authRateLimit";
 import { createAuthToken } from "@/shared/lib/authToken";
 import { sendPasswordResetEmail } from "@/shared/lib/email";
+import {
+  createNoStoreJsonResponse as jsonResponse,
+  isJsonRequest,
+  isTrustedOrigin,
+} from "@/shared/lib/http";
 import { getPrisma } from "@/shared/lib/prisma";
 import { getRequestIp } from "@/shared/lib/request";
 
@@ -20,49 +25,6 @@ import {
 } from "./constants";
 
 export const runtime = "nodejs";
-
-function jsonResponse(
-  body: Record<string, unknown>,
-  status: number,
-  headers?: HeadersInit,
-) {
-  const response = NextResponse.json(body, { status, headers });
-
-  response.headers.set("Cache-Control", "no-store");
-
-  return response;
-}
-
-function isTrustedOrigin(request: NextRequest): boolean {
-  const origin = request.headers.get("origin");
-
-  if (!origin) {
-    return false;
-  }
-
-  try {
-    const trustedOrigins = new Set([request.nextUrl.origin]);
-    const configuredAppUrl = process.env.APP_URL?.trim();
-
-    if (configuredAppUrl) {
-      trustedOrigins.add(new URL(configuredAppUrl).origin);
-    }
-
-    return trustedOrigins.has(new URL(origin).origin);
-  } catch {
-    return false;
-  }
-}
-
-function isJsonRequest(request: NextRequest): boolean {
-  return (
-    request.headers
-      .get("content-type")
-      ?.split(";", 1)[0]
-      ?.trim()
-      .toLowerCase() === "application/json"
-  );
-}
 
 function createRateLimitRules(
   email: string,

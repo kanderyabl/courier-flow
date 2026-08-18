@@ -64,7 +64,7 @@
           "placeholder": "Introduce la contraseña de nuevo"
         },
         "acceptTerms": {
-          "label": "Acepto los <terms>Términos del servicio</terms> y la <privacy>Política de privacidad</privacy>"
+          "label": "Acepto los <terms>Términos del servicio</terms> y confirmo que he leído el <privacy>Aviso de privacidad</privacy>"
         }
       },
 
@@ -85,6 +85,7 @@
       "errors": {
         "emailAlreadyInUse": "Ya existe una cuenta con este correo electrónico.",
         "phoneAlreadyInUse": "Ya existe una cuenta con este número de teléfono.",
+        "rateLimited": "Demasiados intentos de registro. Espera un momento e inténtalo de nuevo.",
         "submitFailed": "No se pudo crear la cuenta. Inténtalo de nuevo."
       }
     },
@@ -292,6 +293,135 @@
       "actions": {
         "retry": "Intentar de nuevo",
         "signIn": "Ir a iniciar sesión"
+      }
+    }
+  },
+  "legal": {
+    "shared": {
+      "draft": {
+        "title": "Borrador — requiere revisión jurídica",
+        "description": "Esta página es una plantilla de trabajo, no una declaración de cumplimiento legal. No debe utilizarse en producción hasta completar los datos del operador y obtener la aprobación de una persona cualificada."
+      },
+      "publication": {
+        "title": "Datos de publicación",
+        "description": "Estos valores proceden de la configuración del despliegue. Los valores ausentes deben completarse antes de producción.",
+        "fields": {
+          "operatorName": "Operador del servicio",
+          "operatorRegistration": "Datos registrales y fiscales",
+          "operatorAddress": "Dirección del operador",
+          "contactEmail": "Contacto jurídico y de privacidad",
+          "effectiveDate": "Fecha de entrada en vigor",
+          "jurisdiction": "Ley aplicable y jurisdicción"
+        },
+        "missingValue": "Sin configurar — obligatorio antes de producción."
+      },
+      "actions": {
+        "backToSignUp": "Volver al registro",
+        "viewTerms": "Ver los Términos del servicio",
+        "viewPrivacy": "Ver el Aviso de privacidad"
+      }
+    },
+    "terms": {
+      "metaTitle": "Términos del servicio | Courier Flow",
+      "title": "Términos del servicio",
+      "summary": "Estos términos describen la cuenta y el flujo de entregas en prototipo disponibles actualmente en Courier Flow.",
+      "sections": {
+        "currentService": {
+          "title": "1. Servicio actual",
+          "body": "Courier Flow ofrece actualmente registro de cuentas de cliente, autenticación, verificación por correo electrónico, recuperación de contraseña y un panel en prototipo. Las funciones de pedidos, mensajeros y seguimiento en directo pueden cambiar antes del lanzamiento."
+        },
+        "accounts": {
+          "title": "2. Cuentas",
+          "body": "Facilita datos de contacto correctos, protege tus credenciales y utiliza solo cuentas a las que estés autorizado a acceder. Puede ser necesario verificar el correo electrónico antes de acceder a funciones protegidas."
+        },
+        "acceptableUse": {
+          "title": "3. Uso aceptable",
+          "body": "No utilices Courier Flow para actividades ilícitas, fraudulentas o abusivas; para interferir con el servicio; para probar o eludir la seguridad; ni para enviar contenido que no estés autorizado a proporcionar."
+        },
+        "deliveries": {
+          "title": "4. Flujo de entrega",
+          "body": "Los estados de un pedido son información del flujo de trabajo y no garantizan por sí mismos un plazo de entrega. Antes de ofrecer entregas reales deben definirse precios, zonas, cancelaciones, reembolsos, responsabilidades del mensajero y prueba de entrega."
+        },
+        "pricing": {
+          "title": "5. Precios y pago",
+          "body": "La aplicación actual no implementa precios ni cobros. Antes de realizar cualquier cargo, los términos definitivos deben indicar precios, moneda, impuestos, momento del pago, proveedor de pago, recibos y reglas para pagos fallidos o disputados."
+        },
+        "cancellation": {
+          "title": "6. Cancelaciones y reembolsos",
+          "body": "La aplicación actual no define una política de cancelación o reembolso para producción. Antes de aceptar pedidos reales, el operador debe indicar quién puede cancelar, plazos y cargos, condiciones y método de reembolso y derechos imperativos del consumidor."
+        },
+        "liability": {
+          "title": "7. Responsabilidad y reclamaciones",
+          "body": "Este borrador no establece el reparto de responsabilidad ni un procedimiento de reclamación para producción. Los términos definitivos deben describir el canal y proceso de reclamación, la responsabilidad por pérdida, retraso o daño, los límites legales y los derechos que no pueden excluirse."
+        },
+        "availability": {
+          "title": "8. Disponibilidad",
+          "body": "El servicio actual está en desarrollo y puede suspenderse o no estar disponible. Este borrador no establece compromisos de nivel de servicio ni disponibilidad. Cualquier compromiso de producción y política de mantenimiento debe definirse por separado."
+        },
+        "changes": {
+          "title": "9. Cambios en estos términos",
+          "body": "Este texto de trabajo puede cambiar antes del lanzamiento. Los términos definitivos deben incluir una fecha de vigencia y explicar cómo se comunicarán los cambios importantes y cuándo surtirán efecto; usar el prototipo no implica aceptar términos futuros desconocidos."
+        },
+        "completion": {
+          "title": "10. Elementos necesarios antes de producción",
+          "body": "Los datos del operador, requisitos de acceso, tarifas, reembolsos, responsabilidad, resolución de disputas y ley aplicable deben completarse para el mercado previsto y someterse a revisión jurídica cualificada antes de producción."
+        }
+      }
+    },
+    "privacy": {
+      "metaTitle": "Aviso de privacidad | Courier Flow",
+      "title": "Aviso de privacidad",
+      "summary": "Este aviso describe los datos personales tratados por las funciones actuales de cuenta y autenticación e indica qué aspectos deben completarse antes de producción.",
+      "sections": {
+        "scope": {
+          "title": "1. Alcance",
+          "body": "Este aviso cubre la aplicación Courier Flow actual. Debe actualizarse antes de producción si se habilitan pedidos, pagos, geolocalización precisa, alta de mensajeros u otros tratamientos relevantes."
+        },
+        "data": {
+          "title": "2. Datos tratados actualmente",
+          "body": "La aplicación está diseñada para tratar las siguientes categorías:",
+          "items": {
+            "account": "Datos de cuenta: nombre, correo electrónico, teléfono, rol, hash de la contraseña y fechas de verificación.",
+            "security": "Datos de autenticación y seguridad: sesiones, metadatos de desafíos, dirección IP, agente de usuario y registros de limitación de solicitudes.",
+            "delivery": "Los datos de entrega aún no forman parte del modelo de base de datos actual. Antes de habilitarlos, este aviso debe describir direcciones, destinatarios, instrucciones, historial de estados y cualquier ubicación realmente recopilada."
+          }
+        },
+        "use": {
+          "title": "3. Para qué se usan los datos",
+          "body": "El tratamiento actual permite crear cuentas, iniciar sesión, verificar el correo, restablecer contraseñas, gestionar sesiones, prevenir abusos y enviar mensajes transaccionales. El aviso definitivo debe identificar las bases jurídicas aplicables al mercado de lanzamiento."
+        },
+        "legalBases": {
+          "title": "4. Bases jurídicas",
+          "body": "El operador aún no ha publicado una evaluación definitiva de bases jurídicas. Según el mercado y la finalidad, el tratamiento podría basarse en contrato, obligación legal, interés legítimo o consentimiento. Cada finalidad debe documentarse antes de producción; esta lista no afirma que todas sean aplicables."
+        },
+        "recipients": {
+          "title": "5. Destinatarios y proveedores",
+          "body": "Los datos de cuenta se guardan en la base configurada y el correo se envía al proveedor transaccional configurado al solicitar verificaciones o restablecimientos. Antes de producción, el operador debe identificar proveedores reales de alojamiento, base de datos, correo y otros encargados, así como ubicaciones y garantías."
+        },
+        "internationalTransfers": {
+          "title": "6. Transferencias internacionales",
+          "body": "Que los datos crucen fronteras depende del despliegue y de la ubicación de los proveedores. Aquí no se declara un inventario ni garantías definitivas. Antes de producción, el operador debe documentar destinos y cualquier decisión de adecuación, contrato u otra garantía necesaria."
+        },
+        "retention": {
+          "title": "7. Conservación",
+          "body": "Las sesiones y los desafíos de verificación tienen plazos de caducidad configurados, pero las cuentas no tienen aún un calendario de eliminación publicado. Deben definirse y documentarse plazos exactos y reglas de supresión antes de producción."
+        },
+        "security": {
+          "title": "8. Seguridad",
+          "body": "La aplicación aplica hash a contraseñas y secretos de autenticación y limita las páginas protegidas a usuarios autenticados. Estas medidas reducen riesgos, pero no garantizan seguridad absoluta; configuración, accesos, copias e incidentes requieren revisión separada."
+        },
+        "cookies": {
+          "title": "9. Cookies",
+          "body": "La aplicación usa una cookie de sesión necesaria para el acceso autenticado. El middleware de idioma puede guardar una preferencia según el despliegue. El código actual no documenta cookies publicitarias, pero el despliegue final debe auditarse y añadir las opciones o avisos exigidos."
+        },
+        "rights": {
+          "title": "10. Solicitudes y derechos",
+          "body": "Los derechos de acceso, rectificación, supresión, limitación, portabilidad, oposición y otros dependen de la ley y pueden tener excepciones. Las solicitudes deben enviarse al contacto indicado. Antes de producción deben definirse verificación de identidad, procedimiento y plazos."
+        },
+        "complaints": {
+          "title": "11. Preguntas y reclamaciones",
+          "body": "Contacta primero con el operador mediante los datos anteriores. La autoridad competente y el derecho a reclamar dependen del establecimiento del operador y de la ubicación del usuario; la información definitiva debe añadirse tras revisar la jurisdicción."
+        }
       }
     }
   },

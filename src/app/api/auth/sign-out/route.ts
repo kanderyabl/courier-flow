@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 import { hashAuthToken } from "@/shared/lib/authToken";
+import { isTrustedOrigin } from "@/shared/lib/http";
 import { getPrisma } from "@/shared/lib/prisma";
 import {
   clearSessionCookie,
@@ -8,27 +9,6 @@ import {
 } from "@/shared/lib/session";
 
 export const runtime = "nodejs";
-
-function isTrustedOrigin(request: NextRequest): boolean {
-  const origin = request.headers.get("origin");
-
-  if (!origin) {
-    return false;
-  }
-
-  try {
-    const trustedOrigins = new Set([request.nextUrl.origin]);
-    const configuredAppUrl = process.env.APP_URL?.trim();
-
-    if (configuredAppUrl) {
-      trustedOrigins.add(new URL(configuredAppUrl).origin);
-    }
-
-    return trustedOrigins.has(new URL(origin).origin);
-  } catch {
-    return false;
-  }
-}
 
 function noContentResponse(): NextResponse {
   const response = new NextResponse(null, { status: 204 });
