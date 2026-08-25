@@ -77,6 +77,14 @@ jobs:
       - name: Check schema drift
         run: npm run db:migrate:check-drift
 
+      - name: Run PostgreSQL auth integration smoke test
+        run: npm run test:integration
+        env:
+          RUN_DATABASE_INTEGRATION_TESTS: "1"
+          APP_URL: "http://localhost:3000"
+          TRUSTED_PROXY_HEADER: "x-forwarded-for"
+          AUTH_RATE_LIMIT_SECRET: "ci-only-auth-rate-limit-secret-not-for-production"
+
       - name: Run ESLint
         run: npm run lint
 

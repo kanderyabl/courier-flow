@@ -106,11 +106,11 @@ protection rules by itself.
 
 ### CI and production migrations
 
-| Environment | `DATABASE_URL` | `DIRECT_URL` |
-| --- | --- | --- |
-| Local | Local PostgreSQL connection | The same local database |
-| CI | Ephemeral PostgreSQL service | The same ephemeral database |
-| Production | Pooled runtime connection when available | Direct migration connection |
+| Environment | `DATABASE_URL`                           | `DIRECT_URL`                |
+| ----------- | ---------------------------------------- | --------------------------- |
+| Local       | Local PostgreSQL connection              | The same local database     |
+| CI          | Ephemeral PostgreSQL service             | The same ephemeral database |
+| Production  | Pooled runtime connection when available | Direct migration connection |
 
 The [CI workflow](.github/workflows/ci.yml) runs for every pull request targeting
 `main` and every push to `main`. It starts a clean PostgreSQL 17 service, applies
@@ -118,6 +118,16 @@ the complete migration history, checks migration status, and compares the
 resulting database with `schema.prisma`. The service and its test credentials
 are discarded when the job ends. Keep the CI PostgreSQL major version aligned
 with production.
+
+After the drift check, CI runs a real sign-in integration smoke test against
+the same temporary database. The test invokes the auth route without mocking
+Prisma, verifies the real password and session flow, and matches the response
+cookie to the persisted `sessions` row.
+
+`npm run test:integration` is intentionally separate from the unit test suite.
+Run it only against the disposable local `courier_flow_ci` database with
+`RUN_DATABASE_INTEGRATION_TESTS=1`; the test rejects remote hosts and other
+database names before initializing Prisma.
 
 The CI workflow never deploys migrations to production. Production changes use
 the separate
