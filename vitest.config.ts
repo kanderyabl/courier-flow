@@ -1,7 +1,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 
@@ -26,6 +26,16 @@ export default defineConfig({
           name: "unit",
           environment: "node",
           include: ["**/*.{test,spec}.{ts,tsx}"],
+          exclude: [...configDefaults.exclude, "tests/integration/**"],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: "integration",
+          environment: "node",
+          include: ["tests/integration/**/*.{test,spec}.{ts,tsx}"],
+          fileParallelism: false,
         },
       },
       {
