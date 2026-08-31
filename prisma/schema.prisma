@@ -21,6 +21,14 @@ enum AuthChallengeType {
   PHONE_CHANGE
 }
 
+enum OrderStatus {
+  PENDING
+  ASSIGNED
+  IN_PROGRESS
+  DELIVERED
+  CANCELLED
+}
+
 model User {
   id String @id @default(uuid()) @db.Uuid
 
@@ -40,8 +48,39 @@ model User {
 
   sessions       Session[]
   authChallenges AuthChallenge[]
+  orders         Order[]
 
   @@map("users")
+}
+
+model Order {
+  id              String      @id @default(uuid()) @db.Uuid
+  ownerId         String      @map("owner_id") @db.Uuid
+  owner           User        @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  pickupAddress   String      @map("pickup_address") @db.VarChar(500)
+  deliveryAddress String      @map("delivery_address") @db.VarChar(500)
+  recipientName   String      @map("recipient_name") @db.VarChar(80)
+  recipientPhone  String      @map("recipient_phone") @db.VarChar(32)
+  comment         String?     @db.VarChar(1000)
+  status          OrderStatus @default(PENDING)
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  statusHistory OrderStatusHistory[]
+
+  @@index([ownerId, createdAt])
+  @@map("orders")
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(uuid()) @db.Uuid
+  orderId   String      @map("order_id") @db.Uuid
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([orderId, createdAt])
+  @@map("order_status_histories")
 }
 
 model Session {
