@@ -3,7 +3,7 @@ import type { BadgeVariant } from "@/components/Badge";
 import type { OrderStatus } from "../types";
 
 export const ORDER_STATUSES = [
-  "new",
+  "pending",
   "assigned",
   "in_progress",
   "delivered",
@@ -11,7 +11,7 @@ export const ORDER_STATUSES = [
 ] as const;
 
 export const ORDER_STATUS_BADGE_VARIANT = {
-  new: "neutral",
+  pending: "neutral",
   assigned: "primary",
   in_progress: "warning",
   delivered: "success",

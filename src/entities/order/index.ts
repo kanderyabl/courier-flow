@@ -1,2 +1,6 @@
 export { OrderStatusBadge } from "./ui";
-export type { OrderStatusBadgeProps, OrderStatus } from "./types";
+export type {
+  OrderStatusBadgeProps,
+  OrderStatus,
+  OrderListItem,
+} from "./types";

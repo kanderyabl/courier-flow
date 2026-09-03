@@ -5,7 +5,7 @@
   },
   "order": {
     "status": {
-      "new": "Нове",
+      "pending": "Очікує кур’єра",
       "assigned": "Призначено",
       "in_progress": "В процесі",
       "delivered": "Доставлено",

@@ -5,7 +5,7 @@
   },
   "order": {
     "status": {
-      "new": "नया",
+      "pending": "कूरियर की प्रतीक्षा में",
       "assigned": "सौंपा गया",
       "in_progress": "प्रगति में",
       "delivered": "डिलीवर किया गया",

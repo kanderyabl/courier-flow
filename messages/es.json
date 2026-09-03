@@ -5,7 +5,7 @@
   },
   "order": {
     "status": {
-      "new": "Nuevo",
+      "pending": "En espera de mensajero",
       "assigned": "Asignado",
       "in_progress": "En progreso",
       "delivered": "Entregado",
