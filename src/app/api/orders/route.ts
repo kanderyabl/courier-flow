@@ -168,3 +168,85 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function GET(request: NextRequest) {
+  let session: Awaited<ReturnType<typeof getCurrentSession>>;
+
+  try {
+    session = await getCurrentSession(request);
+  } catch (error) {
+    console.error("Getting session for get-orders failed:", error);
+    return jsonResponse(
+      {
+        code: "INTERNAL_SERVER_ERROR",
+      },
+      500,
+    );
+  }
+
+  if (!session) {
+    return jsonResponse(
+      {
+        code: "UNAUTHORIZED",
+      },
+      401,
+    );
+  }
+
+  if (!session.user.emailVerifiedAt) {
+    return jsonResponse(
+      {
+        code: "EMAIL_VERIFICATION_REQUIRED",
+      },
+      403,
+    );
+  }
+
+  if (session.user.role !== UserRole.CLIENT) {
+    return jsonResponse(
+      {
+        code: "FORBIDDEN",
+      },
+      403,
+    );
+  }
+
+  try {
+    const prisma = getPrisma();
+
+    const orders = await prisma.order.findMany({
+      where: {
+        ownerId: session.user.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        pickupAddress: true,
+        deliveryAddress: true,
+        status: true,
+        createdAt: true,
+      },
+    });
+
+    return jsonResponse(
+      {
+        orders: orders.map((order) => ({
+          ...order,
+          status: serializeOrderStatus(order.status),
+        })),
+      },
+      200,
+    );
+  } catch (error) {
+    console.error("Getting orders failed:", error);
+
+    return jsonResponse(
+      {
+        code: "INTERNAL_SERVER_ERROR",
+      },
+      500,
+    );
+  }
+}
