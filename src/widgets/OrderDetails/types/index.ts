@@ -29,3 +29,13 @@ export type OrderDetailsProps =
   | OrderDetailsErrorProps
   | OrderDetailsNotFoundProps
   | OrderDetailsReadyProps;
+
+export type OrderDetailsLoadState =
+  | { status: "loading" }
+  | { status: "ready"; order: OrderDetailsItem }
+  | { status: "not-found" }
+  | { status: "error" };
+
+export type OrderDetailsContainerProps = {
+  orderId: string;
+};
