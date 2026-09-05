@@ -22,3 +22,8 @@ export type OrdersListProps =
   | OrdersListLoadingProps
   | OrdersListErrorProps
   | OrdersListReadyProps;
+
+export type OrdersLoadState =
+  | { status: "loading" }
+  | { status: "ready"; orders: OrderListItem[] }
+  | { status: "error" };
