@@ -5,3 +5,4 @@ export type {
   CreateOrderFormValues,
   CreateOrderValidationMessages,
 } from "./types";
+export { createOrder } from "./api";
