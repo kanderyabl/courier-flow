@@ -1,0 +1,1 @@
+export const MAX_CREATE_ORDER_BODY_BYTES = 16 * 1_024;

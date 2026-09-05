@@ -22,7 +22,7 @@ const meta = {
     },
   },
   args: {
-    status: "new",
+    status: "pending",
     size: "md",
   },
 } satisfies Meta<typeof OrderStatusBadge>;
@@ -31,9 +31,9 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const New: Story = {
+export const Pending: Story = {
   args: {
-    status: "new",
+    status: "pending",
   },
 };
 

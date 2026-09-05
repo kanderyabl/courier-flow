@@ -5,11 +5,100 @@
   },
   "order": {
     "status": {
-      "new": "Нове",
+      "pending": "Очікує кур’єра",
       "assigned": "Призначено",
       "in_progress": "В процесі",
       "delivered": "Доставлено",
       "cancelled": "Скасовано"
+    },
+    "labels": {
+      "pickupAddress": "Адреса забору",
+      "deliveryAddress": "Адреса доставки",
+      "recipientName": "Ім’я отримувача",
+      "recipientPhone": "Телефон отримувача",
+      "comment": "Коментар",
+      "status": "Статус",
+      "createdAt": "Створено",
+      "updatedAt": "Оновлено"
+    },
+    "card": {
+      "createdAt": "Створено {date}",
+      "viewDetails": "Переглянути деталі"
+    },
+    "list": {
+      "title": "Замовлення",
+      "description": "Відстежуйте свої заявки на доставку та їхній поточний статус.",
+      "actions": {
+        "create": "Створити замовлення",
+        "retry": "Спробувати ще раз"
+      },
+      "empty": {
+        "title": "Замовлень ще немає",
+        "description": "Створіть перше замовлення, щоб почати керувати доставками."
+      },
+      "loadingLabel": "Завантаження замовлень",
+      "error": {
+        "title": "Не вдалося завантажити замовлення",
+        "description": "Спробуйте ще раз."
+      }
+    },
+    "create": {
+      "title": "Створити замовлення",
+      "description": "Введіть дані про забір, доставку й отримувача.",
+      "fields": {
+        "pickupAddress": {
+          "placeholder": "Введіть адресу забору"
+        },
+        "deliveryAddress": {
+          "placeholder": "Введіть адресу доставки"
+        },
+        "recipientName": {
+          "placeholder": "Введіть ім’я отримувача"
+        },
+        "recipientPhone": {
+          "placeholder": "+48 123 456 789"
+        },
+        "comment": {
+          "placeholder": "Додайте інструкції для доставки"
+        }
+      },
+      "actions": {
+        "cancel": "Скасувати",
+        "submit": "Створити замовлення",
+        "submitting": "Створення замовлення..."
+      },
+      "validation": {
+        "pickupAddressRequired": "Адреса забору є обов’язковою",
+        "pickupAddressTooLong": "Адреса забору не може перевищувати 500 символів",
+        "deliveryAddressRequired": "Адреса доставки є обов’язковою",
+        "deliveryAddressTooLong": "Адреса доставки не може перевищувати 500 символів",
+        "recipientNameRequired": "Ім’я отримувача є обов’язковим",
+        "recipientNameTooLong": "Ім’я отримувача не може перевищувати 80 символів",
+        "recipientPhoneRequired": "Телефон отримувача є обов’язковим",
+        "recipientPhoneInvalid": "Введіть дійсний номер телефону",
+        "commentTooLong": "Коментар не може перевищувати 1000 символів"
+      },
+      "errors": {
+        "submitFailed": "Не вдалося створити замовлення. Спробуйте ще раз."
+      }
+    },
+    "details": {
+      "title": "Деталі замовлення",
+      "description": "Інформація про доставку та поточний статус.",
+      "actions": {
+        "backToOrders": "Назад до замовлень",
+        "retry": "Спробувати ще раз"
+      },
+      "noComment": "Коментар відсутній.",
+      "loadingLabel": "Завантаження замовлення",
+      "notFound": {
+        "title": "Замовлення не знайдено",
+        "description": "Цього замовлення не існує або воно недоступне для вашого облікового запису."
+      },
+      "error": {
+        "title": "Не вдалося завантажити замовлення",
+        "description": "Спробуйте ще раз."
+      }
     }
   },
   "auth": {

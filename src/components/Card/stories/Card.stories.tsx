@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { Badge } from "@/components/Badge";
 import { Text } from "@/components/Text";
 
 import { Card } from "../ui";
@@ -92,32 +91,6 @@ export const LargePadding: Story = {
   render: (args) => (
     <Card {...args} style={{ width: "320px" }}>
       <Text>Large padding card</Text>
-    </Card>
-  ),
-};
-
-export const OrderCard: Story = {
-  render: () => (
-    <Card variant="default" padding="md" style={{ width: "360px" }}>
-      <div style={{ display: "grid", gap: "12px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: "12px",
-          }}
-        >
-          <Text as="h3" variant="h3">
-            Order #1248
-          </Text>
-
-          <Badge variant="warning">In progress</Badge>
-        </div>
-
-        <Text color="muted">Wrocław, Magnolia Park</Text>
-
-        <Text>Courier assigned. Estimated delivery time: 24 minutes.</Text>
-      </div>
     </Card>
   ),
 };

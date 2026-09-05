@@ -10,3 +10,22 @@ export type OrderStatusBadgeProps = Omit<
 > & {
   status: OrderStatus;
 };
+
+export type OrderListItem = {
+  id: string;
+  pickupAddress: string;
+  deliveryAddress: string;
+  status: OrderStatus;
+  createdAt: string;
+};
+
+export type OrderDetailsItem = OrderListItem & {
+  recipientName: string;
+  recipientPhone: string;
+  comment: string | null;
+  updatedAt: string;
+};
+
+export type OrderCardProps = {
+  order: OrderListItem;
+};

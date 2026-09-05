@@ -5,11 +5,100 @@
   },
   "order": {
     "status": {
-      "new": "New",
+      "pending": "Awaiting courier",
       "assigned": "Assigned",
       "in_progress": "In progress",
       "delivered": "Delivered",
       "cancelled": "Cancelled"
+    },
+    "labels": {
+      "pickupAddress": "Pickup address",
+      "deliveryAddress": "Delivery address",
+      "recipientName": "Recipient name",
+      "recipientPhone": "Recipient phone",
+      "comment": "Comment",
+      "status": "Status",
+      "createdAt": "Created",
+      "updatedAt": "Updated"
+    },
+    "card": {
+      "createdAt": "Created {date}",
+      "viewDetails": "View details"
+    },
+    "list": {
+      "title": "Orders",
+      "description": "Track your delivery requests and their current status.",
+      "actions": {
+        "create": "Create order",
+        "retry": "Try again"
+      },
+      "empty": {
+        "title": "No orders yet",
+        "description": "Create your first order to start managing deliveries."
+      },
+      "loadingLabel": "Loading orders",
+      "error": {
+        "title": "Could not load orders",
+        "description": "Please try again."
+      }
+    },
+    "create": {
+      "title": "Create order",
+      "description": "Enter the pickup, delivery and recipient details.",
+      "fields": {
+        "pickupAddress": {
+          "placeholder": "Enter pickup address"
+        },
+        "deliveryAddress": {
+          "placeholder": "Enter delivery address"
+        },
+        "recipientName": {
+          "placeholder": "Enter recipient name"
+        },
+        "recipientPhone": {
+          "placeholder": "+48 123 456 789"
+        },
+        "comment": {
+          "placeholder": "Add delivery instructions"
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "submit": "Create order",
+        "submitting": "Creating order..."
+      },
+      "validation": {
+        "pickupAddressRequired": "Pickup address is required",
+        "pickupAddressTooLong": "Pickup address must not exceed 500 characters",
+        "deliveryAddressRequired": "Delivery address is required",
+        "deliveryAddressTooLong": "Delivery address must not exceed 500 characters",
+        "recipientNameRequired": "Recipient name is required",
+        "recipientNameTooLong": "Recipient name must not exceed 80 characters",
+        "recipientPhoneRequired": "Recipient phone is required",
+        "recipientPhoneInvalid": "Enter a valid phone number",
+        "commentTooLong": "Comment must not exceed 1000 characters"
+      },
+      "errors": {
+        "submitFailed": "Could not create the order. Please try again."
+      }
+    },
+    "details": {
+      "title": "Order details",
+      "description": "Delivery information and current status.",
+      "actions": {
+        "backToOrders": "Back to orders",
+        "retry": "Try again"
+      },
+      "noComment": "No comment provided.",
+      "loadingLabel": "Loading order",
+      "notFound": {
+        "title": "Order not found",
+        "description": "This order does not exist or is not available to your account."
+      },
+      "error": {
+        "title": "Could not load the order",
+        "description": "Please try again."
+      }
     }
   },
   "auth": {
