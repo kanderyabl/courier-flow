@@ -1,2 +1,2 @@
-export { CreateOrderPage } from "./ui";
+export { CreateOrderPage, CreateOrderPageContainer } from "./ui";
 export type { CreateOrderPageProps } from "./types";
