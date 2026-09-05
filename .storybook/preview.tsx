@@ -46,7 +46,11 @@ const preview: Preview = {
       const locale = context.globals.locale as Locale;
 
       return (
-        <NextIntlClientProvider locale={locale} messages={messages[locale]}>
+        <NextIntlClientProvider
+          locale={locale}
+          messages={messages[locale]}
+          timeZone="Europe/Warsaw"
+        >
           <div style={{ fontFamily: "Inter, Arial, sans-serif" }}>
             <Story />
           </div>

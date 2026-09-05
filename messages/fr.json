@@ -10,6 +10,95 @@
       "in_progress": "En cours",
       "delivered": "Livré",
       "cancelled": "Annulé"
+    },
+    "labels": {
+      "pickupAddress": "Adresse de retrait",
+      "deliveryAddress": "Adresse de livraison",
+      "recipientName": "Nom du destinataire",
+      "recipientPhone": "Téléphone du destinataire",
+      "comment": "Commentaire",
+      "status": "Statut",
+      "createdAt": "Date de création",
+      "updatedAt": "Dernière mise à jour"
+    },
+    "card": {
+      "createdAt": "Créée le {date}",
+      "viewDetails": "Voir les détails"
+    },
+    "list": {
+      "title": "Commandes",
+      "description": "Suivez vos demandes de livraison et leur statut actuel.",
+      "actions": {
+        "create": "Créer une commande",
+        "retry": "Réessayer"
+      },
+      "empty": {
+        "title": "Aucune commande pour le moment",
+        "description": "Créez votre première commande pour commencer à gérer vos livraisons."
+      },
+      "loadingLabel": "Chargement des commandes",
+      "error": {
+        "title": "Impossible de charger les commandes",
+        "description": "Veuillez réessayer."
+      }
+    },
+    "create": {
+      "title": "Créer une commande",
+      "description": "Saisissez les informations de retrait, de livraison et du destinataire.",
+      "fields": {
+        "pickupAddress": {
+          "placeholder": "Saisissez l’adresse de retrait"
+        },
+        "deliveryAddress": {
+          "placeholder": "Saisissez l’adresse de livraison"
+        },
+        "recipientName": {
+          "placeholder": "Saisissez le nom du destinataire"
+        },
+        "recipientPhone": {
+          "placeholder": "+48 123 456 789"
+        },
+        "comment": {
+          "placeholder": "Ajoutez des instructions de livraison"
+        }
+      },
+      "actions": {
+        "cancel": "Annuler",
+        "submit": "Créer la commande",
+        "submitting": "Création de la commande..."
+      },
+      "validation": {
+        "pickupAddressRequired": "L’adresse de retrait est obligatoire",
+        "pickupAddressTooLong": "L’adresse de retrait ne doit pas dépasser 500 caractères",
+        "deliveryAddressRequired": "L’adresse de livraison est obligatoire",
+        "deliveryAddressTooLong": "L’adresse de livraison ne doit pas dépasser 500 caractères",
+        "recipientNameRequired": "Le nom du destinataire est obligatoire",
+        "recipientNameTooLong": "Le nom du destinataire ne doit pas dépasser 80 caractères",
+        "recipientPhoneRequired": "Le téléphone du destinataire est obligatoire",
+        "recipientPhoneInvalid": "Saisissez un numéro de téléphone valide",
+        "commentTooLong": "Le commentaire ne doit pas dépasser 1000 caractères"
+      },
+      "errors": {
+        "submitFailed": "Impossible de créer la commande. Veuillez réessayer."
+      }
+    },
+    "details": {
+      "title": "Détails de la commande",
+      "description": "Informations de livraison et statut actuel.",
+      "actions": {
+        "backToOrders": "Retour aux commandes",
+        "retry": "Réessayer"
+      },
+      "noComment": "Aucun commentaire.",
+      "loadingLabel": "Chargement de la commande",
+      "notFound": {
+        "title": "Commande introuvable",
+        "description": "Cette commande n’existe pas ou n’est pas accessible avec votre compte."
+      },
+      "error": {
+        "title": "Impossible de charger la commande",
+        "description": "Veuillez réessayer."
+      }
     }
   },
   "auth": {

@@ -10,6 +10,95 @@
       "in_progress": "进行中",
       "delivered": "已送达",
       "cancelled": "已取消"
+    },
+    "labels": {
+      "pickupAddress": "取件地址",
+      "deliveryAddress": "配送地址",
+      "recipientName": "收件人姓名",
+      "recipientPhone": "收件人电话",
+      "comment": "备注",
+      "status": "状态",
+      "createdAt": "创建时间",
+      "updatedAt": "更新时间"
+    },
+    "card": {
+      "createdAt": "创建于 {date}",
+      "viewDetails": "查看详情"
+    },
+    "list": {
+      "title": "订单",
+      "description": "跟踪您的配送订单及其当前状态。",
+      "actions": {
+        "create": "创建订单",
+        "retry": "重试"
+      },
+      "empty": {
+        "title": "暂无订单",
+        "description": "创建您的第一个订单，开始管理配送。"
+      },
+      "loadingLabel": "正在加载订单",
+      "error": {
+        "title": "无法加载订单",
+        "description": "请重试。"
+      }
+    },
+    "create": {
+      "title": "创建订单",
+      "description": "填写取件、配送和收件人信息。",
+      "fields": {
+        "pickupAddress": {
+          "placeholder": "请输入取件地址"
+        },
+        "deliveryAddress": {
+          "placeholder": "请输入配送地址"
+        },
+        "recipientName": {
+          "placeholder": "请输入收件人姓名"
+        },
+        "recipientPhone": {
+          "placeholder": "+48 123 456 789"
+        },
+        "comment": {
+          "placeholder": "添加配送说明"
+        }
+      },
+      "actions": {
+        "cancel": "取消",
+        "submit": "创建订单",
+        "submitting": "正在创建订单..."
+      },
+      "validation": {
+        "pickupAddressRequired": "取件地址为必填项",
+        "pickupAddressTooLong": "取件地址不能超过 500 个字符",
+        "deliveryAddressRequired": "配送地址为必填项",
+        "deliveryAddressTooLong": "配送地址不能超过 500 个字符",
+        "recipientNameRequired": "收件人姓名为必填项",
+        "recipientNameTooLong": "收件人姓名不能超过 80 个字符",
+        "recipientPhoneRequired": "收件人电话为必填项",
+        "recipientPhoneInvalid": "请输入有效的电话号码",
+        "commentTooLong": "备注不能超过 1000 个字符"
+      },
+      "errors": {
+        "submitFailed": "无法创建订单，请重试。"
+      }
+    },
+    "details": {
+      "title": "订单详情",
+      "description": "配送信息和当前状态。",
+      "actions": {
+        "backToOrders": "返回订单列表",
+        "retry": "重试"
+      },
+      "noComment": "未提供备注。",
+      "loadingLabel": "正在加载订单",
+      "notFound": {
+        "title": "未找到订单",
+        "description": "此订单不存在或您的账户无权查看。"
+      },
+      "error": {
+        "title": "无法加载订单",
+        "description": "请重试。"
+      }
     }
   },
   "auth": {

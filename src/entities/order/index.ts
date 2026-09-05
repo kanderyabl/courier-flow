@@ -1,6 +1,8 @@
-export { OrderStatusBadge } from "./ui";
+export { OrderCard, OrderStatusBadge } from "./ui";
 export type {
-  OrderStatusBadgeProps,
-  OrderStatus,
+  OrderCardProps,
+  OrderDetailsItem,
   OrderListItem,
+  OrderStatus,
+  OrderStatusBadgeProps,
 } from "./types";

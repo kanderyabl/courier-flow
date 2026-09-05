@@ -10,6 +10,95 @@
       "in_progress": "En progreso",
       "delivered": "Entregado",
       "cancelled": "Cancelado"
+    },
+    "labels": {
+      "pickupAddress": "Dirección de recogida",
+      "deliveryAddress": "Dirección de entrega",
+      "recipientName": "Nombre del destinatario",
+      "recipientPhone": "Teléfono del destinatario",
+      "comment": "Comentarios",
+      "status": "Estado",
+      "createdAt": "Creado",
+      "updatedAt": "Actualizado"
+    },
+    "card": {
+      "createdAt": "Creado el {date}",
+      "viewDetails": "Ver detalles"
+    },
+    "list": {
+      "title": "Pedidos",
+      "description": "Consulta tus solicitudes de entrega y su estado actual.",
+      "actions": {
+        "create": "Crear pedido",
+        "retry": "Reintentar"
+      },
+      "empty": {
+        "title": "Aún no hay pedidos",
+        "description": "Crea tu primer pedido para empezar a gestionar entregas."
+      },
+      "loadingLabel": "Cargando pedidos",
+      "error": {
+        "title": "No se pudieron cargar los pedidos",
+        "description": "Inténtalo de nuevo."
+      }
+    },
+    "create": {
+      "title": "Crear pedido",
+      "description": "Introduce los datos de recogida, entrega y destinatario.",
+      "fields": {
+        "pickupAddress": {
+          "placeholder": "Introduce la dirección de recogida"
+        },
+        "deliveryAddress": {
+          "placeholder": "Introduce la dirección de entrega"
+        },
+        "recipientName": {
+          "placeholder": "Introduce el nombre del destinatario"
+        },
+        "recipientPhone": {
+          "placeholder": "+48 123 456 789"
+        },
+        "comment": {
+          "placeholder": "Añade instrucciones para la entrega"
+        }
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "submit": "Crear pedido",
+        "submitting": "Creando pedido..."
+      },
+      "validation": {
+        "pickupAddressRequired": "La dirección de recogida es obligatoria",
+        "pickupAddressTooLong": "La dirección de recogida no debe superar los 500 caracteres",
+        "deliveryAddressRequired": "La dirección de entrega es obligatoria",
+        "deliveryAddressTooLong": "La dirección de entrega no debe superar los 500 caracteres",
+        "recipientNameRequired": "El nombre del destinatario es obligatorio",
+        "recipientNameTooLong": "El nombre del destinatario no debe superar los 80 caracteres",
+        "recipientPhoneRequired": "El teléfono del destinatario es obligatorio",
+        "recipientPhoneInvalid": "Introduce un número de teléfono válido",
+        "commentTooLong": "El comentario no debe superar los 1000 caracteres"
+      },
+      "errors": {
+        "submitFailed": "No se pudo crear el pedido. Inténtalo de nuevo."
+      }
+    },
+    "details": {
+      "title": "Detalles del pedido",
+      "description": "Información de entrega y estado actual.",
+      "actions": {
+        "backToOrders": "Volver a los pedidos",
+        "retry": "Reintentar"
+      },
+      "noComment": "No se añadieron comentarios.",
+      "loadingLabel": "Cargando pedido",
+      "notFound": {
+        "title": "Pedido no encontrado",
+        "description": "Este pedido no existe o no está disponible para tu cuenta."
+      },
+      "error": {
+        "title": "No se pudo cargar el pedido",
+        "description": "Inténtalo de nuevo."
+      }
     }
   },
   "auth": {

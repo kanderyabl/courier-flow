@@ -32,9 +32,9 @@ export function createOrderSchema(messages: CreateOrderValidationMessages) {
       .string()
       .trim()
       .max(1000, { error: messages.commentTooLong })
-      .optional()
+      .nullish()
       .transform((value) =>
-        value === "" || value === undefined ? null : value,
+        value === "" || value === undefined || value === null ? null : value,
       ),
   });
 }

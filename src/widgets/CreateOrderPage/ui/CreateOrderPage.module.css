@@ -1,0 +1,10 @@
+.page {
+  flex: 1;
+  padding-block: 48px 64px;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-block: 32px 48px;
+  }
+}

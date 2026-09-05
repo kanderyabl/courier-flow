@@ -18,3 +18,14 @@ export type OrderListItem = {
   status: OrderStatus;
   createdAt: string;
 };
+
+export type OrderDetailsItem = OrderListItem & {
+  recipientName: string;
+  recipientPhone: string;
+  comment: string | null;
+  updatedAt: string;
+};
+
+export type OrderCardProps = {
+  order: OrderListItem;
+};

@@ -10,6 +10,95 @@
       "in_progress": "प्रगति में",
       "delivered": "डिलीवर किया गया",
       "cancelled": "रद्द किया गया"
+    },
+    "labels": {
+      "pickupAddress": "पिकअप पता",
+      "deliveryAddress": "डिलीवरी पता",
+      "recipientName": "प्राप्तकर्ता का नाम",
+      "recipientPhone": "प्राप्तकर्ता का फ़ोन",
+      "comment": "टिप्पणी",
+      "status": "स्थिति",
+      "createdAt": "बनाया गया",
+      "updatedAt": "अपडेट किया गया"
+    },
+    "card": {
+      "createdAt": "बनाया गया: {date}",
+      "viewDetails": "विवरण देखें"
+    },
+    "list": {
+      "title": "ऑर्डर",
+      "description": "अपने डिलीवरी अनुरोधों और उनकी मौजूदा स्थिति को ट्रैक करें।",
+      "actions": {
+        "create": "ऑर्डर बनाएँ",
+        "retry": "फिर से कोशिश करें"
+      },
+      "empty": {
+        "title": "अभी कोई ऑर्डर नहीं है",
+        "description": "डिलीवरी प्रबंधित करना शुरू करने के लिए अपना पहला ऑर्डर बनाएँ।"
+      },
+      "loadingLabel": "ऑर्डर लोड हो रहे हैं",
+      "error": {
+        "title": "ऑर्डर लोड नहीं हो सके",
+        "description": "कृपया फिर से कोशिश करें।"
+      }
+    },
+    "create": {
+      "title": "ऑर्डर बनाएँ",
+      "description": "पिकअप, डिलीवरी और प्राप्तकर्ता की जानकारी दर्ज करें।",
+      "fields": {
+        "pickupAddress": {
+          "placeholder": "पिकअप पता दर्ज करें"
+        },
+        "deliveryAddress": {
+          "placeholder": "डिलीवरी पता दर्ज करें"
+        },
+        "recipientName": {
+          "placeholder": "प्राप्तकर्ता का नाम दर्ज करें"
+        },
+        "recipientPhone": {
+          "placeholder": "+48 123 456 789"
+        },
+        "comment": {
+          "placeholder": "डिलीवरी के निर्देश जोड़ें"
+        }
+      },
+      "actions": {
+        "cancel": "रद्द करें",
+        "submit": "ऑर्डर बनाएँ",
+        "submitting": "ऑर्डर बनाया जा रहा है..."
+      },
+      "validation": {
+        "pickupAddressRequired": "पिकअप पता आवश्यक है",
+        "pickupAddressTooLong": "पिकअप पता 500 अक्षरों से अधिक नहीं होना चाहिए",
+        "deliveryAddressRequired": "डिलीवरी पता आवश्यक है",
+        "deliveryAddressTooLong": "डिलीवरी पता 500 अक्षरों से अधिक नहीं होना चाहिए",
+        "recipientNameRequired": "प्राप्तकर्ता का नाम आवश्यक है",
+        "recipientNameTooLong": "प्राप्तकर्ता का नाम 80 अक्षरों से अधिक नहीं होना चाहिए",
+        "recipientPhoneRequired": "प्राप्तकर्ता का फ़ोन आवश्यक है",
+        "recipientPhoneInvalid": "मान्य फ़ोन नंबर दर्ज करें",
+        "commentTooLong": "टिप्पणी 1000 अक्षरों से अधिक नहीं होनी चाहिए"
+      },
+      "errors": {
+        "submitFailed": "ऑर्डर नहीं बनाया जा सका। कृपया फिर से कोशिश करें।"
+      }
+    },
+    "details": {
+      "title": "ऑर्डर का विवरण",
+      "description": "डिलीवरी की जानकारी और मौजूदा स्थिति।",
+      "actions": {
+        "backToOrders": "ऑर्डर पर वापस जाएँ",
+        "retry": "फिर से कोशिश करें"
+      },
+      "noComment": "कोई टिप्पणी नहीं दी गई है।",
+      "loadingLabel": "ऑर्डर लोड हो रहा है",
+      "notFound": {
+        "title": "ऑर्डर नहीं मिला",
+        "description": "यह ऑर्डर मौजूद नहीं है या आपके खाते के लिए उपलब्ध नहीं है।"
+      },
+      "error": {
+        "title": "ऑर्डर लोड नहीं हो सका",
+        "description": "कृपया फिर से कोशिश करें।"
+      }
     }
   },
   "auth": {
