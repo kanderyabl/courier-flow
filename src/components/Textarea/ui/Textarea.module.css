@@ -40,7 +40,7 @@
   background: var(--color-surface);
   color: var(--color-foreground);
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
   outline: none;
   transition:
